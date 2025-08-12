@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carlos Henrique | Portfólio</title>
+
+<!-- GSAP para animações do card CMD (externo) -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+<style>
+/* ============================= VARS/TEMA ============================= */
+:root{
+  --header-h: 64px;
+  --bg:#070b16;
+  --card:#10183b;
+  --surface:#0d1534;
+  --text:#eaf2ff;
+  --muted:#9bb0d3;
+  --accent:#20d3ff;
+  --brand:#7c4dff;
+  --pill-bg:rgba(124,77,255,.16);
+  --border:rgba(255,255,255,.10);
+  --shadow:0 18px 40px rgba(0,0,0,.38);
+  --ok:#00e6d1; --warn:#ffb24d; --err:#ff6b6b;
+  --violet:#8b6cff; --baby:#89c9ff;
+}
+body.light{
+  --bg:#f7f9ff; --card:#ffffff; --surface:#f2f5ff;
+  --text:#1e2530; --muted:#647184;
+  --accent:#2b8eff; --brand:#1f6ed6;
+  --pill-bg:rgba(43,142,255,.12);
+  --border:rgba(0,0,0,.10);
+  --shadow:0 12px 28px rgba(0,0,0,.12);
+}
+
+/* ============================= BASE ============================= */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+html,body{ overflow-x:hidden; touch-action:pan-y; overscroll-behavior-x:none; }
+body{
+  margin:0; color:var(--text); font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:
+    radial-gradient(1200px 700px at 10% 10%, rgba(124,77,255,.18), transparent 60%),
+    radial-gradient(900px 600px at 90% 90%, rgba(32,211,255,.12), transparent 60%),
+    var(--bg);
+  transition:background .35s,color .35s;
+}
+.container{ max-width:1100px; margin:0 auto; padding:0 16px; }
+.muted{ color:var(--muted); }
+img,svg,canvas{ max-width:100%; height:auto; display:block; }
+
+body.scroll-lock{ position:fixed; inset:0; overflow:hidden; width:100vw; height:100vh; }
+
+/* ============================= HEADER ============================= */
+header{
+  position:sticky; top:0; z-index:2200;
+  background:rgba(7,11,22,.60);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:saturate(120%) blur(8px);
+  padding-inline:14px;
+}
+body.light header{ background:var(--bg); border-bottom:1px solid var(--border); }
+
+.pill-nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; flex-wrap:wrap; }
+.logo{
+  font-weight:800; letter-spacing:-.2px; white-space:nowrap;
+  background:linear-gradient(90deg,var(--brand),var(--accent) 60%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  font-size:clamp(18px,2.6vw,22px);
+}
+#primary-nav{ display:flex; align-items:center; gap:8px; list-style:none; margin:0; padding:0; flex-wrap:wrap; }
+#primary-nav a{
+  text-decoration:none; color:var(--text);
+  padding:8px 12px; border-radius:999px; font-weight:800; font-size:clamp(12px,2.8vw,14px);
+  border:1px solid transparent; transition:transform .12s, background .2s, color .2s, border-color .2s, box-shadow .2s;
+}
+#primary-nav a:hover{ transform:translateY(-1px); box-shadow:0 6px 16px rgba(32,211,255,.18); }
+#primary-nav .pill{ background:var(--pill-bg); color:var(--accent); border-color:var(--border); }
+
+/* Hambúrguer */
+.hamburger{ background:transparent; border:0; cursor:pointer; width:46px; height:42px;
+  border-radius:12px; display:grid; place-items:center; margin-right:6px; z-index:2400; position:relative; }
+.hamburger:hover{ background:rgba(255,255,255,.06); }
+.hamburger span{ width:26px; height:2px; background:#fff; display:block; margin:6px 0; transition:transform .22s,opacity .22s; box-shadow:0 0 0 1px rgba(0,0,0,.35); }
+.hamburger .emoji-close{ position:absolute; inset:0; display:none; align-items:center; justify-content:center; font-size:20px; }
+.hamburger.active span{ display:none; } .hamburger.active .emoji-close{ display:flex; }
+
+/* Side menu */
+#side-menu{
+  position:fixed; top:var(--header-h); right:0; width:min(86%, 360px); height:calc(100vh - var(--header-h));
+  background:var(--card); border-left:1px solid var(--border); box-shadow:-12px 0 28px rgba(0,0,0,.35);
+  transform:translateX(100%); transition:transform .26s cubic-bezier(.2,.7,.2,1);
+  padding:18px; display:flex; flex-direction:column; gap:12px; pointer-events:none; z-index:2300; list-style:none; margin:0;
+}
+#side-menu.open{ transform:translateX(0); pointer-events:auto; }
+.menu-heading{ font-weight:900; opacity:.85; margin-top:6px; }
+.menu-sep{ height:1px; background:var(--border); }
+#side-menu a{ text-decoration:none; color:var(--text); font-weight:700; padding:8px 10px; border-radius:10px; }
+#side-menu a:hover{ background:rgba(255,255,255,.06); }
+
+/* Theme switch */
+.menu-switch{ display:flex; align-items:center; gap:10px; }
+#theme-switch{ position:absolute; opacity:0; width:0; height:0; }
+.switch{ width:46px; height:26px; background:#3a4159; border-radius:999px; display:inline-block; position:relative; border:1px solid var(--border); cursor:pointer; }
+.switch::before{ content:""; position:absolute; width:22px; height:22px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform .25s ease; }
+#theme-switch:checked + .switch{ background:linear-gradient(90deg,var(--brand),var(--accent)); }
+#theme-switch:checked + .switch::before{ transform:translateX(20px); }
+
+/* Barra de leitura */
+#scrollbar{ position:absolute; left:0; bottom:-1px; height:3px; width:0%; background:linear-gradient(90deg,var(--brand),var(--accent)); box-shadow:0 0 12px rgba(32,211,255,.45); }
+
+/* ============================= BOTÕES / UTILS ============================= */
+.btn{
+  display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:10px 14px; font-weight:900;
+  text-decoration:none; border:1px solid var(--border); color:var(--text); background:var(--card);
+  transition:transform .12s, background .2s, color .2s, border-color .2s, box-shadow .2s; cursor:pointer;
+}
+.btn:hover{ transform:translateY(-1px); }
+.btn.primary{ background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border-color:transparent; box-shadow:0 10px 24px rgba(32,211,255,.28); }
+.btn.ghost{ background:var(--pill-bg); color:var(--accent); }
+.btn.small{ font-size:.92rem; padding:8px 12px; }
+.badge{ display:inline-flex; align-items:center; gap:6px; font-weight:800; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--surface); }
+
+/* ====== "?" e popovers ====== */
+.help{ width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:999px; background:transparent; color:#fff; border:2px solid #fff; font-weight:900; line-height:1; cursor:pointer; }
+.help-pop{ position:fixed; z-index:4000; max-width:260px; padding:10px 12px; border-radius:12px; background:rgba(7,11,22,.92); border:1px solid rgba(255,255,255,.18); color:#eaf2ff; box-shadow:0 18px 40px rgba(0,0,0,.45); font-size:.92rem; line-height:1.35; display:none; }
+.help-pop.show{ display:block; }
+.help-pop h4{ margin:0 0 6px; font-size:1rem } .help-pop .x{ position:absolute; top:6px; right:8px; background:transparent; border:0; color:#fff; font-size:16px; cursor:pointer; }
+
+/* ============================= SEÇÕES / HERO ============================= */
+.section{ padding:56px 0; opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+.section.visible{ opacity:1; transform:translateY(0); }
+
+.hero{ display:grid; grid-template-columns:1.2fr .9fr; gap:28px; align-items:center; min-height: clamp(420px, 72vh, 680px); }
+.hero .lead{ color:var(--muted); }
+.hero-stats{ display:flex; gap:22px; align-items:baseline; flex-wrap:wrap; margin:16px 0 0; }
+.stat b{
+  display:inline-block; font: 900 clamp(32px,7vw,56px)/1 'Segoe UI',system-ui,sans-serif;
+  letter-spacing:-.5px; background:linear-gradient(90deg,#62a6ff,#7c4dff 40%,#20d3ff);
+  -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 6px 14px rgba(32,211,255,.15));
+}
+.stat small{ margin-left:8px; font-size:clamp(14px,2.8vw,16px); color:var(--muted); }
+
+.hero-art{ position:relative; min-height:360px; }
+.spin-orbs{ position:absolute; inset:0; display:grid; place-items:center; }
+.orb{ position:absolute; inset:0; margin:auto; width:300px; height:300px; border-radius:50%; border:2px dashed rgba(255,255,255,.18); animation:spin 12s linear infinite; animation-play-state:paused; box-shadow: 0 0 0 0 rgba(32,211,255,.18); transition: box-shadow .3s ease; }
+.orb:nth-child(2){ width:220px; height:220px; animation-duration:9s; }
+.orb:nth-child(3){ width:140px; height:140px; animation-duration:6s; }
+.orb::after{ content:""; position:absolute; top:-6px; left:50%; transform:translateX(-50%); width:12px; height:12px; border-radius:50%; background:linear-gradient(90deg,var(--brand),var(--accent)); box-shadow:0 0 18px rgba(32,211,255,.6); }
+@keyframes spin{ to{ transform:rotate(360deg) } }
+.hero-art.play .orb{ animation-play-state:running; }
+.hero-art.play .orb:nth-child(1){ box-shadow: 0 0 60px 6px rgba(32,211,255,.08) inset; }
+
+/* ============================= MICRO-CARDS ============================= */
+.ui-row{ display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
+.ui-card{ position:relative; overflow:hidden; border-radius:16px; border:1px solid var(--border); background:var(--card); padding:16px; box-shadow:var(--shadow); transition:transform .18s ease, box-shadow .18s ease; }
+.ui-card:hover{ transform:translateY(-3px); box-shadow:0 18px 40px rgba(0,0,0,.35); }
+.ui-card .shine{ position:absolute; inset:-40% -40% auto auto; width:160%; height:80%; transform:rotate(18deg); background:linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent); animation:shine 2.8s linear infinite; }
+@keyframes shine{ to{ transform:translateX(-30%) rotate(18deg) } }
+
+/* ============================= BANNERS ============================= */
+.anim-banners{ display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
+.ban{ position:relative; overflow:hidden; border-radius:16px; border:1px solid var(--border); min-height:140px; color:#fff; display:flex; align-items:flex-end; padding:16px; box-shadow:var(--shadow); }
+.ban h3{ margin:0; z-index:1 } .ban p{ margin:4px 0 0; z-index:1; opacity:.9 }
+.ban-aurora::before{ content:""; position:absolute; inset:-40%; background: conic-gradient(from 0deg, rgba(124,77,255,.32), rgba(32,211,255,.28), rgba(124,77,255,.32), rgba(32,211,255,.28)); animation:aurora 16s linear infinite; filter:blur(18px); }
+.ban-aurora::after{ content:""; position:absolute; inset:0; background:radial-gradient(1200px 600px at 80% 20%, rgba(255,255,255,.10), transparent 60%); mask:radial-gradient(400px 200px at 30% 40%, #000 30%, transparent 70%); animation:star 6s ease-in-out infinite alternate; }
+@keyframes aurora{ to{ transform:rotate(360deg) } } @keyframes star{ from{ transform:translateY(-6px)} to{ transform:translateY(6px)} }
+.ban-blobs{ background:linear-gradient(180deg, rgba(124,77,255,.14), rgba(32,211,255,.10)); }
+.ban-blobs::before,.ban-blobs::after{ content:""; position:absolute; width:220px; height:220px; border-radius:40% 60% 55% 45%/40% 45% 55% 60%; filter:blur(14px); }
+.ban-blobs::before{ left:-40px; top:-60px; background:radial-gradient(closest-side, rgba(139,108,255,.65), transparent); animation:blob1 10s ease-in-out infinite; }
+.ban-blobs::after{ right:-60px; bottom:-60px; background:radial-gradient(closest-side, rgba(137,201,255,.65), transparent); animation:blob2 12s ease-in-out infinite; }
+@keyframes blob1{ 0%,100%{ transform:translate(0,0) rotate(0deg) scale(1) } 50%{ transform:translate(40px,20px) rotate(20deg) scale(1.1) } }
+@keyframes blob2{ 0%,100%{ transform:translate(0,0) rotate(0deg) scale(1) } 50%{ transform:translate(-30px,-10px) rotate(-18deg) scale(1.06) } }
+.ban-waves{ background: linear-gradient(180deg, rgba(124,77,255,.10), rgba(32,211,255,.10)), repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 14px, rgba(255,255,255,.02) 14px 28px); }
+.ban-waves::before{ content:""; position:absolute; inset:-20%; background: radial-gradient(800px 300px at 20% 20%, rgba(124,77,255,.25), transparent 60%), radial-gradient(700px 300px at 80% 80%, rgba(32,211,255,.20), transparent 60%); animation:waves 8s linear infinite; mix-blend-mode:screen; }
+@keyframes waves{ to{ transform:translateX(-10%) } }
+
+/* ============================= INFO CARD (📩) — para usar em qualquer lugar ============================= */
+.info-toggle{ display:grid; gap:10px; }
+.info-trigger{
+  display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; flex-wrap:wrap;
+  background:linear-gradient(180deg, rgba(124,77,255,.10), transparent 40%), var(--card);
+  border:1px solid var(--border); border-radius:14px; padding:12px 14px; box-shadow:var(--shadow);
+  cursor:pointer; font-weight:900;
+}
+.info-left{ display:flex; gap:10px; align-items:center; }
+.info-emoji{ font-size:22px; }
+.info-badge{ display:flex; gap:8px; align-items:center; margin-left:auto; flex-shrink:0; }
+.pill-dot{ width:8px; height:8px; border-radius:50%; background:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.25) inset, 0 0 18px rgba(255,255,255,.45); animation:pulseDot 1.1s ease-in-out infinite; }
+@keyframes pulseDot{ 0%,100%{ transform:scale(.9); opacity:.6 } 50%{ transform:scale(1.15); opacity:1 } }
+.badge-mini{ font:800 12px/1 'Segoe UI',sans-serif; padding:6px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.55); background:rgba(255,255,255,.10); color:#fff; }
+.info-panel{ overflow:hidden; max-height:0; opacity:0; border:1px solid var(--border); border-radius:14px; padding:0 14px; background:var(--card); transition:max-height .35s ease, opacity .28s ease, padding .2s ease; }
+.info-panel.open{ max-height:380px; opacity:1; padding:14px; }
+
+/* ============================= ASSISTENTE (ROBÔ CARLOS) ============================= */
+.assistant{ display:grid; gap:16px; grid-template-columns: .9fr 1.1fr; align-items:stretch; }
+@media (max-width:900px){ .assistant{ grid-template-columns:1fr; } }
+.bot-mini{ position:relative; border:1px solid var(--border); border-radius:16px; background:var(--surface); padding:18px; overflow:hidden; }
+.bot-mini .spark{ position:absolute; inset:-20%; background: radial-gradient(300px 200px at 20% 20%, rgba(124,77,255,.20), transparent 60%), radial-gradient(260px 180px at 80% 80%, rgba(32,211,255,.16), transparent 60%); filter:blur(10px); animation:floatY 6s ease-in-out infinite alternate; }
+@keyframes floatY{ from{ transform:translateY(-8px)} to{ transform:translateY(8px)} }
+.mbot{ width:min(320px, 100%); margin:0 auto; display:block; filter:drop-shadow(0 14px 24px rgba(0,0,0,.35)); }
+.mbot .blink{ transform-origin:50% 50%; animation:blink 3.2s linear infinite; }
+@keyframes blink{ 0%,92%{ transform:scaleY(1)} 96%{ transform:scaleY(.1)} 100%{ transform:scaleY(1)} }
+.mbot .float{ animation:botFloat 5.6s ease-in-out infinite; }
+@keyframes botFloat{ 0%,100%{ transform:translateY(0)} 50%{ transform:translateY(-8px)} }
+
+/* substituto do chat inline (abrir sala) */
+.chat-launch{ display:grid; gap:10px; border:1px solid var(--border); border-radius:16px; background:var(--card); padding:14px; box-shadow:var(--shadow); }
+
+/* ============================= SALA (OVERLAY) ============================= */
+#support-full{ position:fixed; inset:0; z-index:3000; display:none;
+  background: radial-gradient(1200px 600px at 15% 15%, rgba(124,77,255,.18), transparent 60%), radial-gradient(1200px 600px at 85% 85%, rgba(32,211,255,.18), transparent 60%), rgba(7,11,22,.92);
+  backdrop-filter:saturate(120%) blur(6px);
+}
+#support-full.show{ display:grid; place-items:center; }
+.full-box{ width:min(920px, 94vw); height:min(640px, 86vh); display:grid; grid-template-rows:auto 1fr auto; gap:10px; border:1px solid rgba(255,255,255,.18); border-radius:16px; background:var(--card); box-shadow:var(--shadow); padding:14px; position:relative; }
+.full-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.full-close{ background:transparent; border:0; color:#fff; font-size:22px; cursor:pointer; }
+.full-log{ overflow:auto; background:#0a0f22; border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:12px; height: 420px; }
+.full-input{ display:flex; gap:8px; } .full-input input{ flex:1; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text); }
+.menu-grid{ display:grid; gap:8px; grid-template-columns:repeat(3,1fr); margin-top:8px; }
+.menu-grid .btn{ justify-content:center; }
+
+/* ============================= PROMPTS (ALTURA FIXA) ============================= */
+.stack{ display:grid; gap:18px; margin-top:18px; }
+.card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:var(--shadow); }
+.card.head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+
+/* Prompt 1 */
+.mem-wrap{ display:grid; gap:10px; }
+.mem-bar{ height:14px; border-radius:10px; background:rgba(255,255,255,.08); overflow:hidden; border:1px solid var(--border); }
+.mem-fill{ height:100%; width:23%; background:linear-gradient(90deg, var(--brand), var(--accent)); transition:width .45s ease, background .25s ease; }
+.mem-legend{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.log-mini{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; opacity:.9; }
+
+/* Prompt 2 */
+.filters{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.filters label{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; }
+
+/* Prompt 3 */
+.cmd{ background:#000; color:#d6e0ff; border-radius:14px; border:1px solid rgba(255,255,255,.12); box-shadow:0 16px 40px rgba(0,0,0,.35); overflow:hidden; position:relative; }
+.cmd::before{ content:""; position:absolute; inset:-2px; border-radius:16px; background:conic-gradient(from 0deg, rgba(124,77,255,.25), rgba(32,211,255,.25), transparent 40%); filter:blur(18px); z-index:0; animation:spin 16s linear infinite; }
+.cmd-inner{ position:relative; z-index:1; }
+.cmd-head{ display:flex; gap:8px; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.08); }
+.cmd-head .dots{ display:flex; gap:6px; }
+.dot{ width:10px; height:10px; border-radius:50%; background:#ff5f56; }
+.dot:nth-child(2){ background:#ffbd2e } .dot:nth-child(3){ background:#27c93f }
+.cmd-body{ height:320px; overflow:auto; padding:12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:13px; line-height:1.45; }
+.cmd-controls{ display:flex; gap:10px; flex-wrap:wrap; padding:10px 12px; border-top:1px solid rgba(255,255,255,.08); }
+.cmd .btn{ border-color:rgba(255,255,255,.12); background:#0b0b0b; color:#e0ecff; }
+
+/* ============================= CFTV ============================= */
+.cftv{ position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow); }
+.cftv-bg{ content:""; position:absolute; inset:-20px; z-index:0; background: radial-gradient(700px 400px at 10% 10%, rgba(139,108,255,.28), transparent 60%), radial-gradient(600px 360px at 90% 90%, rgba(137,201,255,.25), transparent 60%); filter: blur(10px); animation: cftvFloat 8s ease-in-out infinite alternate; }
+@keyframes cftvFloat{ from{ transform:translateY(-6px) } to{ transform:translateY(6px) } }
+.kpi-grid{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); margin-top:12px; }
+.kpi{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center; }
+.kpi b{ font-size:1.2rem; display:block; }
+.chart-row{ display:grid; gap:14px; grid-template-columns:1.2fr .8fr; }
+@media (max-width:900px){ .hero{ grid-template-columns:1fr; } .chart-row{ grid-template-columns:1fr; } }
+.table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); }
+.table th,.table td{ padding:10px 12px; border-bottom:1px solid var(--border); }
+.table th{ text-align:left; font-weight:800; }
+.table tr:last-child td{ border-bottom:0; }
+
+/* ============================= Pós-prompts ============================= */
+.after-ui{ display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
+.after-ui .ui-card{ min-height:120px; }
+@media (max-width:900px){ .ui-row,.after-ui{ grid-template-columns:1fr; } }
+
+/* ============================= Floaters ============================= */
+.fab-contact{ position:fixed; right:16px; bottom:16px; z-index:2500; background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; text-decoration:none; padding:12px 18px; border-radius:999px; font-weight:900; box-shadow:0 10px 24px rgba(0,0,0,.35); border:1px solid transparent; display:flex; gap:8px; align-items:center; transition:opacity .2s, transform .15s; }
+.fab-contact.dim{ opacity:.6; }
+#to-top{ position:fixed; right:16px; bottom:86px; z-index:2500; opacity:0; transform:translateY(10px); background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border:0; border-radius:999px; padding:10px 14px; font-weight:900; cursor:pointer; box-shadow:0 10px 24px rgba(32,211,255,.28); transition:opacity .2s, transform .2s; }
+#to-top.show{ opacity:1; transform:none; }
+
+/* Dock flutuante */
+#bot-dock{ position:fixed; right:12px; top:50%; transform:translateY(-50%); display:flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:16px; padding:0; border:1px solid var(--border);
+  background:linear-gradient(135deg,var(--brand),var(--accent)); color:#081226; font-weight:900; box-shadow:0 12px 28px rgba(0,0,0,.38); z-index:2600; cursor:pointer; }
+#bot-dock.peek{ width:280px; height:auto; border-radius:16px; padding:12px; }
+#bot-dock .peek-inner{ display:none; color:#eaf2ff; }
+#bot-dock.peek .peek-inner{ display:block; }
+#bot-dock.peek .open{ margin-top:8px }
+.dock-face{ width:26px; height:26px; filter:drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
+
+/* ============================= Avaliações ============================= */
+.rate-summary{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  padding:14px; border:1px solid var(--border); border-radius:16px; background:linear-gradient(180deg, rgba(124,77,255,.08), transparent 50%), var(--card); box-shadow:var(--shadow); }
+.rate-left{ display:flex; align-items:center; gap:12px; }
+.rate-text{ display:grid; gap:2px; } .rate-num{ font-size:clamp(1.1rem, 1.8vw, 1.4rem); }
+.rate-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-left:auto; }
+.lv-modern{
+  --val: 12; --max: 29; --pct: calc(var(--val) / var(--max));
+  width:84px; height:84px; border-radius:50%;
+  background: conic-gradient(#7c4dff calc(var(--pct)*1turn), rgba(255,255,255,.12) 0), radial-gradient(closest-side, var(--card) 70%, transparent 72%);
+  display:grid; place-items:center; border:1px solid var(--border); box-shadow:0 10px 24px rgba(0,0,0,.35);
+}
+.lv-modern b{ font:900 20px/1 'Segoe UI',system-ui,sans-serif; }
+.lv-modern small{ display:block; color:var(--muted); margin-top:2px; font-size:11px; text-transform:uppercase; letter-spacing:.08em }
+
+.reviews-grid{ display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:12px; }
+.rev{ display:grid; grid-template-columns:auto 1fr; gap:12px; border:1px solid var(--border); border-radius:16px; background:var(--card); padding:14px; box-shadow:var(--shadow); transition:transform .16s ease, box-shadow .16s ease, border-color .2s ease; }
+.rev:hover{ transform:translateY(-2px); box-shadow:0 18px 40px rgba(0,0,0,.35); border-color:color-mix(in srgb, var(--accent) 25%, var(--border)); }
+.rev .avatar{ width:48px; height:48px; border-radius:50%; flex-shrink:0; background:#c9cfdb; display:grid; place-items:center; overflow:hidden; border:2px solid rgba(255,255,255,.35); box-shadow:0 0 0 4px rgba(124,77,255,.12); }
+.rev .avatar svg{ width:70%; height:70%; opacity:.9; }
+.rev .name{ font-weight:900; letter-spacing:.1px; }
+.rev .meta{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.rev .txt{ color:var(--muted); margin-top:6px; line-height:1.5; }
+.stars{ --score:4.7; position:relative; display:inline-block; line-height:1; font-size:16px; letter-spacing:3px; user-select:none; white-space:nowrap; }
+.stars.big{ font-size:22px; letter-spacing:4px; }
+.stars::before{ content:'★★★★★'; color:rgba(255,255,255,.22); }
+.stars::after{ content:'★★★★★'; color:#ffd36b; position:absolute; left:0; top:0; width:calc((var(--score)/5) * 100%); overflow:hidden; }
+.tag-note{ padding:4px 8px; border-radius:999px; font-weight:800; border:1px solid var(--border); background:var(--surface); font-size:.86rem; }
+
+/* ============================= Card “CMD — Fábrica Autônoma” ============================= */
+.factory-wrap{ position:relative; }
+.factory-glow{
+  position:absolute; inset:-2px; border-radius:18px;
+  background:conic-gradient(from 0deg, rgba(124,77,255,.35), rgba(32,211,255,.35), transparent 60%);
+  filter:blur(18px); z-index:0; animation:spin 16s linear infinite;
+}
+.factory-card{ position:relative; z-index:1; }
+.factory-cmd .cmd-body{ height:260px; }
+.factory-kpis{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); margin-top:12px; }
+.factory-kpi{ text-align:center; border:1px solid var(--border); border-radius:12px; padding:10px; background:var(--card); }
+.factory-kpi b{ font-size:1.2rem; display:block; }
+</style>
+</head>
+
+<body>
+  <!-- ============================= HEADER ============================= -->
+  <header>
+    <nav class="pill-nav">
+      <div class="logo">Carlos Henrique</div>
+      <ul id="primary-nav">
+        <li><a class="pill" href="portfolio.html">Portfólio</a></li>
+        <li><a class="pill" href="sobre.html">Sobre</a></li>
+        <li><a class="pill" href="projetos.html">Projetos</a></li>
+      </ul>
+
+      <button id="burger" class="hamburger" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+        <div class="emoji-close" aria-hidden="true">❌</div>
+      </button>
+
+      <ul id="side-menu" aria-hidden="true">
+        <li class="menu-heading">Outros links</li>
+        <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="cv.pdf" target="_blank" rel="noopener">Currículo (PDF)</a></li>
+        <li class="menu-sep"></li>
+        <li class="menu-switch">
+          <input type="checkbox" id="theme-switch" checked />
+          <label class="switch" for="theme-switch"></label>
+          <span class="switch-label">Tema escuro</span>
+        </li>
+      </ul>
+    </nav>
+    <div id="scrollbar"></div>
+  </header>
+
+  <!-- ============================= HERO ============================= -->
+  <main id="inicio" class="container">
+    <section class="section hero">
+      <div>
+        <h1 style="margin:0 0 6px">Carlos HFL | Web Designer</h1>
+        <p class="lead">Web Design, Front-End, automação em Python e suporte T.I. — visual + performance.</p>
+        <h6> Caso   deseje   algo  mais,   navegue   pelas Guias  ou    Fale    com   o   Suporte   na   lateral  direita  da sua  tela </h6>
+        <div class="hero-stats" id="hero-stats">
+          <div class="stat"><b id="h-projetos">+0</b><small>projetos</small></div>
+          <div class="stat"><b id="h-anos">+0</b><small>anos</small></div>
+          <div class="stat"><b id="h-satisfacao">0%</b><small>satisfação</small></div>
+        </div>
+        <div class="chips-bar" aria-hidden="true" style="margin-top:14px">
+          <div class="chips-track">
+            <span class="chip">UI/UX</span><span class="chip">Acessibilidade</span><span class="chip">SEO</span>
+            <span class="chip">Automação</span><span class="chip">APIs</span><span class="chip">CFTV</span>
+            <span class="chip">Landing</span><span class="chip">Dashboards</span><span class="chip">Webhooks</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-art" id="hero-art" aria-hidden="true">
+        <div class="spin-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+      </div>
+    </section>
+
+    <!-- ============================= MICRO-CARDS ============================= -->
+    <section class="section">
+      <div class="ui-row">
+        <div class="ui-card"><div class="shine"></div><h3 style="margin:0 0 6px">Performance</h3><p class="muted">Sites com notas altas no PageSpeed e carregamento inteligente.</p></div>
+        <div class="ui-card"><div class="shine"></div><h3 style="margin:0 0 6px">Acessibilidade</h3><p class="muted">Componentes com foco, contraste e navegação por teclado.</p></div>
+        <div class="ui-card"><div class="shine"></div><h3 style="margin:0 0 6px">Automação</h3><p class="muted">Bots, ETL e integrações que economizam tempo da equipe.</p></div>
+      </div>
+    </section>
+
+    <!-- ============================= BANNERS ============================= -->
+    <section class="section">
+      <div class="anim-banners">
+        <div class="ban ban-aurora"><div><h3>Aurora dinâmica</h3><p class="muted">Conic + brilho — tom roxo/azul com variação contínua.</p></div></div>
+        <div class="ban ban-blobs"><div><h3>Blobs orgânicos</h3><p class="muted">Formas maleáveis — contraste suave e fluido.</p></div></div>
+        <div class="ban ban-waves"><div><h3>Waves em camadas</h3><p class="muted">Faixas diagonais com deslocamento e luz suave.</p></div></div>
+      </div>
+    </section>
+
+    <!-- ============================= ASSISTENTE 🤖 ============================= -->
+    <section class="section assistant" id="assistente">
+      <div class="bot-mini">
+        <div class="spark" aria-hidden="true"></div>
+        <svg class="mbot" viewBox="0 0 300 220" role="img" aria-label="Robô Carlos">
+          <defs><linearGradient id="rg" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#7c4dff"/><stop offset="100%" stop-color="#20d3ff"/></linearGradient></defs>
+          <g class="float">
+            <rect x="90" y="40" width="120" height="90" rx="16" fill="url(#rg)" />
+            <rect x="105" y="18" width="90" height="34" rx="12" fill="#1a2246" stroke="rgba(255,255,255,.25)"/>
+            <g transform="translate(120,28)"><rect x="0" y="0" width="60" height="14" rx="7" fill="#0b1026"/>
+              <g class="blink"><circle cx="18" cy="7" r="4" fill="#eaf2ff"/><circle cx="42" cy="7" r="4" fill="#eaf2ff"/></g>
+            </g>
+            <rect x="60" y="130" width="180" height="18" rx="9" fill="rgba(255,255,255,.18)"/>
+          </g>
+        </svg>
+        <button class="bot-secret" id="bot-secret" aria-label="Abrir suporte (Robô Carlos)"></button>
+        <p class="muted" style="margin:8px 0 0">Olá! Sou o <b>Robô Carlos</b> — posso te guiar 🔎</p>
+      </div>
+
+      <div class="chat-launch">
+        <div class="chat-head" style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+          <strong>Precisa de ajuda agora?</strong>
+          <button class="btn primary" id="open-room" type="button">Abrir sala de suporte</button>
+        </div>
+        <p class="muted" style="margin:4px 0 0">A conversa acontece dentro de uma <b>sala</b> dedicada (mesma sala para o bot do meio e o flutuante).</p>
+      </div>
+
+      <!-- 📩 card (único), igual ao estilo do antigo de cima -->
+      <div class="info-toggle" id="prompt-info">
+        <button class="info-trigger" data-toggle="info" aria-expanded="false" aria-controls="prompt-panel">
+          <div class="info-left"><span class="info-emoji">📩</span> <span>Relatórios em tempo real</span></div>
+          <div class="info-badge">
+            <span class="badge-mini"><span class="pill-dot"></span> Atividade</span>
+            <span class="badge-mini" id="mini-rate-2">~0 msg/s</span>
+          </div>
+        </button>
+        <div id="prompt-panel" class="info-panel" hidden>
+          <p class="muted" style="margin:0">
+            Abaixo você acompanha a <b>memória de bots</b>, <b>filtros por tipo</b>, <b>logs em tempo real</b> e o painel de <b>CFTV</b> (DVR/câmeras, donut, tabela). Tudo em PT-BR.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= SALA (overlay full) ============================= -->
+    <section id="support-full" aria-hidden="true">
+      <div class="full-box">
+        <div class="full-head">
+          <strong>Robô Carlos — Sala de Suporte</strong>
+          <button class="full-close" id="full-close" aria-label="Fechar">×</button>
+        </div>
+        <div id="full-log" class="full-log" aria-live="polite"></div>
+        <form id="full-form" class="full-input">
+          <input id="full-input" type="text" placeholder="Digite um número do menu ou escreva…" autocomplete="off">
+          <button class="btn primary" type="submit">Enviar</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============================= PROMPTS ============================= -->
+    <section class="stack">
+      <div class="card">
+        <div class="card head">
+          <strong>Prompt 1 — Memória RAM de Logs (Bots)</strong>
+          <button class="help" data-help="p1">?</button>
+        </div>
+        <div class="mem-wrap">
+          <div class="mem-bar"><div id="mem-fill" class="mem-fill"></div></div>
+          <div class="mem-legend">
+            <span class="badge">Status: <b id="mem-status">OK</b></span>
+            <span class="log-mini" id="mem-log">⏳ inicializando…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card head">
+          <strong>Prompt 2 — Filtros</strong>
+          <button class="help" data-help="p2">?</button>
+        </div>
+        <div class="filters">
+          <label><input type="checkbox" data-filter="ok" checked> Sucesso</label>
+          <label><input type="checkbox" data-filter="warn" checked> Aviso</label>
+          <label><input type="checkbox" data-filter="err" checked> Erro</label>
+          <label><input type="checkbox" data-filter="job" checked> Job/Integração</label>
+        </div>
+      </div>
+
+      <div class="cmd">
+        <div class="cmd-inner">
+          <div class="cmd-head">
+            <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <div class="badge">Prompt 3 — Logs em tempo real</div>
+            <button class="help" data-help="p3">?</button>
+          </div>
+          <div id="cmd-body" class="cmd-body" aria-live="polite"></div>
+          <div class="cmd-controls">
+            <button id="cmd-pause" class="btn">⏸️ Pausar</button>
+            <button id="cmd-clear" class="btn">🧹 Limpar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= CFTV ============================= -->
+    <section class="section stack">
+      <div class="card">
+        <div class="card head">
+          <strong>Memória RAM — CFTV (buffers/streams)</strong>
+          <button class="help" data-help="c1">?</button>
+        </div>
+        <div class="mem-wrap">
+          <div class="mem-bar"><div id="mem-fill-cftv" class="mem-fill" style="width:19%"></div></div>
+          <div class="mem-legend">
+            <span class="badge">Status: <b id="mem-status-cftv">OK</b></span>
+            <span class="log-mini" id="mem-log-cftv">⏳ inicializando buffers…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card head">
+        <strong>Prompt CFTV — Câmeras (lilás/azul)</strong>
+        <button class="help" data-help="c2">?</button>
+      </div>
+
+      <div class="cftv">
+        <div class="cftv-bg" aria-hidden="true"></div>
+        <div class="cmd">
+          <div class="cmd-inner">
+            <div class="cmd-head">
+              <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div class="badge">Terminal — DVR/Câmeras</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button id="cftv-pause" class="btn">⏸️ Pausar</button>
+                <button id="cftv-clear" class="btn">🧹 Limpar</button>
+                <button class="help" data-help="c3">?</button>
+              </div>
+            </div>
+            <div id="cftv-body" class="cmd-body" style="height:260px"></div>
+          </div>
+        </div>
+
+        <div class="card" style="position:relative; z-index:1">
+          <div class="kpi-grid">
+            <div class="kpi"><small class="muted">Eventos (1min)</small><b id="k-cftv-total">0</b></div>
+            <div class="kpi"><small class="muted">Humano</small><b id="k-cftv-hum">0%</b></div>
+            <div class="kpi"><small class="muted">Veículo</small><b id="k-cftv-veh">0%</b></div>
+            <div class="kpi"><small class="muted">Furto</small><b id="k-cftv-theft">0%</b></div>
+          </div>
+
+          <div class="chart-row" style="margin-top:12px">
+            <canvas id="cftv-donut" height="220"></canvas>
+            <div style="overflow:auto">
+              <table class="table">
+                <thead><tr><th>DVR</th><th>Nome</th><th>Câmera</th><th>Ocorrência</th></tr></thead>
+                <tbody id="cftv-tb"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= Pós-prompts ============================= -->
+    <section class="section">
+      <div class="after-ui">
+        <div class="ui-card"><div class="shine"></div><h3 style="margin:0 0 6px">Stack</h3><p class="muted">HTML/CSS/JS • Python • APIs • Webhooks • GA4 • SEO técnico</p></div>
+        <div class="ui-card"><div class="shine"></div><h3 style="margin:0 0 6px">Qualidade</h3><p class="muted">Linters, acessibilidade, testes de performance e monitoramento.</p></div>
+        <div class="ui-card"><div class="shine"></div><h3 style="margin:0 0 6px">Suporte</h3><p class="muted">Onboarding, documentação e acompanhamento pós-lançamento.</p></div>
+      </div>
+    </section>
+
+    <!-- ============================= SHOWCASE ============================= -->
+    <section class="section">
+      <h2>Showcase</h2>
+      <p class="muted">Alguns destaques recentes (substitua pelos seus projetos reais).</p>
+      <div class="container" style="display:grid; gap:16px; grid-template-columns:repeat(3,1fr)">
+        <div class="card">Landing otimizada</div>
+        <div class="card">Dashboard & API</div>
+        <div class="card">Automação Python</div>
+      </div>
+    </section>
+
+    <!-- ============================= AVALIAÇÕES ============================= -->
+    <section id="avaliacoes" class="section">
+      <div class="container">
+        <h2 style="margin-top:0">Avaliações</h2>
+
+        <div class="rate-summary">
+          <div class="rate-left">
+            <div class="stars big" style="--score:4.7" aria-label="Média 4,7 de 5"></div>
+            <div class="rate-text">
+              <b id="avg-rating" class="rate-num">4,7</b>
+              <div class="muted"><span id="total-count">92</span> classificados</div>
+            </div>
+          </div>
+          <div class="rate-right">
+            <div class="lv-modern" id="lv-modern" title="Últimas visualizações">
+              <div style="text-align:center"><b id="lv-num">12</b><small>últ. 1h</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="reviews-list" class="reviews-grid"></div>
+      </div>
+    </section>
+
+    <!-- ============================= CARD “CMD — Fábrica Autônoma” (novo) ============================= -->
+    <section class="section factory-wrap">
+      <div class="factory-glow" aria-hidden="true"></div>
+      <div class="card factory-card">
+        <div class="card head">
+          <strong>CMD — Fábrica Autônoma (Bots & Máquinas)</strong>
+          <span class="badge">Live</span>
+        </div>
+        <div class="cmd factory-cmd">
+          <div class="cmd-inner">
+            <div class="cmd-head">
+              <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div class="badge">Console Industrial</div>
+            </div>
+            <div id="fab-body" class="cmd-body" aria-live="polite"></div>
+            <div class="cmd-controls">
+              <button id="fab-pause" class="btn">⏸️ Pausar</button>
+              <button id="fab-clear" class="btn">🧹 Limpar</button>
+            </div>
+          </div>
+        </div>
+        <div class="factory-kpis">
+          <div class="factory-kpi"><small class="muted">Células ativas</small><b id="fk-cel">0</b></div>
+          <div class="factory-kpi"><small class="muted">Cobots online</small><b id="fk-cob">0</b></div>
+          <div class="factory-kpi"><small class="muted">AGVs rodando</small><b id="fk-agv">0</b></div>
+          <div class="factory-kpi"><small class="muted">Alertas (1h)</small><b id="fk-alt">0</b></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p>&copy; 2025 Carlos Henrique. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Flutuantes -->
+  <a href="contato.html" class="fab-contact" id="fab-contact">💬 Contato</a>
+  <button id="to-top" aria-label="Voltar ao topo">↑ Topo</button>
+
+  <!-- Dock (bot flutuante) — mesma sala -->
+  <button id="bot-dock" title="Robô Carlos">
+    <svg class="dock-face" viewBox="0 0 64 64" aria-hidden="true">
+      <defs><linearGradient id="rgd" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#7c4dff"/><stop offset="100%" stop-color="#20d3ff"/></linearGradient></defs>
+      <rect x="10" y="18" width="44" height="28" rx="10" fill="url(#rgd)"/>
+      <circle cx="26" cy="32" r="4" fill="#eaf2ff"/><circle cx="38" cy="32" r="4" fill="#eaf2ff"/>
+    </svg>
+    <div class="peek-inner">
+      <div><b>Robô Carlos</b><br><span class="muted">Precisa de ajuda?</span></div>
+      <button class="btn primary open" id="dock-open" type="button">Abrir suporte</button>
+    </div>
+  </button>
+
+<script>
+/* ============================= HELPERS ============================= */
+const $  = (s,doc=document)=>doc.querySelector(s);
+const $$ = (s,doc=document)=>Array.from(doc.querySelectorAll(s));
+const pad4 = n => String(n).padStart(4,'0');
+const rand = (a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+
+/* ============================= HEADER + barra leitura + toTop ============================= */
+(function headerStuff(){
+  const header = document.querySelector('header');
+  const bar = document.getElementById('scrollbar');
+  const toTop = $('#to-top');
+  const fab = $('#fab-contact');
+
+  const setH = ()=> document.documentElement.style.setProperty('--header-h', (header?.offsetHeight||64)+'px');
+  setH(); addEventListener('load', setH); addEventListener('resize', setH);
+
+  let lastY = 0;
+  const onScroll = ()=>{
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const y = h.scrollTop||0;
+    const p = max>0 ? (y / max)*100 : 0;
+    if (bar) bar.style.width = p + '%';
+
+    const goingUp = y < lastY;
+    const nearBottom = (y + h.clientHeight) > (h.scrollHeight - 420);
+    toTop?.classList.toggle('show', goingUp || nearBottom);
+    fab?.classList.toggle('dim', nearBottom);
+    lastY = y;
+  };
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  toTop?.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+})();
+
+/* ============================= MENU LATERAL (bloqueio suave) ============================= */
+(() => {
+  const burger=$('#burger'), side=$('#side-menu');
+  if(!burger || !side) return;
+
+  let lastY = 0;
+  const preventAll = (e)=>{ if (e && e.cancelable) e.preventDefault(); e.stopPropagation(); return false; };
+  const keyBlock = (e)=>{
+    const keys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End','Space',' '];
+    if(keys.includes(e.key)){ preventAll(e); }
+  };
+
+  function lock(){
+    lastY = window.scrollY || 0;
+    document.body.classList.add('scroll-lock');
+    document.body.style.top = `-${lastY}px`;
+    document.documentElement.style.overscrollBehavior = 'none';
+    document.documentElement.style.touchAction = 'none';
+    window.addEventListener('wheel', preventAll, {passive:false});
+    window.addEventListener('touchmove', preventAll, {passive:false});
+    window.addEventListener('keydown', keyBlock, {passive:false});
+  }
+  function unlock(){
+    document.body.classList.remove('scroll-lock');
+    document.body.style.top = '';
+    document.documentElement.style.overscrollBehavior = '';
+    document.documentElement.style.touchAction = '';
+    window.removeEventListener('wheel', preventAll);
+    window.removeEventListener('touchmove', preventAll);
+    window.removeEventListener('keydown', keyBlock);
+    window.scrollTo(0, lastY);
+  }
+
+  function openMenu(force){
+    const open = (typeof force==='boolean') ? force : !side.classList.contains('open');
+    side.classList.toggle('open', open);
+    burger.classList.toggle('active', open);
+    burger.setAttribute('aria-expanded', open ? 'true':'false');
+    open ? lock() : unlock();
+  }
+
+  burger.addEventListener('click', ()=> openMenu());
+  side.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> openMenu(false)));
+  addEventListener('keydown', e=>{ if(e.key==='Escape') openMenu(false); });
+})();
+
+/* ============================= THEME SWITCH ============================= */
+(() => {
+  const sw = $('#theme-switch');
+  if(!sw) return;
+  document.body.classList.toggle('light', !sw.checked);
+  sw.addEventListener('change', ()=> document.body.classList.toggle('light', !sw.checked));
+})();
+
+/* ============================= REVEAL + hero orbs ============================= */
+(() => {
+  const io=new IntersectionObserver(ents=>ents.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  }),{threshold:.14});
+  $$('.section').forEach(s=>io.observe(s));
+})();
+(() => {
+  const art = $('#hero-art');
+  if(!art) return;
+  const io = new IntersectionObserver((ents)=>{
+    ents.forEach(e=> art.classList.toggle('play', e.isIntersecting));
+  },{threshold:.3});
+  io.observe(art);
+})();
+
+/* ============================= HERO COUNTERS ============================= */
+(() => {
+  const wrap = $('#hero-stats');
+  const elP = $('#h-projetos'), elA = $('#h-anos'), elS = $('#h-satisfacao');
+
+  function countTo(el, to, isPct=false, dur=1000){
+    if(!el) return;
+    const t0=performance.now(), start=0;
+    const step=(t)=>{
+      const p=Math.min(1,(t-t0)/dur);
+      const v=Math.round(start+(to-start)*p);
+      el.textContent = isPct ? (v+'%') : ('+'+v);
+      if(p<1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  const io = new IntersectionObserver((ents)=>{
+    ents.forEach(e=>{
+      if(e.isIntersecting){
+        countTo(elP, 217);
+        countTo(elA, 4);
+        countTo(elS, 97, true);
+        io.disconnect();
+      }
+    });
+  },{threshold:.45});
+  wrap && io.observe(wrap);
+})();
+
+/* ============================= INFO CARD (📩) – genérico (usa no prompt-info) ============================= */
+(() => {
+  $$('.info-toggle').forEach((wrap)=>{
+    const trigger = wrap.querySelector('.info-trigger');
+    const panel   = wrap.querySelector('.info-panel');
+    const rateEl  = wrap.querySelector('[id^="mini-rate"]');
+    if(!trigger || !panel) return;
+
+    function toggle(open){
+      const will = (typeof open==='boolean') ? open : !panel.classList.contains('open');
+      panel.hidden = false;
+      panel.classList.toggle('open', will);
+      trigger.setAttribute('aria-expanded', will ? 'true' : 'false');
+      if(!will){ const t=setTimeout(()=>{ panel.hidden=true; clearTimeout(t); }, 350); }
+    }
+    trigger.addEventListener('click', ()=> toggle());
+    if(rateEl){
+      setInterval(()=>{ const msgs = 1 + Math.floor(Math.random()*3); rateEl.textContent = `~${msgs} msg/s`; }, 1200);
+    }
+  });
+})();
+
+/* ============================= HELP “?” – popover ============================= */
+(() => {
+  const helpText = {
+    p1: {t:'Memória de Logs (Bots)', d:'Uso de memória dos processos. Limpezas automáticas retornam a ~23%.'},
+    p2: {t:'Filtros', d:'Habilite Sucesso/Aviso/Erro/Job para afetar o que aparece no terminal.'},
+    p3: {t:'Logs em tempo real', d:'Console com conexões, jobs e eventos. Pausar/limpar não afeta o backend.'},
+    c1: {t:'Memória CFTV', d:'Buffers/streams do DVR/NVR com limpeza proativa.'},
+    c2: {t:'CFTV — Cabeçalho', d:'Status geral de câmeras e DVRs.'},
+    c3: {t:'Terminal CFTV', d:'Eventos por tipo, donut e tabela de ocorrências.'}
+  };
+  const pop = document.createElement('div');
+  pop.className='help-pop';
+  pop.innerHTML = `<button class="x" aria-label="Fechar">×</button><h4></h4><div class="txt"></div>`;
+  document.body.appendChild(pop);
+  const h4 = pop.querySelector('h4');
+  const txt = pop.querySelector('.txt');
+  const close = ()=> pop.classList.remove('show');
+
+  document.addEventListener('click', (e)=>{
+    if(e.target.closest('.help')){
+      const btn = e.target.closest('.help');
+      const id = btn.dataset.help;
+      const data = helpText[id] || {t:'Ajuda', d:'Informação indisponível.'};
+      h4.textContent = data.t; txt.textContent = data.d;
+
+      const r = btn.getBoundingClientRect();
+      const px = Math.min(window.innerWidth - 280, Math.max(14, r.left - 10));
+      const py = r.bottom + 8;
+      pop.style.left = px + 'px';
+      pop.style.top  = py + 'px';
+      pop.classList.add('show');
+    } else if(!e.target.closest('.help-pop')) {
+      close();
+    }
+  }, {passive:true});
+  pop.querySelector('.x').addEventListener('click', close);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+})();
+
+/* ============================= SALA ÚNICA — menu 1–5 / submenus / 6 sair ============================= */
+(() => {
+  const overlay = $('#support-full');
+  const closeBtn = $('#full-close');
+  const fullLog = $('#full-log');
+  const fullForm = $('#full-form');
+  const fullInput = $('#full-input');
+
+  // entradas: bot do meio, botão, dock
+  $('#bot-secret')?.addEventListener('click', openOverlay);
+  $('#open-room')?.addEventListener('click', openOverlay);
+  $('#dock-open')?.addEventListener('click', openOverlay);
+
+  function print(text, who='bot'){
+    const wrap=document.createElement('div');
+    wrap.className='msg ' + (who==='me'?'me':'bot');
+    wrap.style.margin='8px 0';
+    wrap.style.border='1px solid rgba(255,255,255,.12)';
+    wrap.style.background = (who==='me'?'rgba(32,211,255,.10)':'#0f1736');
+    wrap.style.padding='10px 12px';
+    wrap.style.borderRadius='12px';
+    wrap.innerHTML = text;
+    fullLog.appendChild(wrap);
+    fullLog.scrollTop = fullLog.scrollHeight;
+    if(window.gsap){ gsap.from(wrap,{y:10,opacity:0,duration:.28}); }
+  }
+
+  const MENUS = {
+    main: [
+      'Navegação do site (onde está cada coisa)',
+      'Projetos/Portfólio',
+      'Sobre mim / minha história',
+      'Automações & CFTV',
+      'Contato / Orçamentos',
+      'Sair e voltar para o site'
+    ],
+    subs: {
+      1: [
+        ['Onde vejo os projetos?','Abra <a class="btn small ghost" href="projetos.html">projetos.html</a> ou a seção “Showcase” nesta página.'],
+        ['Onde baixo o meu CV?','No menu lateral, clique em <b>Currículo (PDF)</b>.'],
+        ['Tem página “Sobre”?','Sim: <a class="btn small ghost" href="sobre.html">sobre.html</a>.'],
+        ['Onde ficam as avaliações?','Role para a seção <b>Avaliações</b> ou clique <a class="btn small ghost" href="#avaliacoes">aqui</a>.'],
+        ['Onde falo com você?','Use o botão <b>💬 Contato</b> ou <a class="btn small ghost" href="contato.html">contato.html</a>.'],
+        ['Como volto ao topo?','Use o botão <b>↑ Topo</b> no canto.'],
+        ['Tem exemplos de automação?','Sim, veja os <b>Prompts</b> abaixo e logs em tempo real.'],
+        ['E CFTV?','Há um painel com eventos, donut e tabela simulando DVR/câmeras.'],
+        ['Dá pra mudar o tema?','Sim, menu lateral → <b>Tema escuro</b>.'],
+      ],
+      2: [
+        ['Quais stacks você usa?','HTML/CSS/JS, Python, APIs, Webhooks, GA4 e SEO técnico.'],
+        ['Você faz UI/UX?','Sim, foco em conversão, acessibilidade e performance.'],
+        ['Entrega com documentação?','Sim, com checklist e handoff.'],
+        ['Tem dashboards?','Sim, com integrações e logs.'],
+        ['Landing pages?','Sim, otimizadas e responsivas.'],
+        ['Performance?','PageSpeed alto, cache, imagens otimizadas.'],
+        ['Acessibilidade?','Foco, contraste, navegação por teclado.'],
+        ['SEO?','SEO técnico + estrutura limpa.'],
+        ['Manutenção?','Sim, otimizações contínuas.'],
+      ],
+      3: [
+        ['Quando começou?','Estudo desde os <b>14 anos</b>.'],
+        ['Experiência Microsoft (YouSpark)?','Sim, já trabalhei com YouSpark/Microsoft.'],
+        ['Automação?','Experiência com bots, ETL e APIs.'],
+        ['CFTV?','Instalação, programação e monitoramento remoto.'],
+        ['Machine Learning?','Experimentos e protótipos práticos.'],
+        ['Web Design?','UI/UX, landing pages e prototipagem.'],
+        ['Pintura plástica/digital?','Sob pedido e encomenda.'],
+        ['UI copy/CTAs?','Ajustes para conversão.'],
+        ['Documentação?','Sim, clara e objetiva.'],
+      ],
+      4: [
+        ['Que automações você faz?','ETL, integrações REST, alertas e relatórios.'],
+        ['Logs em tempo real?','Veja a seção <b>Prompt 3</b>.'],
+        ['Memória de bots?','Visualize o uso de RAM e limpeza inteligente.'],
+        ['CFTV funciona como?','Eventos por DVR/câmera (humano, veículo, furto).'],
+        ['Estatísticas CFTV?','Donut e KPIs por tipo de evento.'],
+        ['Tabela CFTV?','Últimas ocorrências com DVR/nome/câmera.'],
+        ['Limpeza de buffers?','Ajustes automáticos para estabilidade.'],
+        ['Tema do terminal?','CMD com picos, jobs e integrações.'],
+        ['Filtros?','Habilite Sucesso/Aviso/Erro/Job.'],
+      ],
+      5: [
+        ['Como pedir orçamento?','Use <a class="btn small primary" href="contato.html">contato.html</a>.'],
+        ['Qual prazo de uma landing?','Entre <b>6–12 dias</b> (escopo varia).'],
+        ['Atende remoto?','Sim, 100%.'],
+        ['Emite nota?','Sim, mediante solicitação.'],
+        ['Suporte após entrega?','Sim, otimizações e evolução.'],
+        ['Contrato?','Disponível sob demanda.'],
+        ['Reunião inicial?','Agendamos rapidinho por e-mail/WhatsApp.'],
+        ['Pagamento?','Combinamos por etapa ou pacote.'],
+        ['Garantia?','Correções de bugs no período acordado.'],
+      ],
+    }
+  };
+
+  let idleTimer = null;
+  let currentSub = 0;
+
+  function showMenuButtons(max){
+    const grid = document.createElement('div');
+    grid.className='menu-grid';
+    for(let i=1;i<=max;i++){
+      const b=document.createElement('button');
+      b.className='btn'; b.type='button'; b.textContent=String(i); b.dataset.choice=String(i);
+      grid.appendChild(b);
+    }
+    fullLog.appendChild(grid); fullLog.scrollTop=fullLog.scrollHeight;
+    grid.addEventListener('click', (e)=>{
+      const btn=e.target.closest('[data-choice]'); if(!btn) return; handleChoice(btn.dataset.choice);
+    });
+  }
+  function showMainMenu(){
+    let html = `<b>Menu principal</b><br>`;
+    MENUS.main.forEach((txt,i)=>{ html += `${i+1}. ${txt}<br>`; });
+    print(html); showMenuButtons(6);
+  }
+  function showSubMenu(idx){
+    const list = MENUS.subs[idx];
+    let html = `<b>${MENUS.main[idx-1]}</b><br>`;
+    list.forEach((pair,i)=>{ html += `${i+1}. ${pair[0]}<br>`; });
+    html += `10. Voltar ao menu principal`;
+    print(html); showMenuButtons(10);
+  }
+  function answerThenResolve(text){
+    print(text);
+    const wrap = document.createElement('div');
+    wrap.style.margin='8px 0';
+    wrap.innerHTML = `
+      <div class="menu-grid">
+        <button class="btn" data-res="1">1</button>
+        <button class="btn" data-res="2">2</button>
+      </div>
+      <div class="muted" style="margin-top:6px">Resolveu sua dúvida? (1 = Sim, 2 = Não)</div>`;
+    fullLog.appendChild(wrap); fullLog.scrollTop = fullLog.scrollHeight;
+    wrap.addEventListener('click', (e)=>{
+      const btn=e.target.closest('[data-res]'); if(!btn) return;
+      if(btn.dataset.res==='1'){ print('Perfeito! Para voltar ao menu principal, use a opção 10.'); }
+      else{ print('Beleza — vou te encaminhar para a página de contato agora.'); setTimeout(()=>{ closeOverlay(); location.href='contato.html'; }, 600); }
+    });
+  }
+  function handleChoice(val){
+    const n = parseInt(val,10); if(isNaN(n)) return;
+    print(val, 'me');
+    if(n>=1 && n<=5 && !currentSub){ currentSub = n; showSubMenu(currentSub); return; }
+    if(n===6 && !currentSub){ closeOverlay(); return; }
+    if(currentSub){
+      if(n>=1 && n<=9){ const pair = MENUS.subs[currentSub][n-1]; if(pair){ answerThenResolve(pair[1]); } return; }
+      if(n===10){ currentSub=0; showMainMenu(); return; }
+    }
+  }
+
+  function startIdle(){ stopIdle(); idleTimer = setTimeout(()=>{ closeOverlay(true); }, 120000); }
+  function stopIdle(){ if(idleTimer){ clearTimeout(idleTimer); idleTimer=null; } }
+
+  function openOverlay(){
+    overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false');
+    fullLog.innerHTML=''; currentSub=0;
+    print(`Bem-vindo à <b>sala de suporte</b> do Robô Carlos. Escolha uma opção (1–5) ou 6 para sair.`); showMainMenu(); startIdle();
+  }
+  function closeOverlay(auto=false){
+    overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true'); stopIdle();
+    if(auto){ showDockPeek('Conversa pausada por inatividade.', true); }
+  }
+  closeBtn.addEventListener('click', ()=> closeOverlay(false));
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeOverlay(false); });
+
+  fullForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const q = fullInput.value.trim(); if(!q) return;
+    print(q,'me'); fullInput.value=''; startIdle();
+    const num = parseInt(q,10); if(!isNaN(num)){ handleChoice(num); return; }
+    print('Use os números do menu para navegar (1–5). Digite 6 para sair.');
+  });
+
+  // Dock visibilidade
+  (function dockCtrl(){
+    const sec = $('#assistente'); const dock = $('#bot-dock');
+    function showDock(show){ dock.style.display = show ? 'flex' : 'none'; dock.classList.remove('peek'); }
+    const io = new IntersectionObserver((ents)=>{ ents.forEach(e=>{ e.isIntersecting ? showDock(false) : showDock(true); }); },{threshold:.12});
+    io.observe(sec);
+    let peekTimer=null;
+    function showDockPeek(msg='Precisa de ajuda?', warn=false){
+      dock.style.display='flex';
+      dock.classList.add('peek');
+      dock.innerHTML = `
+        <svg class="dock-face" viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="rgd" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#7c4dff"/><stop offset="100%" stop-color="#20d3ff"/></linearGradient></defs>
+          <rect x="10" y="18" width="44" height="28" rx="10" fill="url(#rgd)"/>
+          <circle cx="26" cy="32" r="4" fill="#eaf2ff"/><circle cx="38" cy="32" r="4" fill="#eaf2ff"/>
+        </svg>
+        <div class="peek-inner">
+          <div><b>Robô Carlos</b><br><span class="muted">${msg}</span></div>
+          <button class="btn ${warn?'ghost':'primary'} open" id="dock-open" type="button">Abrir suporte</button>
+        </div>`;
+      clearTimeout(peekTimer);
+      peekTimer = setTimeout(()=>{ dock.classList.remove('peek'); }, 5000);
+      setTimeout(()=>{ $('#dock-open')?.addEventListener('click', openOverlay); }, 30);
+    }
+    window.showDockPeek = showDockPeek;
+    dock.addEventListener('click', (ev)=>{
+      if(ev.target.id==='dock-open') return;
+      if(!dock.classList.contains('peek')) showDockPeek();
+      else { openOverlay(); dock.classList.remove('peek'); }
+    });
+  })();
+})();
+
+/* ============================= PROMPT 1 — Memória/Logs ============================= */
+(() => {
+  const fill = $('#mem-fill'), status=$('#mem-status'), log=$('#mem-log');
+  let pct = 23;
+  function time(){ const d=new Date(); return d.toLocaleTimeString('pt-BR',{hour12:false}); }
+  function setBar(p){
+    pct = Math.max(0, Math.min(100, p));
+    fill.style.width = pct + '%';
+    fill.style.background = (pct>=87) ? 'linear-gradient(90deg,#ff6b6b,#ff3b3b)'
+      : (pct>=86) ? 'linear-gradient(90deg,#ffb24d,#ff8756)'
+      : 'linear-gradient(90deg,var(--brand),var(--accent))';
+    status.textContent = (pct>=87) ? 'Crítico' : (pct>=86) ? 'Atenção' : 'OK';
+  }
+  function resetTo23(msg){ setBar(23); log.textContent = msg || `[${time()}] Limpeza de memória RAM feita com sucesso → 23%`; }
+  function chanceReset(p){
+    if(p>=87){ log.textContent = `[${time()}] uso crítico (87%). Reinicializando buffers…`; setTimeout(()=> resetTo23(`[${time()}] OK → 23%`), 1000); return true; }
+    const roll=Math.random()*100;
+    if(p>=85 && roll<90) { resetTo23(`[${time()}] ajuste preventivo → 23%`); return true; }
+    if(p>=83 && roll<65) { resetTo23(`[${time()}] limpeza inteligente → 23%`); return true; }
+    if(p>=80 && roll<40) { resetTo23(`[${time()}] redução de memória → 23%`); return true; }
+    if(p>=77 && roll<30) { resetTo23(`[${time()}] otimização proativa → 23%`); return true; }
+    return false;
+  }
+  const messages = [
+    ()=>`[${time()}] coleta concluída • 187 itens indexados`,
+    ()=>`[${time()}] compactação de logs (zstd) ok`,
+    ()=>`[${time()}] limpeza de cache aplicada`,
+    ()=>`[${time()}] job diário concluído (ETL incremental)`,
+    ()=>`[${time()}] verificação de integridade ok`,
+    ()=>`[${time()}] limpeza de memória RAM feita com sucesso → 23%`
+  ];
+  setBar(pct);
+  setInterval(()=>{ if(chanceReset(pct)) return; const delta = -2 + Math.random()*6; setBar(pct+delta); log.textContent = messages[Math.floor(Math.random()*messages.length)](); }, 1200);
+})();
+
+/* ============================= PROMPT 2 – Filtros ============================= */
+const activeFilters = new Set(['ok','warn','err','job']);
+$$('.filters input[type="checkbox"]').forEach(cb=>{
+  if(cb.checked) activeFilters.add(cb.dataset.filter);
+  cb.addEventListener('change', ()=>{ cb.checked ? activeFilters.add(cb.dataset.filter) : activeFilters.delete(cb.dataset.filter); });
+});
+
+/* ============================= PROMPT 3 — Logs em tempo real ============================= */
+(() => {
+  const body = $('#cmd-body'); const btnPause = $('#cmd-pause'); const btnClear = $('#cmd-clear');
+  let paused=false, buffer=[];
+  function time(){ const d=new Date(); return d.toLocaleTimeString('pt-BR',{hour12:false}); }
+  const ip = () => `${rand(10,250)}.${rand(0,255)}.${rand(0,255)}.${rand(1,254)}`;
+  const port = () => rand(1024,65535);
+  const proto = () => (Math.random()<0.5?'HTTP/2':'gRPC');
+  const tls = () => (Math.random()<0.7?'TLS1.3':'TLS1.2');
+  const dur = () => rand(5,120);
+  const bytes = () => (rand(30,900) + '.' + rand(0,9));
+  const p95 = () => rand(180,950);
+  const ms = () => rand(90,1200);
+  const id = () => rand(1000,9999);
+  const user = () => ['alice','bob','carol','dave','erin','frank'][rand(0,5)];
+  const baseWeights = [{k:'ok',w:58},{k:'warn',w:22},{k:'err',w:6},{k:'job',w:28}];
+  function pickWeighted(){ const pool = baseWeights.filter(w=>activeFilters.has(w.k)); const sum = pool.reduce((a,b)=>a+b.w,0)||1; let r = Math.random()*sum, acc=0; for(const it of pool){ acc+=it.w; if(r<=acc) return it.k; } return pool[0]?.k || 'ok'; }
+  const msgs = {
+    ok: [ ()=>`[${time()}] ✓ Conexão via ${proto()} ${ip()}:${port()} • ${tls()} • ${dur()}s • ${bytes()} KB`,
+          ()=>`[${time()}] ✓ ETL orders ok • 12.${rand(0,9)}k linhas em ${ms()}ms (p95 ${p95()}ms)`,
+          ()=>`[${time()}] ✓ Webhook /v1/leads 200 OK • id=${id()} • retry=0`,
+          ()=>`[${time()}] ✓ Cache aquecido • rotas=14 • hit-rate ${rand(86,98)}%`,
+          ()=>`[${time()}] ✓ Auth SSO • refresh token OK • user=${user()}`,
+          ()=>`[${time()}] ✓ CDN purge • paths=6 • ${ms()}ms`,
+          ()=>`[${time()}] ✓ CSV enviado • ${bytes()} KB • SHA-256 ok` ],
+    warn:[ ()=>`[${time()}] ⚠️ Latência elevada • api-parceiro (p95 ${p95()}ms) • circuito half-open`,
+          ()=>`[${time()}] ⚠️ Quota de e-mail 78% • rate-limit adaptativo`,
+          ()=>`[${time()}] ⚠️ Fila retry ${rand(3,18)} itens • backoff ${rand(4,12)}s`,
+          ()=>`[${time()}] ⚠️ Write lento • lock row-level • ${ms()}ms` ],
+    err: [ ()=>`[${time()}] ❌ Timeout ${proto()} ${ip()}:${port()} • ${dur()}s • reenvio agendado`,
+          ()=>`[${time()}] ❌ 502 em /billing/charge • tentativa ${rand(1,3)}/3`,
+          ()=>`[${time()}] ❌ SMTP falhou • ${ip()}:587 • retry em 15s` ],
+    job: [ ()=>`[${time()}] ⏱️ Backup iniciado • shard ${rand(1,4)}/4 • zstd`,
+          ()=>`[${time()}] 🔄 CRM sync • ${rand(40,180)} contatos • delta ${dur()}s`,
+          ()=>`[${time()}] 🧭 Reindexação • ${rand(3,10)} índices • ${ms()}ms`,
+          ()=>`[${time()}] 🧩 Migração de schema • v${rand(12,18)}.${rand(0,9)}` ]
+  };
+  function pushLine(txt){
+    if(paused){ buffer.push(txt); return; }
+    const p=document.createElement('div'); p.textContent=txt; body.appendChild(p);
+    body.scrollTop = body.scrollHeight; if(window.gsap){ gsap.from(p,{y:8,opacity:0,duration:.22}); }
+  }
+  function tick(){ const kind = pickWeighted(); const arr=msgs[kind]; pushLine(arr[Math.floor(Math.random()*arr.length)]()); }
+  setInterval(tick, 900);
+  btnPause.addEventListener('click', ()=>{ paused=!paused; btnPause.textContent = paused ? '▶️ Retomar' : '⏸️ Pausar';
+    if(!paused && buffer.length){ const total = buffer.length; const sum = {ok:0,warn:0,err:0,job:0};
+      buffer.forEach(line=>{ if(line.includes('✓')) sum.ok++; else if(line.includes('⚠️')) sum.warn++; else if(line.includes('❌')) sum.err++; else sum.job++; });
+      const now = new Date().toLocaleTimeString('pt-BR',{hour12:false});
+      pushLine(`[${now}] ▶️ Resumo (pausa): ${total} eventos • ok=${sum.ok}, aviso=${sum.warn}, erro=${sum.err}, job=${sum.job}`); buffer.forEach(l => pushLine(l)); buffer.length=0; }
+  });
+  btnClear.addEventListener('click', ()=>{ body.innerHTML=''; });
+})();
+
+/* ============================= LISTAS DE NOMES ============================= */
+const BR_FIRST = ["Maria","Ana","João","José","Pedro","Lucas","Gabriel","Matheus","Luiz","Guilherme","Gustavo","Rafael","Felipe","Bruno","Carlos","Henrique","Eduardo","Diego","Thiago","Daniel","André","Vitor","Victor","Marcelo","Marcos","Rodrigo","Leonardo","Vinícius","Paulo","Caio","Fábio","Renan","Fernando","Wesley","Igor","Samuel","Miguel","Heitor","Arthur","Davi"];
+const BR_LAST  = ["Silva","Santos","Oliveira","Souza","Rodrigues","Ferreira","Alves","Pereira","Lima","Gomes","Costa","Dias","Araújo","Carvalho","Ribeiro","Almeida","Martins","Lopes","Teixeira","Moreira","Correia","Rocha","Machado","Mendes","Moura","Freitas","Batista","Ramos","Campos","Vieira","Duarte","Melo","Tavares","Braga","Pires","Neves","Santana","Borges","Barbosa"];
+const INTL_FIRST = ["John","Michael","Emily","Olivia","James","William","Benjamin","Ethan","Emma","Ava","Sophia","Isabella","Mia","Charlotte","Amelia","Harper"];
+const INTL_LAST  = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Martinez","Hernandez","Lopez","Wilson","Anderson","Taylor","Moore"];
+function mixedName(){ const isBR = Math.random() < 0.85; const FN = isBR?BR_FIRST:INTL_FIRST; const LN = isBR?BR_LAST:INTL_LAST; const pick = a => a[rand(0,a.length-1)]; return `${pick(FN)} ${pick(LN)}`; }
+
+/* ============================= CFTV ============================= */
+(() => {
+  const body = $('#cftv-body'); const btnPause = $('#cftv-pause'); const btnClear = $('#cftv-clear');
+  const kTotal = $('#k-cftv-total'), kHum=$('#k-cftv-hum'), kVeh=$('#k-cftv-veh'), kTheft=$('#k-cftv-theft');
+  const tb = $('#cftv-tb'); const donut = $('#cftv-donut');
+  let paused=false; function time(){ const d=new Date(); return d.toLocaleTimeString('pt-BR',{hour12:false}); }
+  const weights = [{type:'humano', w:57, label:'Detecção de movimento — Humano'},{type:'veiculo', w:35, label:'Detecção de movimento — Veículo'},{type:'furto', w:3, label:'Alerta — Furto em supermercado'},{type:'outros', w:5, label:'Evento — Outros (temperatura/voz/bloqueio)'}];
+  const sumW = weights.reduce((a,b)=>a+b.w,0); const stats = { total:0, humano:0, veiculo:0, furto:0, outros:0 };
+  function pickWeighted(){ let r = Math.random()*sumW, acc=0; for(const it of weights){ acc+=it.w; if(r<=acc) return it; } return weights[0]; }
+  function newEvent(){ const dvr = pad4(rand(0,9999)); const nome = mixedName(); const cam = 'cam'+rand(1,12); const w = pickWeighted(); const line = `[${time()}] DVR ${dvr} — ${nome} — ${cam} — ${w.label}`; return {dvr,nome,cam,type:w.type,label:w.label,line}; }
+  function pushLine(ev){
+    const p=document.createElement('div'); p.textContent=ev.line; body.appendChild(p); body.scrollTop = body.scrollHeight;
+    const tr = document.createElement('tr'); tr.innerHTML = `<td>${ev.dvr}</td><td>${ev.nome}</td><td>${ev.cam}</td><td>${ev.label}</td>`; tb.prepend(tr); while(tb.children.length>10) tb.lastChild.remove();
+    stats.total++; stats[ev.type]++; const pct = t => stats.total ? Math.round((stats[t]/stats.total)*100) : 0;
+    kTotal.textContent = stats.total; kHum.textContent = pct('humano') + '%'; kVeh.textContent = pct('veiculo') + '%'; kTheft.textContent = pct('furto') + '%';
+    drawDonut(donut, [{nome:'Humano', valor:stats.humano, cor:'#7c4dff'},{nome:'Veículo', valor:stats.veiculo, cor:'#20d3ff'},{nome:'Furto', valor:stats.furto, cor:'#ff6b6b'},{nome:'Outros', valor:stats.outros, cor:'#9bb0d3'}]);
+  }
+  setInterval(()=>{ if(!paused) pushLine(newEvent()); }, 900);
+  btnPause.addEventListener('click', ()=>{ paused=!paused; btnPause.textContent = paused ? '▶️ Retomar' : '⏸️ Pausar'; });
+  btnClear.addEventListener('click', ()=>{ body.innerHTML=''; tb.innerHTML=''; Object.assign(stats,{total:0,humano:0,veiculo:0,furto:0,outros:0}); kTotal.textContent='0'; kHum.textContent='0%'; kVeh.textContent='0%'; kTheft.textContent='0%'; drawDonut(donut, []); });
+})();
+function drawDonut(cv, items){
+  if(!cv) return; const ctx=cv.getContext('2d'); const w=cv.width = cv.clientWidth || 260; const h=cv.height = 220;
+  ctx.clearRect(0,0,w,h); const cx=w/2, cy=h/2, r=Math.min(w,h)/3, r2=r*0.62; const total=items.reduce((a,b)=>a+b.valor,0)||1; let a0=-Math.PI/2;
+  items.forEach((it)=>{ const frac=it.valor/total, a1=a0+frac*2*Math.PI; ctx.beginPath(); ctx.arc(cx,cy,r,a0,a1); ctx.arc(cx,cy,r2,a1,a0,true); ctx.closePath(); ctx.fillStyle=it.cor||'#20d3ff'; ctx.fill(); a0=a1; });
+  ctx.fillStyle='#eaf2ff'; ctx.font='700 16px Segoe UI, sans-serif'; ctx.textAlign='center'; ctx.fillText('Eventos CFTV', cx, cy+6);
+}
+
+/* ============================= AVALIAÇÕES — listagem + LV 1h ============================= */
+(function reviewsSection(){
+  const elList = document.getElementById('reviews-list');
+  const elAvg  = document.getElementById('avg-rating');
+  const elTotal= document.getElementById('total-count');
+
+  if(!elList || !elAvg || !elTotal) return;
+
+  const simples = ["Excelente trabalho, obrigado!","Muito bom, recomendo!","Atendimento rápido. Valeu!","Perfeito, era o que eu precisava.","Ficou top, obrigado!","Curti demais!","Obrigado pela atenção!","Boa qualidade e entrega.","Serviço nota 10!"];
+  const espertos = ["A estrutura ficou leve e a performance subiu bastante no PageSpeed.","Sugeriu melhorias de UX que aumentaram a conversão.","Documentação clara e código organizado — manutenção fácil.","Automação economizou horas semanais; integrações estáveis.","Layout realmente responsivo, sem quebras em telas menores.","SEO técnico bem aplicado — ganhamos posições orgânicas.","Acessibilidade (foco/contraste) bem cuidada. Navegação fluida.","Trouxe métricas que ajudaram a defender decisões ao board.","Integração com CRM/planilhas sem fricção, dados consistentes.","Pipeline de deploy simples e confiável. Ótima transição.","CFTV com acesso remoto seguro e manual didático.","Otimizações de frontend reduziram latência perceptível.","Comunicação direta e prazos cumpridos. Sem sustos.","Cobriu estados de erro/vazio — app mais robusto.","Componentes reutilizáveis aceleraram módulos seguintes.","Logs e alertas facilitaram detecção de problemas.","Refinou copy/CTAs; CTR melhorou no primeiro A/B.","Handoff no Figma + checklist — fluxo muito bom.","Monitoramento pós-lançamento proativo, evitou regressões.","Adaptou escopo sem perder qualidade. Excelente!"];
+  const qtdSimples = Math.floor(Math.random()*3) + 7;
+  const qtdEspertos = 27 - qtdSimples;
+  const pool = [...espertos].sort(()=>Math.random()-0.5).slice(0,qtdEspertos)
+              .concat([...simples].sort(()=>Math.random()-0.5).slice(0,qtdSimples))
+              .sort(()=>Math.random()-0.5);
+  const notes = Array.from({length:27}, ()=>{ const hi = Math.random()<0.8; const n  = hi ? (4.4 + Math.random()*0.6) : (3.5 + Math.random()*0.7); return Math.round(n*2)/2; });
+
+  const avatarSVG = `<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="24" r="14" fill="#b9c1d0"/><rect x="12" y="36" width="40" height="22" rx="11" fill="#b9c1d0"/></svg>`;
+  const frag = document.createDocumentFragment();
+  function mixedNameLocal(){ return Math.random()<0.85 ? `${BR_FIRST[rand(0,BR_FIRST.length-1)]} ${BR_LAST[rand(0,BR_LAST.length-1)]}` : `${INTL_FIRST[rand(0,INTL_FIRST.length-1)]} ${INTL_LAST[rand(0,INTL_LAST.length-1)]}`; }
+  pool.forEach((text, i)=>{
+    const note = notes[i] ?? 4.5;
+    const card = document.createElement('article');
+    card.className = 'rev';
+    card.innerHTML = `<div class="avatar">${avatarSVG}</div>
+      <div><div class="meta">
+        <span class="name">${mixedNameLocal()}</span>
+        <span class="stars" style="--score:${note}" aria-label="${note.toFixed(1).replace('.',',')} de 5"></span>
+        <span class="tag-note">${note.toFixed(1).replace('.',',')} ★</span></div>
+        <div class="txt">${text}</div></div>`;
+    frag.appendChild(card);
+  });
+  elList.appendChild(frag);
+  elAvg.textContent = '4,7';
+  elTotal.textContent = '92';
+
+  // valor único por hora (viés para números menores, máx 29)
+  const lv = $('#lv-modern'); const lvNum = $('#lv-num');
+  const candidates = [3,4,5,6,9,13,19,23,29];
+  function pickBiased(){ const weights = [22,20,18,14,10,8,5,2,1]; const sum = weights.reduce((a,b)=>a+b,0); let r = Math.random()*sum, acc=0; for(let i=0;i<weights.length;i++){ acc+=weights[i]; if(r<=acc) return candidates[i]; } return candidates[0]; }
+  function updateLV(){ const v = pickBiased(); lvNum.textContent = v; lv.style.setProperty('--val', v); if(window.gsap){ gsap.from(lv,{scale:.92, duration:.25, ease:'power2.out'}); } }
+  updateLV();
+  setInterval(updateLV, 3600000); // 1h
+})();
+
+/* ============================= CARD CMD — Fábrica Autônoma (animações GSAP) ============================= */
+(() => {
+  const body = $('#fab-body'); const btnPause = $('#fab-pause'); const btnClear = $('#fab-clear');
+  const kCel = $('#fk-cel'); const kCob = $('#fk-cob'); const kAgv = $('#fk-agv'); const kAlt = $('#fk-alt');
+  let paused=false;
+
+  function time(){ const d=new Date(); return d.toLocaleTimeString('pt-BR',{hour12:false}); }
+  const bots = ()=> `BOT-${String(rand(39,99)).padStart(2,'0')}${rand(0,9)}${rand(0,9)}`;
+  const cells = ['CÉLULA 01','CÉLULA 02','CÉLULA 03','CÉLULA 04','CÉLULA 05','CÉLULA 06'];
+  const arms  = ['Braço Mecânico A','Braço Mecânico B','Garra Vácuo','Ferramenta Solda','Ferramenta Polimento'];
+  const events = [
+    ()=>`${bots()} fez contato com ${arms[rand(0,arms.length-1)]} — <b>ativo</b>.`,
+    ()=>`${bots()} fechou software do robô — fim de expediente.`,
+    ()=>`${bots()} calibrando servo (eixos XZ) — ok em ${rand(8,22)}s.`,
+    ()=>`${bots()} visão computacional detectou peça fora de tolerância (±${(Math.random()*1.2).toFixed(2)}mm) — linha pausada.`,
+    ()=>`${bots()} AGV-${rand(1,12).toString().padStart(2,'0')} entregou pallet A${rand(10,99)} em ${cells[rand(0,cells.length-1)]}.`,
+    ()=>`${bots()} troca de ferramenta (polimento → corte) — concluída.`,
+    ()=>`${bots()} ciclo concluído em ${rand(36,58)}s (p95 ${rand(40,65)}s).`,
+    ()=>`${bots()} alarme temperatura alta • ${rand(65,85)}°C — resfriamento automático.`,
+    ()=>`${bots()} reiniciado em ${rand(3,8)}s — buffer preservado.`,
+    ()=>`${bots()} inspeção ótica: ${rand(96,100)}% aptas no lote B${rand(100,999)}.`
+  ];
+
+  const addLine = (txt)=>{
+    const line = document.createElement('div');
+    line.textContent = `[${time()}] ${txt}`;
+    body.appendChild(line);
+    body.scrollTop = body.scrollHeight;
+    if(window.gsap){ gsap.from(line,{y:10, opacity:0, duration:.26, ease:'power2.out'}); }
+  };
+
+  function tick(){
+    if(paused) return;
+    addLine(events[rand(0,events.length-1)]());
+    // KPIs animados (pequenas oscilações)
+    const v1 = rand(4,6), v2 = rand(6,10), v3 = rand(2,6), v4 = rand(0,3);
+    kCel.textContent = v1; kCob.textContent = v2; kAgv.textContent = v3; kAlt.textContent = v4;
+    if(window.gsap){
+      gsap.from([kCel,kCob,kAgv,kAlt], {y:-6, opacity:0.6, duration:.25, stagger:.04});
+    }
+  }
+
+  const int = setInterval(tick, 1100);
+  btnPause.addEventListener('click', ()=>{ paused=!paused; btnPause.textContent = paused ? '▶️ Retomar' : '⏸️ Pausar'; });
+  btnClear.addEventListener('click', ()=>{ body.innerHTML=''; });
+})();
+</script>
+</body>
+</html>

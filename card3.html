@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projetos | T.I. & Automação — Carlos Henrique</title>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+<style>
+:root{
+  --bg:#070b16; --card:#10183b; --surface:#0d1534;
+  --text:#eaf2ff; --muted:#9bb0d3; --accent:#20d3ff; --brand:#7c4dff;
+  --border:rgba(255,255,255,.10); --shadow:0 18px 40px rgba(0,0,0,.38);
+  --ok:#00e6d1; --warn:#ffb24d; --err:#ff6b6b;
+}
+*{ box-sizing:border-box }
+html{ scroll-behavior:smooth }
+body{
+  margin:0; color:var(--text); font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  background:
+    radial-gradient(1200px 700px at 10% 10%, rgba(124,77,255,.18), transparent 60%),
+    radial-gradient(900px 600px at 90% 90%, rgba(32,211,255,.12), transparent 60%),
+    var(--bg);
+}
+.container{ max-width:1100px; margin:0 auto; padding:0 16px; }
+.section{ padding:56px 0; opacity:0; transform:translateY(28px); transition:opacity .7s, transform .7s }
+.section.visible{ opacity:1; transform:none }
+.muted{ color:var(--muted) }
+h1,h2,h3{ margin:0 0 10px }
+a.btn,button.btn{ display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:10px 14px; font-weight:900; text-decoration:none; border:1px solid var(--border); color:var(--text); background:var(--card); box-shadow:var(--shadow); cursor:pointer; }
+.btn.primary{ background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border-color:transparent }
+.btn.small{ padding:8px 10px; font-size:.92rem }
+.badge{ display:inline-flex; align-items:center; gap:6px; font-weight:800; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--surface); }
+
+/* HEADER */
+header{ position:sticky; top:0; z-index:50; background:rgba(7,11,22,.65); backdrop-filter:saturate(120%) blur(8px); border-bottom:1px solid rgba(255,255,255,.06) }
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 16px; }
+.logo{
+  font-weight:900; letter-spacing:-.2px;
+  background:linear-gradient(90deg,var(--brand),var(--accent) 60%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.nav a{ color:var(--text); text-decoration:none; padding:8px 12px; border-radius:999px; border:1px solid transparent }
+.nav a:hover{ background:rgba(255,255,255,.06) }
+.nav .active{ background:rgba(124,77,255,.16); color:var(--accent); border-color:var(--border) }
+
+/* CARDS/GRIDS */
+.card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:var(--shadow); }
+.card.head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.grid-2{ display:grid; gap:14px; grid-template-columns:1fr 1fr }
+.grid-3{ display:grid; gap:14px; grid-template-columns:repeat(3,1fr) }
+@media (max-width:900px){ .grid-2,.grid-3{ grid-template-columns:1fr } }
+
+/* HERO */
+.hero{
+  display:grid; grid-template-columns:1.2fr .8fr; gap:22px; align-items:center; min-height: clamp(360px, 58vh, 520px);
+}
+.hero-blob{
+  position:relative; min-height:280px; border-radius:18px; overflow:hidden;
+  border:1px solid var(--border); background:#0a1026;
+}
+#hero-net{ width:100%; height:100%; display:block }
+
+/* FEATURE BLOCK */
+.feature{ display:grid; gap:10px }
+.feature .head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap }
+.feature .title{ display:flex; align-items:center; gap:10px }
+.feature .title .em{ font-size:22px }
+.activity{ margin-top:8px }
+.split{ display:grid; gap:12px; grid-template-columns:1.1fr .9fr }
+@media (max-width:900px){ .split{ grid-template-columns:1fr } }
+
+/* CMD */
+.cmd{ background:#000; color:#d6e0ff; border-radius:14px; border:1px solid rgba(255,255,255,.12); overflow:hidden; position:relative; box-shadow:0 16px 40px rgba(0,0,0,.35); }
+.cmd::before{ content:""; position:absolute; inset:-2px; border-radius:16px; background:conic-gradient(from 0deg, rgba(124,77,255,.25), rgba(32,211,255,.25), transparent 40%); filter:blur(18px); z-index:0; animation:spin 16s linear infinite; }
+.cmd-inner{ position:relative; z-index:1; }
+.cmd-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.08) }
+.dots{ display:flex; gap:6px } .dot{ width:10px; height:10px; border-radius:50%; background:#ff5f56 } .dot:nth-child(2){ background:#ffbd2e } .dot:nth-child(3){ background:#27c93f }
+.cmd-body{ max-height:220px; overflow:auto; padding:12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:13px; line-height:1.45; }
+.cmd-controls{ display:flex; gap:10px; padding:10px 12px; border-top:1px solid rgba(255,255,255,.08) }
+
+/* WIDGETS */
+.kpi-row{ display:grid; gap:12px; grid-template-columns:repeat(4,1fr) }
+.kpi{ text-align:center; border:1px solid var(--border); border-radius:12px; padding:10px; background:var(--surface); }
+.kpi b{ font-size:1.2rem; display:block }
+
+.table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; background:var(--card); border:1px solid var(--border); border-radius:12px; }
+.table th,.table td{ padding:8px 10px; border-bottom:1px solid var(--border); font-size:.9rem }
+.table th{ text-align:left; font-weight:800 } .table tr:last-child td{ border-bottom:0 }
+.dotst{ display:inline-block; width:10px; height:10px; border-radius:50% }
+.dot-ok{ background:var(--ok) } .dot-warn{ background:var(--warn) } .dot-err{ background:var(--err) }
+
+/* TOPOLOGY */
+.topology{ position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--border); }
+.topology canvas{ display:block; width:100%; height:380px; background:radial-gradient(600px 300px at 20% 20%, rgba(124,77,255,.14), transparent 60%), radial-gradient(600px 300px at 80% 80%, rgba(32,211,255,.12), transparent 60%) }
+.top-cta{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:12px; border-top:1px solid var(--border); background:linear-gradient(180deg, rgba(124,77,255,.10), transparent) }
+
+/* FÁBRICA */
+.factory{ position:relative; border:1px solid var(--border); border-radius:14px; background:var(--surface); padding:10px; min-height:220px; overflow:hidden }
+.conv{ position:absolute; left:10px; right:10px; bottom:16px; height:8px; background:linear-gradient(90deg, rgba(255,255,255,.18) 40%, transparent 40%); background-size:30px 8px; border-radius:6px; border:1px solid rgba(255,255,255,.12) }
+.bot-mini{ position:absolute; top:60px; left:-40px; width:38px; height:38px; border-radius:8px; background:linear-gradient(90deg,var(--brand),var(--accent)); box-shadow:0 8px 20px rgba(0,0,0,.35) }
+.arm{ position:absolute; left:50%; top:14px; width:120px; height:8px; margin-left:-60px; background:rgba(255,255,255,.18); transform-origin:0 50%; border-radius:6px; }
+.claw{ position:absolute; right:-8px; top:-6px; width:0; height:0; border-left:12px solid rgba(32,211,255,.8); border-top:8px solid transparent; border-bottom:8px solid transparent; filter:drop-shadow(0 0 8px rgba(32,211,255,.5)); }
+
+/* LINHA DE PRODUÇÃO */
+.line-prod{ position:relative; border:1px dashed rgba(255,255,255,.18); border-radius:12px; padding:10px; overflow:hidden; min-height:120px; }
+.capsule{ position:absolute; top:50%; transform:translateY(-50%); width:64px; height:28px; border-radius:999px; background:linear-gradient(90deg, rgba(124,77,255,.85), rgba(32,211,255,.85)); box-shadow:0 8px 20px rgba(0,0,0,.35) }
+
+/* FX GRID */
+.fx-grid{ display:grid; gap:14px; grid-template-columns:repeat(2,1fr) }
+@media (max-width:900px){ .fx-grid{ grid-template-columns:1fr } }
+.fx-card{ position:relative; border:1px solid var(--border); border-radius:16px; overflow:hidden; background:var(--card) }
+.fx-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-bottom:1px solid var(--border) }
+.fx-body{ position:relative; height:220px; background:var(--surface) }
+.fx-body canvas{ width:100%; height:100%; display:block }
+.fx-aurora{ background:
+  radial-gradient(800px 400px at 20% 30%, rgba(124,77,255,.25), transparent 60%),
+  radial-gradient(800px 400px at 80% 70%, rgba(32,211,255,.20), transparent 60%);
+  animation:aur 10s ease-in-out infinite alternate;
+}
+@keyframes aur{ from{ filter:hue-rotate(0deg) blur(8px)} to{ filter:hue-rotate(40deg) blur(10px)} }
+.fx-foot{ display:flex; gap:8px; padding:10px 12px; border-top:1px solid var(--border); background:linear-gradient(180deg, rgba(124,77,255,.06), transparent) }
+.fx-cmd{ margin:12px; }
+</style>
+</head>
+
+<body>
+<header>
+  <nav class="nav container">
+    <div class="logo">Carlos Henrique</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap">
+      <a href="index.html">Início</a>
+      <a href="portfolio.html">Portfólio</a>
+      <a href="sobre.html">Sobre</a>
+      <a class="active" href="projetos.html">Projetos</a>
+      <a href="contato.html" class="btn primary">Contato</a>
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+  <!-- HERO -->
+  <section class="section hero">
+    <div>
+      <h1>Projetos — T.I. & Automação</h1>
+      <p class="muted">Auxílio técnico completo: backend, automações, criação de máquinas, manutenção, hospedagem e apps de apoio T.I. Tudo com foco em UI/UX e performance.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px">
+        <span class="badge">Backend</span>
+        <span class="badge">Automação</span>
+        <span class="badge">CFTV & Infra</span>
+        <span class="badge">Cyber</span>
+        <span class="badge">Apps</span>
+      </div>
+    </div>
+    <div class="hero-blob" aria-hidden="true">
+      <canvas id="hero-net"></canvas>
+    </div>
+  </section>
+
+  <!-- BACKEND (igual) -->
+  <section class="section feature" id="backend">
+    <div class="card head">
+      <div class="title"><span class="em">🧩</span><div><b>Backend</b><div class="muted">APIs estáveis, filas e observabilidade</div></div></div>
+      <a href="#fx" class="btn small">Ver Laboratório ↓</a>
+    </div>
+    <div class="activity">
+      <div class="card split">
+        <div>
+          <h3>Monitor de API (tempo real)</h3>
+          <p class="muted">Gráfico de RPS e p95 simulados; pausa e limpeza sem travar a página.</p>
+          <div class="kpi-row" style="margin:8px 0">
+            <div class="kpi"><small class="muted">RPS</small><b id="bk-rps">0</b></div>
+            <div class="kpi"><small class="muted">p95 (ms)</small><b id="bk-p95">0</b></div>
+            <div class="kpi"><small class="muted">Erros (1m)</small><b id="bk-err">0</b></div>
+            <div class="kpi"><small class="muted">Uptime</small><b id="bk-up">99.98%</b></div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap">
+            <button id="bk-pause" class="btn small">⏸️ Pausar</button>
+            <button id="bk-clear" class="btn small">🧹 Limpar</button>
+          </div>
+        </div>
+        <div>
+          <canvas id="bk-chart" height="220" style="width:100%; border:1px solid var(--border); border-radius:12px; background:var(--surface)"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUTOMAÇÃO (igual) -->
+  <section class="section feature" id="automacao">
+    <div class="card head">
+      <div class="title"><span class="em">⚙️</span><div><b>Automação de Tarefas</b><div class="muted">Robôs cuidando de máquinas + workflows</div></div></div>
+      <span class="badge">Orquestração</span>
+    </div>
+    <div class="activity">
+      <div class="card split">
+        <div class="factory" id="factory">
+          <div class="arm"><div class="claw"></div></div>
+          <div class="conv"></div>
+          <div class="bot-mini" id="botA" aria-hidden="true"></div>
+          <div class="bot-mini" id="botB" aria-hidden="true" style="top:84px; left:-60px;"></div>
+          <div class="bot-mini" id="botC" aria-hidden="true" style="top:108px; left:-80px;"></div>
+          <p class="muted" style="position:absolute; top:10px; left:10px; margin:0">Fábrica: mini-robôs monitoram as máquinas</p>
+        </div>
+        <div class="cmd">
+          <div class="cmd-inner">
+            <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>Workflow — Execuções</b></div>
+            <div id="wf-body" class="cmd-body"></div>
+            <div class="cmd-controls">
+              <button id="wf-run" class="btn small">▶️ Rodar Lote</button>
+              <button id="wf-pause" class="btn small">⏸️ Pausar</button>
+              <button id="wf-clear" class="btn small">🧹 Limpar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÁQUINAS (igual) -->
+  <section class="section feature" id="maquinas">
+    <div class="card head">
+      <div class="title"><span class="em">🛠️</span><div><b>Criação de Máquinas</b><div class="muted">Linha de produção + simulador compacto</div></div></div>
+      <span class="badge">Prototipagem</span>
+    </div>
+    <div class="activity">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Linha de Produção</h3>
+          <p class="muted">Cápsulas atravessam a linha recebendo módulos.</p>
+          <div class="line-prod" id="line-prod"></div>
+        </div>
+        <div class="card">
+          <h3>Simulador de Montagem (compacto)</h3>
+          <p class="muted">Checklist com micro-animações; finalize e ganhe confetes 😄</p>
+          <div style="display:grid; gap:10px">
+            <div id="mk-bar" style="height:12px; border-radius:10px; border:1px solid var(--border); background:linear-gradient(90deg, rgba(124,77,255,.20), transparent)"><div id="mk-fill" style="height:100%; width:0%; background:linear-gradient(90deg, var(--brand), var(--accent)); border-radius:10px"></div></div>
+            <div class="grid-3" id="mk-list" style="grid-template-columns:repeat(2,1fr)"></div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap">
+              <button id="mk-start" class="btn small">🚀 Iniciar</button>
+              <button id="mk-reset" class="btn small">↩️ Reset</button>
+            </div>
+            <canvas id="mk-confetti" height="80" style="width:100%; display:none"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANUTENÇÃO (igual) -->
+  <section class="section feature" id="manutencao">
+    <div class="card head">
+      <div class="title"><span class="em">🧰</span><div><b>Manutenção de Peças & Equipamentos</b><div class="muted">Diagnósticos e saúde do parque</div></div></div>
+      <span class="badge">Field Service</span>
+    </div>
+    <div class="activity">
+      <div class="card">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
+          <h3 style="margin:0">Diagnóstico Rápido</h3>
+          <div>
+            <button id="mt-scan" class="btn small">🔍 Escanear</button>
+            <button id="mt-reset" class="btn small">🧹 Limpar</button>
+          </div>
+        </div>
+        <div style="overflow:auto; margin-top:8px">
+          <table class="table">
+            <thead><tr><th>Equipamento</th><th>Componente</th><th>Status</th><th>Última verificação</th></tr></thead>
+            <tbody id="mt-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOSPEDAGEM (igual) -->
+  <section class="section feature" id="hospedagem">
+    <div class="card head">
+      <div class="title"><span class="em">☁️</span><div><b>Configuração & Hospedagem</b><div class="muted">CI/CD, deploy e observabilidade</div></div></div>
+      <span class="badge">Cloud</span>
+    </div>
+    <div class="activity">
+      <div class="card">
+        <div class="cmd">
+          <div class="cmd-inner">
+            <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>Pipeline — Deploy</b></div>
+            <div id="dp-body" class="cmd-body"></div>
+            <div class="cmd-controls">
+              <button id="dp-run" class="btn small">🚀 Build & Deploy</button>
+              <button id="dp-clear" class="btn small">🧹 Limpar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPS (igual) -->
+  <section class="section feature" id="apps">
+    <div class="card head">
+      <div class="title"><span class="em">📱</span><div><b>Aplicativos de Apoio T.I.</b><div class="muted">Ferramentas rápidas para o time</div></div></div>
+      <span class="badge">Prototipagem ágil</span>
+    </div>
+    <div class="activity">
+      <div class="card">
+        <h3>Launcher — Apps internos</h3>
+        <p class="muted">Clique para “abrir” e ver um preview animado.</p>
+        <div id="ap-grid" class="grid-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CMD — Bot WhatsApp (igual) -->
+  <section class="section" id="zapbot">
+    <div class="card head"><b>Criação de Bot — WhatsApp</b><span class="badge">Sessão • Webhook • Teste</span></div>
+    <div class="card">
+      <div class="cmd">
+        <div class="cmd-inner">
+          <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>whatsapp-bot build</b></div>
+          <div id="wa-body" class="cmd-body"></div>
+          <div class="cmd-controls">
+            <button id="wa-create" class="btn small">🤖 Criar Bot</button>
+            <button id="wa-test" class="btn small">💬 Testar Mensagem</button>
+            <button id="wa-publish" class="btn small">🌐 Publicar Webhook</button>
+            <button id="wa-clear" class="btn small">🧹 Limpar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FX — Laboratório com funções reais + CMD por card -->
+  <section class="section" id="fx">
+    <div class="card head"><b>Labs — Experimentos Operacionais</b><span class="badge">cada visual tem um CMD</span></div>
+    <div class="fx-grid">
+      <!-- Radar -->
+      <div class="fx-card" id="card-radar">
+        <div class="fx-head"><b>Radar de Segurança (Malware)</b><span class="muted">varredura contínua</span></div>
+        <div class="fx-body"><canvas id="fx-radar"></canvas></div>
+        <div class="fx-foot"><button class="btn small" data-toggle="cmd-radar">Abrir CMD</button></div>
+        <div class="fx-cmd cmd" id="cmd-radar" hidden>
+          <div class="cmd-inner">
+            <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>radar-sec scan</b></div>
+            <div class="cmd-body" id="radar-body"></div>
+            <div class="cmd-controls">
+              <button class="btn small" id="radar-pause">⏸️ Pausar</button>
+              <button class="btn small" id="radar-clear">🧹 Limpar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Flow Field -> Barreira -->
+      <div class="fx-card" id="card-barrier">
+        <div class="fx-head"><b>Scanner de Barreira</b><span class="muted">campos de proteção</span></div>
+        <div class="fx-body"><canvas id="fx-flow"></canvas></div>
+        <div class="fx-foot"><button class="btn small" data-toggle="cmd-barrier">Abrir CMD</button></div>
+        <div class="fx-cmd cmd" id="cmd-barrier" hidden>
+          <div class="cmd-inner">
+            <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>barrier-guard</b></div>
+            <div class="cmd-body" id="barrier-body"></div>
+            <div class="cmd-controls">
+              <button class="btn small" id="barrier-pause">⏸️ Pausar</button>
+              <button class="btn small" id="barrier-clear">🧹 Limpar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Code Rain -> Firewall -->
+      <div class="fx-card" id="card-firewall">
+        <div class="fx-head"><b>Firewall Inteligente</b><span class="muted">assinaturas & regras</span></div>
+        <div class="fx-body"><canvas id="fx-rain"></canvas></div>
+        <div class="fx-foot"><button class="btn small" data-toggle="cmd-firewall">Abrir CMD</button></div>
+        <div class="fx-cmd cmd" id="cmd-firewall" hidden>
+          <div class="cmd-inner">
+            <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>fw-smart</b></div>
+            <div class="cmd-body" id="fw-body"></div>
+            <div class="cmd-controls">
+              <button class="btn small" id="fw-pause">⏸️ Pausar</button>
+              <button class="btn small" id="fw-clear">🧹 Limpar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Aurora -> Oficina -->
+      <div class="fx-card" id="card-shop">
+        <div class="fx-head"><b>Oficina & Manutenção</b><span class="muted">calibração/peças</span></div>
+        <div class="fx-body fx-aurora"></div>
+        <div class="fx-foot"><button class="btn small" data-toggle="cmd-shop">Abrir CMD</button></div>
+        <div class="fx-cmd cmd" id="cmd-shop" hidden>
+          <div class="cmd-inner">
+            <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>workshop</b></div>
+            <div class="cmd-body" id="shop-body"></div>
+            <div class="cmd-controls">
+              <button class="btn small" id="shop-pause">⏸️ Pausar</button>
+              <button class="btn small" id="shop-clear">🧹 Limpar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Network Tester (FrameHat) -->
+      <div class="fx-card" id="card-net" style="grid-column:1 / -1">
+        <div class="fx-head"><b>Testador de Redes — FrameHat</b><span class="muted">latência, jitter, perdas, throughput</span></div>
+        <div class="fx-body"><canvas id="fx-net"></canvas></div>
+        <div class="fx-foot">
+          <button class="btn small" id="net-run">▶️ Rodar Teste</button>
+          <button class="btn small" data-toggle="cmd-net">Abrir CMD</button>
+        </div>
+        <div class="fx-cmd cmd" id="cmd-net" hidden>
+          <div class="cmd-inner">
+            <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>framehat test</b></div>
+            <div class="cmd-body" id="net-body"></div>
+            <div class="cmd-controls">
+              <button class="btn small" id="net-clear">🧹 Limpar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOPOLOGIA (igual) -->
+  <section class="section">
+    <div class="topology card">
+      <canvas id="topo"></canvas>
+      <div class="top-cta">
+        <div>
+          <b>Topologia de Rede — pulsos & latência</b>
+          <div class="muted">Nós com pulsos animados e reconexão automática — só visual 😄</div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <a class="btn primary" href="contato.html">Quero isso no meu projeto</a>
+          <a class="btn" href="#backend">Explorar ↑</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="container" style="padding:28px 0; color:var(--muted); text-align:center">
+  © 2025 Carlos Henrique — Projetos & Automação
+</footer>
+
+<script>
+/* Utils */
+const $ = (s,doc=document)=>doc.querySelector(s);
+const $$= (s,doc=document)=>Array.from(doc.querySelectorAll(s));
+const rand = (a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+
+/* Sections reveal */
+(() => {
+  const io=new IntersectionObserver(ents=>ents.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }),{threshold:.14});
+  $$('.section').forEach(s=> io.observe(s));
+})();
+
+/* ===== HERO — rede de links animada ===== */
+(() => {
+  const cv = $('#hero-net'); if(!cv) return; const ctx=cv.getContext('2d');
+  function size(){ cv.width=cv.clientWidth; cv.height=cv.clientHeight; } size(); addEventListener('resize', size);
+  const nodes = Array.from({length:24}, ()=>({ x:Math.random()*cv.width, y:Math.random()*cv.height, vx:(Math.random()-.5)*.6, vy:(Math.random()-.5)*.6, r: rand(2,4) }));
+  (function step(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    // edges
+    for(let i=0;i<nodes.length;i++){ for(let j=i+1;j<nodes.length;j++){
+      const a=nodes[i], b=nodes[j]; const dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
+      if(d<150){ ctx.strokeStyle=`rgba(137,201,255,${1-d/150})`; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
+    }}
+    // nodes
+    nodes.forEach(n=>{ ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fillStyle='rgba(124,77,255,.85)'; ctx.fill();
+      n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>cv.width) n.vx*=-1; if(n.y<0||n.y>cv.height) n.vy*=-1; });
+    requestAnimationFrame(step);
+  })();
+})();
+
+/* ===== BACKEND chart (igual) ===== */
+(() => {
+  const cv = $('#bk-chart'), rpsEl=$('#bk-rps'), p95El=$('#bk-p95'), errEl=$('#bk-err');
+  const pauseBtn = $('#bk-pause'), clearBtn = $('#bk-clear');
+  if(!cv) return; const ctx = cv.getContext('2d'); cv.width = cv.clientWidth; cv.height = 220;
+  const maxPts = 90; const data = Array.from({length:maxPts}, ()=>({rps:0,p95:0,err:0}));
+  let paused=false, errWin=0;
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    const pad=16, w=cv.width- pad*2, h=cv.height - pad*2;
+    ctx.translate(pad,pad);
+    ctx.globalAlpha=.18; ctx.strokeStyle="#fff"; ctx.lineWidth=1;
+    for(let i=0;i<=5;i++){ const y=(h/5)*i; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+    ctx.globalAlpha=1;
+    const maxRps = 220, maxP = 1200;
+    function line(arr, key, color){
+      ctx.beginPath(); arr.forEach((p,i)=>{ const x = (i/(maxPts-1))*w; const y = h - (p[key]/(key==='rps'?maxRps:maxP))*h; i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+      ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke();
+    }
+    line(data,'rps','#20d3ff'); line(data,'p95','#7c4dff');
+    data.forEach((p,i)=>{ if(p.err>0){ const x=(i/(maxPts-1))*w; ctx.strokeStyle='#ff6b6b'; ctx.beginPath(); ctx.moveTo(x,h-2); ctx.lineTo(x,h-10); ctx.stroke(); } });
+    ctx.setTransform(1,0,0,1,0,0);
+  }
+  function tick(){
+    if(paused) return;
+    const rps = Math.max(0, Math.round(80 + Math.sin(Date.now()/900)*60 + rand(-10,30)));
+    const p95 = Math.max(120, Math.round(480 + Math.cos(Date.now()/1100)*260 + rand(-40,60)));
+    const err = Math.random()<0.08 ? 1 : 0;
+    errWin += err;
+    data.push({rps,p95,err}); if(data.length>maxPts) data.shift();
+    rpsEl.textContent = rps; p95El.textContent = p95; errEl.textContent = errWin;
+    draw();
+  }
+  setInterval(tick, 900);
+  pauseBtn.addEventListener('click', ()=>{ paused=!paused; pauseBtn.textContent = paused ? '▶️ Retomar' : '⏸️ Pausar'; });
+  clearBtn.addEventListener('click', ()=>{ data.fill({rps:0,p95:0,err:0}); errWin=0; rpsEl.textContent='0'; p95El.textContent='0'; errEl.textContent='0'; draw(); });
+  draw();
+})();
+
+/* ===== FÁBRICA + WORKFLOW (igual) ===== */
+(() => {
+  const fac = $('#factory'); if(fac && window.gsap){
+    const arm = fac.querySelector('.arm');
+    const bots = ['#botA','#botB','#botC'].map(id => fac.querySelector(id));
+    const tl = gsap.timeline({repeat:-1, defaults:{ease:'power1.inOut'}});
+    tl.to(arm, {rotation:12, duration:.6}).to(arm, {rotation:-8, duration:.6}).to(arm, {rotation:0, duration:.4});
+    gsap.to(fac.querySelector('.conv'), {backgroundPositionX:'-30px', duration:.6, repeat:-1, ease:'none'});
+    bots.forEach((b, i)=>{
+      const startX = -80 - i*20;
+      gsap.set(b, {x:startX, scale:.7, opacity:.2});
+      gsap.timeline({repeat:-1, delay:i*.8})
+        .to(b, {x:20, opacity:1, duration:.6})
+        .to(b, {x:fac.clientWidth-80, duration:2.2})
+        .to(b, {opacity:0, duration:.2})
+        .set(b, {x:startX, opacity:.2});
+    });
+  }
+  const body=$('#wf-body'), run=$('#wf-run'), pause=$('#wf-pause'), clear=$('#wf-clear');
+  if(!body) return;
+  let paused=false, pulse=null;
+  const steps = [
+    ()=>`🧭 Start workflow • job=${rand(1000,9999)}`,
+    ()=>`📥 Fetch API /leads • 200 OK • ${rand(1,9)}.${rand(0,9)}k rows`,
+    ()=>`🧹 Normalize fields • map: 7 colunas`,
+    ()=>`🔁 Deduplicate • kept=${rand(80,98)}%`,
+    ()=>`📤 Push to CRM • upserts=${rand(30,120)}`,
+    ()=>`🔔 Notify channel • ack=true`,
+    ()=>`✅ Done in ${rand(2,9)}s`
+  ];
+  const addLine = t => { const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${t}`; body.appendChild(p); body.scrollTop=body.scrollHeight; if(window.gsap){ gsap.from(p,{y:8,opacity:0,duration:.22}); } };
+  const runOnce = ()=> steps.forEach(fn=> addLine(fn()));
+  run.addEventListener('click', runOnce);
+  pause.addEventListener('click', ()=>{ paused=!paused; pause.textContent= paused? '▶️ Retomar':'⏸️ Pausar'; if(paused){ clearInterval(pulse); pulse=null; } else { pulse=setInterval(()=> addLine(steps[rand(0,steps.length-1)]()), 1400); } });
+  clear.addEventListener('click', ()=>{ body.innerHTML=''; });
+  pulse = setInterval(()=>{ if(!paused) addLine(steps[rand(0,steps.length-1)]()); }, 1600);
+})();
+
+/* ===== MÁQUINAS (igual) ===== */
+(() => {
+  const line = $('#line-prod');
+  if(line && window.gsap){
+    const makeCaps = n=>{
+      for(let i=0;i<n;i++){
+        const c = document.createElement('div');
+        c.className='capsule';
+        c.style.left = (-80 - i*140) + 'px';
+        line.appendChild(c);
+        gsap.to(c,{x: line.clientWidth + 200, duration:6 + i, repeat:-1, ease:'none',
+          onUpdate(){
+            const mid = (c.getBoundingClientRect().left + c.offsetWidth/2) - line.getBoundingClientRect().left;
+            c.style.filter = `drop-shadow(0 0 10px rgba(32,211,255,${Math.max(0,.6 - Math.abs(mid-line.clientWidth/2)/line.clientWidth)}))`;
+          }
+        });
+      }
+    };
+    makeCaps(4);
+  }
+  const fill=$('#mk-fill'), list=$('#mk-list'), start=$('#mk-start'), reset=$('#mk-reset'), conf=$('#mk-confetti');
+  if(!fill || !list) return;
+  const comps = ['Placa lógica','Módulo motor','Garra vácuo','Sensor óptico','Controlador','Firmware'];
+  const state = comps.map(n=>({name:n, ok:false}));
+  function render(){
+    list.innerHTML='';
+    state.forEach((c,i)=>{
+      const card=document.createElement('div'); card.className='card'; card.style.minHeight='58px';
+      card.innerHTML=`<b>${c.name}</b><div class="muted">${c.ok?'Instalado':'Pendente'}</div>`;
+      card.style.borderColor = c.ok ? 'rgba(0,230,209,.45)' : 'var(--border)';
+      list.appendChild(card);
+      if(c.ok && window.gsap){ gsap.from(card,{scale:.96, filter:'brightness(1.2)', duration:.25}); }
+    });
+  }
+  const progressTo=p=> fill.style.width = Math.max(0,Math.min(100,p)) + '%';
+  function confetti(){
+    const cv=conf, ctx=cv.getContext('2d'); conf.style.display='block';
+    const W=cv.width=cv.clientWidth, H=cv.height; let parts=Array.from({length:60},()=>({x:rand(0,W),y:rand(-40,0),vx:(Math.random()-.5)*1.2,vy:1+Math.random()*2,s:2+Math.random()*3}));
+    let running=true;
+    (function tick(){
+      ctx.clearRect(0,0,W,H);
+      parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; ctx.fillStyle=`hsl(${rand(180,260)},80%,60%)`; ctx.fillRect(p.x,p.y,p.s,p.s); });
+      parts = parts.filter(p=>p.y<H+10);
+      if(parts.length && running) requestAnimationFrame(tick); else { conf.style.display='none'; }
+    })(); setTimeout(()=> running=false, 1200);
+  }
+  function runAssembly(){
+    let done=0; const order=[...state.keys()].sort(()=>Math.random()-.5);
+    (function step(){ const idx = order[done]; if(idx===undefined) return;
+      state[idx].ok=true; done++; progressTo(Math.round((done/state.length)*100)); render();
+      if(done<state.length) setTimeout(step, 260); else confetti();
+    })();
+  }
+  start.addEventListener('click', runAssembly);
+  reset.addEventListener('click', ()=>{ state.forEach(c=>c.ok=false); progressTo(0); render(); });
+  render();
+})();
+
+/* ===== MANUTENÇÃO tabela (igual) ===== */
+(() => {
+  const body=$('#mt-body'), scan=$('#mt-scan'), reset=$('#mt-reset');
+  if(!body) return;
+  const equips = ['Servidor RACK-01','Switch CORE-02','Notebook SUP-14','Câmera CFTV-07','NVR-02','Impressora LAB-3','Desktop DEV-11','AP WiFi-05'];
+  const parts = ['CPU','RAM','Disco','Rede','Fonte','Ventoinha','Firmware','Sensor'];
+  let rows=[];
+  function status(){ const r=Math.random(); if(r<0.70) return ['OK','ok']; if(r<0.90) return ['Atenção','warn']; return ['Falha','err']; }
+  function now(){ return new Date().toLocaleTimeString('pt-BR',{hour12:false}); }
+  function render(){ body.innerHTML=''; rows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${r.eq}</td><td>${r.part}</td><td><span class="dotst dot-${r.kind}"></span> ${r.st}</td><td>${r.at}</td>`; body.appendChild(tr); }); }
+  function doScan(){ rows = Array.from({length:6},()=> { const eq = equips[rand(0,equips.length-1)]; const part = parts[rand(0,parts.length-1)]; const [st,kind]=status(); return {eq,part,st,kind,at:now()}; }); render(); }
+  scan.addEventListener('click', doScan);
+  reset.addEventListener('click', ()=>{ rows=[]; render(); });
+  doScan();
+})();
+
+/* ===== HOSPEDAGEM deploy (igual) ===== */
+(() => {
+  const body=$('#dp-body'), run=$('#dp-run'), clear=$('#dp-clear');
+  if(!body) return;
+  const steps = ['Checkout main','Install deps','Lint/Tests','Build','Dockerize','Push image','Deploy','Smoke tests','Done ✅'];
+  const addLine = t => { const p=document.createElement('div'); p.textContent = `[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${t}`; body.appendChild(p); body.scrollTop=body.scrollHeight; if(window.gsap){ gsap.from(p,{y:8,opacity:0,duration:.2}); } };
+  run.addEventListener('click', async ()=>{ body.innerHTML=''; for(const s of steps){ await new Promise(r=>setTimeout(r, rand(200,700))); addLine(s); } });
+  clear.addEventListener('click', ()=> body.innerHTML='');
+})();
+
+/* ===== APPS launcher (igual) ===== */
+(() => {
+  const grid=$('#ap-grid'); if(!grid) return;
+  const apps=[
+    {name:'Inventário Rápido', desc:'Escaneie itens e gere planilhas.'},
+    {name:'Checklist Técnico', desc:'Procedimentos e fotos.'},
+    {name:'Mapa de Rede', desc:'Descoberta e anotações.'},
+    {name:'Diagnóstico OS', desc:'Logs e relatórios.'},
+    {name:'Controle de Acesso', desc:'Visitantes e crachás.'},
+    {name:'Painel de Chamados', desc:'SLA e métricas.'}
+  ];
+  apps.forEach(a=>{
+    const card=document.createElement('div'); card.className='card'; card.style.cursor='pointer';
+    card.innerHTML=`<b>${a.name}</b><div class="muted">${a.desc}</div>`;
+    card.addEventListener('click', ()=>{
+      const modal=document.createElement('div');
+      modal.className='card'; modal.style.position='fixed'; modal.style.zIndex='60';
+      modal.style.left='50%'; modal.style.top='50%'; modal.style.transform='translate(-50%,-50%)';
+      modal.style.maxWidth='560px'; modal.style.width='92vw';
+      modal.innerHTML=`<div class="head"><b>${a.name} — Preview</b><button class="btn small" id="ap-close">Fechar</button></div>
+      <div style="margin-top:8px">
+        <div class="kpi-row">
+          <div class="kpi"><small class="muted">Ações</small><b>${rand(4,22)}</b></div>
+          <div class="kpi"><small class="muted">Itens</small><b>${rand(10,120)}</b></div>
+          <div class="kpi"><small class="muted">Equipe</small><b>${rand(2,8)}</b></div>
+          <div class="kpi"><small class="muted">Status</small><b>Beta</b></div>
+        </div>
+        <div class="cmd" style="margin-top:10px">
+          <div class="cmd-inner">
+            <div class="cmd-head"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><b>Logs</b></div>
+            <div class="cmd-body" id="ap-log"></div>
+          </div>
+        </div>
+      </div>`;
+      document.body.appendChild(modal);
+      if(window.gsap){ gsap.from(modal,{y:20,opacity:0,scale:.98,duration:.25}); }
+      modal.querySelector('#ap-close').addEventListener('click', ()=> modal.remove());
+      const apLog = modal.querySelector('#ap-log');
+      ['init','load-config','connect-db','ready'].forEach((s,i)=> setTimeout(()=>{ const p=document.createElement('div'); p.textContent = `[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${s}`; apLog.appendChild(p); apLog.scrollTop=apLog.scrollHeight; }, 220*i));
+    });
+    grid.appendChild(card);
+  });
+})();
+
+/* ===== WhatsApp Bot CMD (igual) ===== */
+(() => {
+  const body=$('#wa-body'), create=$('#wa-create'), test=$('#wa-test'), pub=$('#wa-publish'), clear=$('#wa-clear');
+  if(!body) return;
+  const time = ()=> new Date().toLocaleTimeString('pt-BR',{hour12:false});
+  const log = t => { const p=document.createElement('div'); p.textContent = `[${time()}] ${t}`; body.appendChild(p); body.scrollTop=body.scrollHeight; if(window.gsap){ gsap.from(p,{y:8,opacity:0,duration:.2}); } };
+  create.addEventListener('click', async ()=>{
+    log('Criando sessão…'); await new Promise(r=>setTimeout(r,400));
+    log('Gerando QR Code… (simulado)'); await new Promise(r=>setTimeout(r,500));
+    log('Sessão vinculada ✅'); log('Salvando credenciais criptografadas… ok');
+  });
+  test.addEventListener('click', async ()=>{
+    log('Enviando mensagem de teste para +55 43 ****-****…'); await new Promise(r=>setTimeout(r,500));
+    log('Webhook recebeu evento MESSAGE_DELIVERED ✅');
+  });
+  pub.addEventListener('click', async ()=>{
+    log('Publicando webhook em /whats/webhook …'); await new Promise(r=>setTimeout(r,500));
+    log('Verificação de token ok • status 200'); log('Bot pronto 🎉');
+  });
+  clear.addEventListener('click', ()=> body.innerHTML='');
+})();
+
+/* ===== FX RUNNERS + CMDs ===== */
+
+/* Helpers CMD toggle */
+(function cmdToggles(){
+  $$('[data-toggle]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-toggle');
+      const box = document.getElementById(id);
+      const isOpen = !box.hasAttribute('hidden');
+      $$(`.fx-cmd`).forEach(b=> b.setAttribute('hidden',''));
+      if(!isOpen){ box.removeAttribute('hidden'); }
+    });
+  });
+})();
+
+/* Vis runner generic */
+function makeVisRunner(el, start, stop){
+  const io = new IntersectionObserver(ents=>{
+    ents.forEach(e=>{ if(e.isIntersecting) start(); else stop && stop(); });
+  },{threshold:.2});
+  io.observe(el);
+}
+
+/* --- Radar de Segurança --- */
+(() => {
+  const cv=$('#fx-radar'); if(!cv) return;
+  const ctx=cv.getContext('2d'); let run=false, rafId=null; let t=0;
+  function size(){ cv.width=cv.clientWidth; cv.height=cv.clientHeight; } size(); addEventListener('resize', size);
+  function tick(){
+    if(!run) return;
+    const w=cv.width,h=cv.height,cx=w/2,cy=h/2; t+=0.02;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#081226'; ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='rgba(137,201,255,.25)'; for(let r=40;r<Math.min(w,h)/2;r+=40){ ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke(); }
+    const ang=t%(Math.PI*2); const rMax=Math.min(w,h)/2;
+    const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,rMax);
+    grad.addColorStop(0,'rgba(32,211,255,.35)'); grad.addColorStop(1,'transparent');
+    ctx.fillStyle=grad; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,rMax,ang,ang+0.6); ctx.closePath(); ctx.fill();
+    for(let i=0;i<8;i++){ const a=i*(Math.PI*2/8)+t*.4; const r=60+ (i*20); const x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r;
+      ctx.fillStyle='rgba(124,77,255,.9)'; ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+    }
+    rafId=requestAnimationFrame(tick);
+  }
+  makeVisRunner(cv, ()=>{ if(!run){ run=true; tick(); } }, ()=>{ run=false; cancelAnimationFrame(rafId); });
+
+  // CMD
+  const body=$('#radar-body'), pause=$('#radar-pause'), clear=$('#radar-clear');
+  let stopped=false; function line(t){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${t}`; body.appendChild(p); body.scrollTop=body.scrollHeight; }
+  const sigs=['Trojan.Win32','Worm.P2P','Adware.Agent','Backdoor.RAT','Miner.XMR','Ransom.ENC'];
+  const ips=()=>`${rand(10,250)}.${rand(0,255)}.${rand(0,255)}.${rand(1,254)}`;
+  setInterval(()=>{ if(stopped) return;
+    const roll=Math.random();
+    if(roll<.55) line(`Assinatura detectada • ${sigs[rand(0,sigs.length-1)]} • ação: quarentena ✅`);
+    else if(roll<.8) line(`Heurística suspeita • PID=${rand(1000,9999)} • sandbox OK`);
+    else line(`IP malicioso bloqueado • src=${ips()} • regra FW#${rand(100,999)}`);
+  }, 1100);
+  pause.addEventListener('click', ()=>{ stopped=!stopped; pause.textContent=stopped?'▶️ Retomar':'⏸️ Pausar'; });
+  clear.addEventListener('click', ()=> body.innerHTML='');
+})();
+
+/* --- Scanner de Barreira (Flow Field) --- */
+(() => {
+  const cv=$('#fx-flow'); if(!cv) return; const ctx=cv.getContext('2d'); let run=false, rafId=null; let z=0;
+  function size(){ cv.width=cv.clientWidth; cv.height=cv.clientHeight; } size(); addEventListener('resize', size);
+  function noise(x,y,z){ return Math.sin(x*.013+z)*Math.cos(y*.011+z); }
+  function tick(){
+    if(!run) return;
+    const w=cv.width,h=cv.height; z+=0.006; ctx.fillStyle='rgba(13,21,52,.32)'; ctx.fillRect(0,0,w,h);
+    ctx.lineWidth=1; for(let y=0;y<h;y+=8){ for(let x=0;x<w;x+=8){ const a=noise(x,y,z)*Math.PI*2; const x2=x+Math.cos(a)*6, y2=y+Math.sin(a)*6;
+      ctx.strokeStyle='rgba(137,201,255,.35)'; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x2,y2); ctx.stroke(); } }
+    rafId=requestAnimationFrame(tick);
+  }
+  makeVisRunner(cv, ()=>{ if(!run){ run=true; tick(); } }, ()=>{ run=false; cancelAnimationFrame(rafId); });
+
+  // CMD
+  const body=$('#barrier-body'), pause=$('#barrier-pause'), clear=$('#barrier-clear'); let stopped=false;
+  function line(t){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${t}`; body.appendChild(p); body.scrollTop=body.scrollHeight; }
+  setInterval(()=>{ if(stopped) return;
+    const sec=rand(1,6); const lvl=rand(60,98);
+    const roll=Math.random();
+    if(roll<.7) line(`Setor ${sec} • intensidade do campo ${lvl}% • estável`);
+    else if(roll<.9) line(`Tentativa de intrusão no setor ${sec} • bloqueada • log id=${rand(1000,9999)}`);
+    else line(`Recalibração automática • delta +${rand(1,4)}%`);
+  }, 1200);
+  pause.addEventListener('click', ()=>{ stopped=!stopped; pause.textContent=stopped?'▶️ Retomar':'⏸️ Pausar'; });
+  clear.addEventListener('click', ()=> body.innerHTML='');
+})();
+
+/* --- Firewall Inteligente (Code Rain) --- */
+(() => {
+  const cv=$('#fx-rain'); if(!cv) return; const ctx=cv.getContext('2d'); let timer=null, run=false;
+  const chars='アイウエオｱｲｳｴｵ0123456789ABCDEF';
+  function size(){ cv.width=cv.clientWidth; cv.height=cv.clientHeight; } size(); addEventListener('resize', size);
+  function start(){ if(run) return; run=true; const cols=Math.floor(cv.width/14); const drops=Array(cols).fill(0);
+    timer=setInterval(()=>{ ctx.fillStyle='rgba(8,18,38,.35)'; ctx.fillRect(0,0,cv.width,cv.height);
+      ctx.fillStyle='#7c4dff'; ctx.font='14px monospace';
+      for(let i=0;i<drops.length;i++){ const ch = chars.charAt(rand(0,chars.length-1)); const x=i*14; const y=drops[i]*14;
+        ctx.fillText(ch,x,y); if(y>cv.height && Math.random()>0.975) drops[i]=0; drops[i]++; }
+    }, 50);
+  }
+  function stop(){ run=false; clearInterval(timer); }
+  makeVisRunner(cv, start, stop);
+
+  // CMD
+  const body=$('#fw-body'), pause=$('#fw-pause'), clear=$('#fw-clear'); let stopped=false;
+  function line(t){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${t}`; body.appendChild(p); body.scrollTop=body.scrollHeight; }
+  const rules=['DROP tcp/445','DROP smb','ALLOW http/2','ALLOW tls1.3','RATE-LIMIT /auth','BLOCK geo:RU','BLOCK geo:CN'];
+  setInterval(()=>{ if(stopped) return;
+    const roll=Math.random();
+    if(roll<.6) line(`Regra aplicada • ${rules[rand(0,rules.length-1)]}`);
+    else if(roll<.85) line(`Assinatura match • CVE-20${rand(10,25)}-${rand(1000,9999)} • mitigado`);
+    else line(`Anomalia detectada • p95=${rand(400,1200)}ms • throttle ativo`);
+  }, 1000);
+  pause.addEventListener('click', ()=>{ stopped=!stopped; pause.textContent=stopped?'▶️ Retomar':'⏸️ Pausar'; });
+  clear.addEventListener('click', ()=> body.innerHTML='');
+})();
+
+/* --- Oficina & Manutenção (Aurora) --- */
+(() => {
+  const body=$('#shop-body'), pause=$('#shop-pause'), clear=$('#shop-clear'); if(!body) return; let stopped=false;
+  function line(t){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${t}`; body.appendChild(p); body.scrollTop=body.scrollHeight; }
+  const parts=['SSD','Fonte','Ventoinha','Módulo Wi-Fi','Memória','Sensor','Placa-mãe'];
+  setInterval(()=>{ if(stopped) return;
+    const roll=Math.random();
+    if(roll<.5) line(`Ordem de serviço aberta • ${parts[rand(0,parts.length-1)]} • prioridade ${['baixa','média','alta'][rand(0,2)]}`);
+    else if(roll<.8) line(`Peça substituída • Nº série ${rand(100000,999999)} • calibração ok`);
+    else line(`Teste de estresse concluído • temp pico ${rand(52,78)}°C • aprovado ✅`);
+  }, 1300);
+  pause.addEventListener('click', ()=>{ stopped=!stopped; pause.textContent=stopped?'▶️ Retomar':'⏸️ Pausar'; });
+  clear.addEventListener('click', ()=> body.innerHTML='');
+})();
+
+/* --- Testador de Redes (FrameHat) --- */
+(() => {
+  const cv=$('#fx-net'); if(!cv) return; const ctx=cv.getContext('2d');
+  function size(){ cv.width=cv.clientWidth; cv.height=cv.clientHeight; } size(); addEventListener('resize', size);
+  function drawMeter(lat,jit,loss,thr){
+    const w=cv.width,h=cv.height; ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#0c1536'; ctx.fillRect(0,0,w,h);
+    const labels=[['Latência (ms)',lat,1200],['Jitter (ms)',jit,200],['Perda (%)',loss,30],['Throughput (Mbps)',thr,1000]];
+    const barW = (w-60)/labels.length;
+    labels.forEach((L,i)=>{
+      const x = 30 + i*barW; const max=L[2]; const val=L[1]; const pct=Math.min(1,val/max);
+      const bh = (h-80)*pct;
+      ctx.fillStyle='#20d3ff'; ctx.fillRect(x+14, h-40-bh, barW-28, bh);
+      ctx.strokeStyle='rgba(255,255,255,.2)'; ctx.strokeRect(x+14, 40, barW-28, h-80);
+      ctx.fillStyle='#eaf2ff'; ctx.font='bold 12px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText(L[0], x+barW/2, 22); ctx.fillText(val.toString(), x+barW/2, h-16);
+    });
+  }
+  // botão de teste
+  const runBtn = $('#net-run'); const logBody=$('#net-body'); const clearBtn=$('#net-clear');
+  function log(t){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${t}`; logBody.appendChild(p); logBody.scrollTop=logBody.scrollHeight; }
+  function runTest(){
+    logBody.innerHTML='';
+    log('Iniciando teste de rede (FrameHat)…');
+    let step=0; const seq=[
+      ()=>{ log('Descobrindo roteador e DNS… ok'); },
+      ()=>{ log('Medindo latência/jitter…'); },
+      ()=>{ log('Baixando pacote de amostra…'); },
+      ()=>{ log('Enviando pacotes UDP…'); },
+      ()=>{ log('Calculando perda e throughput…'); }
+    ];
+    const timer = setInterval(()=>{
+      if(step<seq.length){ seq[step++](); }
+      else{
+        clearInterval(timer);
+        const lat = rand(12, 180);
+        const jit = rand(2, 40);
+        const loss= Math.random()<.85 ? rand(0,3) : rand(4,12);
+        const thr = rand(80, 920);
+        drawMeter(lat,jit,loss,thr);
+        log(`Resultado • lat=${lat}ms • jitter=${jit}ms • perda=${loss}% • throughput=${thr}Mbps`);
+        log(loss<=3 ? 'Qualidade: boa ✅' : 'Qualidade: atenção ⚠️');
+      }
+    }, 600);
+  }
+  runBtn.addEventListener('click', runTest);
+  clearBtn.addEventListener('click', ()=> logBody.innerHTML='');
+})();
+
+/* ===== TOPOLOGIA (igual) ===== */
+(() => {
+  const cv=$('#topo'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  function size(){ cv.width=cv.clientWidth; cv.height=380; }
+  size(); addEventListener('resize', size);
+  const nodes = Array.from({length:18}, ()=>({ x:Math.random()*cv.width, y:Math.random()*cv.height, vx:(Math.random()-.5)*.6, vy:(Math.random()-.5)*.6, r: rand(3,5) }));
+  (function step(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=nodes[i], b=nodes[j];
+        const dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
+        if(d<160){ ctx.strokeStyle=`rgba(137,201,255,${1-d/160})`; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
+      }
+    }
+    nodes.forEach(n=>{
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(124,77,255,.85)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r+3,0,Math.PI*2);
+      ctx.strokeStyle='rgba(32,211,255,.35)'; ctx.stroke();
+      n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>cv.width) n.vx*=-1; if(n.y<0||n.y>cv.height) n.vy*=-1;
+    });
+    requestAnimationFrame(step);
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projeto 1 — Estudo de Caso (UI/UX + Vendas)</title>
+<style>
+:root{
+  --bg:#0b1020; --surface:#0f1635; --surface2:#0b122e; --line:#1a2450;
+  --fg:#eaf2ff; --muted:#9bb0d3;
+  --brand:#7c4dff; --accent:#20d3ff; --ok:#19c37d; --warn:#ffd166;
+  --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.28);
+}
+/* Base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--fg);
+  font:15px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background:
+    radial-gradient(1100px 600px at 10% 10%, rgba(124,77,255,.18), transparent 60%),
+    radial-gradient(900px 500px at 90% 90%, rgba(32,211,255,.12), transparent 60%),
+    var(--bg);
+}
+a{color:inherit; text-decoration:none}
+img,svg,canvas{display:block; max-width:100%}
+.wrap{max-width:1100px; margin:0 auto; padding:16px 20px}
+h1{margin:.2rem 0 .6rem; font-size:clamp(28px,5.6vw,46px); line-height:1.05}
+.p{color:var(--muted); margin:0}
+
+/* Header */
+header{
+  position:sticky; top:0; z-index:20; backdrop-filter: blur(10px);
+  background:linear-gradient(180deg, rgba(11,16,32,.65), rgba(11,16,32,.35));
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.headbar{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap}
+.back{color:#a8b1c8; font-weight:700; display:inline-flex; gap:8px; align-items:center}
+.badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:#162153; border:1px solid rgba(255,255,255,.08)}
+
+/* Hero */
+.hero{display:grid; gap:24px; align-items:center; grid-template-columns: 1.1fr .9fr; padding:18px 0 10px}
+@media (max-width:900px){ .hero{grid-template-columns:1fr} }
+.cta{
+  display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:999px;
+  font-weight:900; color:#0b1020; background:linear-gradient(90deg, var(--brand), var(--accent));
+  box-shadow:0 12px 28px rgba(124,77,255,.35);
+}
+.sub{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+
+/* Orb */
+.orb-card{background:var(--surface); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow)}
+.orb{width:min(78vmin, 460px); aspect-ratio:1/1; margin:0 auto}
+
+/* Stats */
+.stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:12px 0 0}
+.stat{background:var(--surface); border:1px solid rgba(255,255,255,.07); border-radius:14px; padding:12px; text-align:center}
+.big{font-size:28px; font-weight:900}
+@media (max-width:700px){ .stats{grid-template-columns:1fr 1fr} }
+
+/* Value proposition */
+.value{background:linear-gradient(135deg, rgba(124,77,255,.18), rgba(32,211,255,.16)); border:1px solid rgba(255,255,255,.1); border-radius:16px; padding:14px; box-shadow:var(--shadow)}
+.value ul{margin:6px 0 0; padding-left:20px}
+
+/* Grid cards */
+.section-title{margin:26px 0 10px}
+.grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); margin-top:18px}
+.card{
+  background:var(--surface); border:1px solid rgba(255,255,255,.07); border-radius:16px; overflow:hidden;
+  transform: perspective(900px) rotateX(0) rotateY(0);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.card:hover{ box-shadow: 0 18px 40px rgba(124,77,255,.22); border-color:rgba(32,211,255,.18) }
+.thumb{height:160px; position:relative; overflow:hidden; background:#0e1540}
+.thumb img{width:100%; height:100%; object-fit:cover; display:block}
+.thumb>span{position:absolute; inset:auto 10px 10px auto; background:#0b122e; border:1px solid rgba(255,255,255,.15); padding:6px 8px; border-radius:999px; font-size:12px}
+.card header{padding:12px 14px 6px}
+.card p{color:var(--muted); padding:0 14px 14px; margin:0}
+.btn{
+  margin:0 14px 14px; border:0; cursor:pointer;
+  border-radius:999px; padding:10px 14px; font-weight:800; color:#0b1020;
+  background:linear-gradient(90deg, var(--brand), var(--accent));
+}
+.tags{display:flex; gap:6px; flex-wrap:wrap; padding:0 14px 12px}
+.tag{font-size:12px; padding:6px 8px; border-radius:999px; background:#142256; border:1px solid rgba(255,255,255,.08)}
+
+/* Reveal */
+.reveal{opacity:0; transform: translateY(18px); transition:.6s ease}
+.reveal.on{opacity:1; transform:none}
+@media (prefers-reduced-motion: reduce){ .reveal{transition:none} }
+
+/* Modal */
+.modal{position:fixed; inset:0; background:rgba(2,6,18,.65); display:none; place-items:center; padding:20px; z-index:60}
+.modal.open{display:grid}
+.dialog{width:min(900px,96vw); background:#0b1026; border:1px solid rgba(255,255,255,.1); border-radius:18px; overflow:hidden; box-shadow:0 28px 60px rgba(0,0,0,.45)}
+.dialog-head{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.08)}
+.close{background:#172350; color:#c7d2ff; border:0; border-radius:10px; padding:8px 12px; cursor:pointer}
+.dialog-body{display:grid; grid-template-columns: 1.1fr .9fr; gap:12px; padding:12px}
+@media (max-width:900px){ .dialog-body{grid-template-columns:1fr} }
+
+/* Modal media + animations */
+.md-media{position:relative; background:#0e1540; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.07)}
+.md-img{width:100%; height:100%; object-fit:cover; transform-origin:center; animation:zoomIn .55s ease both}
+@keyframes zoomIn{ from{transform:scale(1.06); filter:brightness(.85)} to{transform:scale(1); filter:none} }
+.md-caption{position:absolute; left:10px; bottom:10px; background:rgba(12,20,52,.75); backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,.12); padding:6px 8px; border-radius:999px; font-size:12px}
+.md-text{padding:6px; line-height:1.65; font-size:16px}
+.md-text ul{margin:10px 0 0; padding-left:18px}
+.type{font-weight:500; min-height:88px; white-space:pre-wrap}
+.typewriter{--speed:22ms; position:relative}
+.typewriter::after{content:""; position:absolute; width:10px; height:1.2em; background:linear-gradient(90deg, #fff, #a6c2ff); right:-2px; top:.2em; animation:blink .9s steps(1) infinite}
+@keyframes blink{50%{opacity:.2}}
+
+/* Dashboards (Sales & novos módulos) */
+.sales{margin-top:24px; background:var(--surface); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:12px; box-shadow:var(--shadow)}
+.sales-grid{display:grid; gap:14px; grid-template-columns:1.1fr .9fr}
+@media (max-width:900px){ .sales-grid{grid-template-columns:1fr} }
+.sales canvas{width:100%; height:260px; background:linear-gradient(180deg, rgba(124,77,255,.12), transparent 60%), var(--surface2); border:1px solid rgba(255,255,255,.08); border-radius:14px}
+.kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.kpi{background:#0e1742; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:10px; text-align:center}
+.kpi b{font-size:22px}
+.stream{font:13px ui-monospace, Menlo, Consolas; background:#000; color:#d6e0ff; border-radius:12px; border:1px solid rgba(255,255,255,.12); padding:10px; height:240px; overflow:auto}
+
+/* Accessibility & mobile tweaks */
+button{touch-action:manipulation}
+@media (hover:none){ .card{transition: box-shadow .25s ease} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap headbar">
+    <a class="back" href="projetos.html">← Voltar</a>
+    <strong>Estudo de Caso • UI/UX orientado a Vendas</strong>
+    <span class="badge">Profissional • Mobile-first</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <h1>Venda mais com design que remove fricção</h1>
+      <p class="p">Não é só um site — é um sistema: UI/UX, bots, APIs e automações que convertem visitas em receita.</p>
+      <div class="sub">
+        <a class="cta" href="#galeria">Ver estudo ↓</a>
+        <span class="badge">Checkout 2x mais rápido</span>
+        <span class="badge">Copy testada A/B</span>
+      </div>
+
+      <div class="value" style="margin-top:10px">
+        <b>Pacote profissional</b>
+        <ul class="p">
+          <li>UI/UX + Motion → microinterações que guiam a decisão</li>
+          <li>APIs & Robôs → menos cliques, menos erros, mais escala</li>
+          <li>Observabilidade → métricas que viram ação (SLA/SLO)</li>
+        </ul>
+      </div>
+
+      <div class="stats reveal">
+        <div class="stat"><div class="big" data-counter="24">0%</div><div class="p">+ Conversão</div></div>
+        <div class="stat"><div class="big" data-counter="32">0%</div><div class="p">− Erros</div></div>
+        <div class="stat"><div class="big" data-counter="0.9">0s</div><div class="p">Carregamento</div></div>
+      </div>
+    </div>
+
+    <!-- Orb animado -->
+    <div class="orb-card reveal">
+      <svg class="orb" viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#7c4dff"/>
+            <stop offset="50%"  stop-color="#20d3ff"/>
+            <stop offset="100%" stop-color="#7c4dff"/>
+          </linearGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="2" result="b1"/><feMerge><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g filter="url(#glow)" transform-origin="100 100">
+          <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="8s" repeatCount="indefinite"/>
+          <circle cx="100" cy="100" r="70" fill="none" stroke="url(#grad)" stroke-width="22"/>
+          <circle cx="100" cy="100" r="70" fill="none" stroke="url(#grad)" stroke-width="22" opacity=".55" stroke-dasharray="8 10"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- GALERIA / CARDS -->
+  <h2 id="galeria" class="section-title">Telas & Interações</h2>
+  <section class="grid"></section>
+
+  <!-- SALES LIVE -->
+  <section class="sales reveal" id="sales-live">
+    <h2 style="margin:0 0 8px">Motor de Vendas — Live</h2>
+    <div class="sales-grid">
+      <div>
+        <canvas id="salesChart" height="260"></canvas>
+        <div class="kpis" style="margin-top:8px">
+          <div class="kpi"><small class="p">Leads</small><b id="kLeads">0</b></div>
+          <div class="kpi"><small class="p">Carrinhos</small><b id="kCart">0</b></div>
+          <div class="kpi"><small class="p">Compras</small><b id="kBuy">0</b></div>
+        </div>
+      </div>
+      <div>
+        <div class="stream" id="salesStream" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1) Tradução ao Vivo — Multilíngue -->
+  <section class="sales reveal" id="live-trad">
+    <h2 style="margin:0 0 8px">Tradução ao Vivo — Multilíngue (→ PT)</h2>
+    <div class="sales-grid">
+      <div>
+        <canvas id="tradChart" height="260"></canvas>
+        <div class="kpis" style="margin-top:8px">
+          <div class="kpi"><small class="p">Idiomas ativos</small><b id="tLang">0</b></div>
+          <div class="kpi"><small class="p">Msgs/min</small><b id="tRate">0</b></div>
+          <div class="kpi"><small class="p">Erros</small><b id="tErr">0</b></div>
+        </div>
+      </div>
+      <div>
+        <div class="stream" id="tradStream"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2) Distribuição Personalizada — TasteMatch -->
+  <section class="sales reveal" id="taste">
+    <h2 style="margin:0 0 8px">Distribuição Personalizada — TasteMatch</h2>
+    <div class="sales-grid">
+      <div>
+        <canvas id="tasteChart" height="260"></canvas>
+        <div class="kpis" style="margin-top:8px">
+          <div class="kpi"><small class="p">Impressões</small><b id="impr">0</b></div>
+          <div class="kpi"><small class="p">CTR</small><b id="ctr">0%</b></div>
+          <div class="kpi"><small class="p">Conversões</small><b id="conv">0</b></div>
+        </div>
+      </div>
+      <div>
+        <div class="stream" id="tasteStream"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3) Recomendador IA — Uplift -->
+  <section class="sales reveal" id="reco">
+    <h2 style="margin:0 0 8px">Recomendador IA — Uplift</h2>
+    <div class="sales-grid">
+      <div>
+        <canvas id="recoChart" height="260"></canvas>
+        <div class="kpis" style="margin-top:8px">
+          <div class="kpi"><small class="p">Uplift</small><b id="up">0%</b></div>
+          <div class="kpi"><small class="p">AOV</small><b id="aov">R$ 0</b></div>
+          <div class="kpi"><small class="p">Recos/min</small><b id="rpm">0</b></div>
+        </div>
+      </div>
+      <div>
+        <div class="stream" id="recoStream"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="modal" id="modal" aria-modal="true" role="dialog">
+  <div class="dialog">
+    <div class="dialog-head">
+      <b id="md-title">Título</b>
+      <button class="close" id="close">Fechar ✕</button>
+    </div>
+    <div class="dialog-body">
+      <figure class="md-media">
+        <img id="md-img" class="md-img" alt="">
+        <figcaption class="md-caption" id="md-cap"></figcaption>
+      </figure>
+      <div class="md-text">
+        <div id="md-desc" class="p typewriter type"></div>
+        <ul id="md-bullets"></ul>
+        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+          <span class="badge">Pro • Conversão</span>
+          <span class="badge">Acessível</span>
+          <span class="badge">Mobile-first</span>
+          <span class="badge">Observabilidade</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== util: placeholder SVG (fallback offline) ===== */
+function placeholder(title, sub){
+  const svg = `
+    <svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'>
+      <defs>
+        <linearGradient id='g' x1='0' x2='1' y1='0' y2='1'>
+          <stop offset='0' stop-color='#7c4dff'/><stop offset='1' stop-color='#20d3ff'/>
+        </linearGradient>
+      </defs>
+      <rect width='100%' height='100%' fill='#0e1540'/>
+      <circle cx='120' cy='120' r='110' fill='url(#g)' opacity='0.22'/>
+      <text x='30' y='260' fill='#eaf2ff' font-family='Segoe UI, Arial' font-size='34' font-weight='700'>${title}</text>
+      <text x='30' y='305' fill='#9bb0d3' font-family='Segoe UI, Arial' font-size='20'>${sub||""}</text>
+    </svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+/* ===== Cards (com fallback de imagem) ===== */
+const itens = [
+  {
+    t:"Hero do Checkout",
+    d:"Promessa clara + prova social. CTA único no primeiro scroll.",
+    cap:"Primeira dobra enxuta",
+    tags:["Prova social","CTA único"],
+    long:"Removemos distrações, evidenciamos valor e marcas aceitas. O usuário entende em 3s por que comprar agora.",
+    bullets:["Estados de carregamento previsíveis","CTA principal sempre visível","Depoimentos curtos e críveis"]
+  },
+  {
+    t:"Passo 2 — Dados",
+    d:"Validação em linha, máscaras e dicas contextuais. Zero fricção.",
+    cap:"Form otimizado",
+    tags:["Validação","Acessibilidade"],
+    long:"Cada campo ensina como ser preenchido. Erro? Mostramos o porquê e a correção certa.",
+    bullets:["Máscaras de CPF/CNPJ e CEP","Autofill e autocomplete","Erros com foco na ação"]
+  },
+  {
+    t:"Pagamento",
+    d:"Opções ordenadas por conversão + feedback imediato de status.",
+    cap:"Menos passos, mais confiança",
+    tags:["Pagamentos","Feedback"],
+    long:"Priorizamos métodos com maior taxa de sucesso. Barra de progresso honesta e resumo ao lado.",
+    bullets:["Pix e Cartão no topo","Resumos claros de taxas/parcelas","Reprocessar sem perder dados"]
+  },
+  {
+    t:"Resumo",
+    d:"Transparência de custos e frete. Usuário vê o total sempre.",
+    cap:"Sem surpresas",
+    tags:["Clareza","Transparência"],
+    long:"Total sempre fixo, frete e prazos previsíveis. Upsell respeitoso, nunca invasivo.",
+    bullets:["Total fixo durante todo o fluxo","Frete e prazo atualizados em tempo real","Upsell contextual"]
+  },
+  {
+    t:"Erro controlado",
+    d:"Mensagens úteis, tom humano e ação recomendada no próprio card.",
+    cap:"Erros que ajudam",
+    tags:["Recuperação","UX Writing"],
+    long:"Quando algo falha, guiamos o usuário em 1 clique para resolver. Sem labirinto.",
+    bullets:["Códigos técnicos escondidos por padrão","Alternativas de pagamento/rota","Registro de tentativa para não duplicar compra"]
+  },
+  {
+    t:"Confirmação",
+    d:"Motion sutil + próximos passos. Incentivo a share e upsell.",
+    cap:"Celebração + Upsell",
+    tags:["Motion","Share"],
+    long:"Não acaba no “obrigado”. Entregamos o que fazer depois: rastrear, avaliar, compartilhar.",
+    bullets:["Prova social pós-compra","Cupom de indicação","Acompanhamento de pedido embutido"]
+  }
+];
+
+const grid = document.querySelector('.grid');
+grid.innerHTML = itens.map((it,i)=>`
+  <article class="card reveal" data-i="${i}">
+    <div class="thumb">
+      <img data-src="https://picsum.photos/seed/${i+111}/800/500" alt="${it.t}">
+      <span>${it.cap}</span>
+    </div>
+    <header><h3 style="margin:0">${it.t}</h3></header>
+    <p>${it.d}</p>
+    <div class="tags">${(it.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    <button class="btn">Ver detalhes</button>
+  </article>
+`).join("");
+
+/* carregar imagens + fallback */
+document.querySelectorAll('.thumb img').forEach((img, idx)=>{
+  const src = img.getAttribute('data-src');
+  img.src = src;
+  img.onerror = ()=>{ img.src = placeholder(itens[idx].t, itens[idx].cap); };
+});
+
+/* Reveal */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+/* Tilt suave */
+function tilt(e){
+  const c = e.currentTarget, r = c.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  const ex = (e.clientX ?? (e.touches && e.touches[0].clientX) ?? cx) - cx;
+  const ey = (e.clientY ?? (e.touches && e.touches[0].clientY) ?? cy) - cy;
+  const rx = (+ey / r.height) * -8, ry = (+ex / r.width) * 8;
+  c.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+}
+function untilt(e){ e.currentTarget.style.transform = 'perspective(900px) rotateX(0) rotateY(0)'; }
+document.querySelectorAll('.card').forEach(c=>{
+  c.addEventListener('mousemove',tilt); c.addEventListener('mouseleave',untilt);
+  c.addEventListener('touchmove',tilt,{passive:true}); c.addEventListener('touchend',untilt);
+});
+
+/* Modal (texto maior + bullets + typewriter) */
+const modal = document.getElementById('modal');
+const mdTitle = document.getElementById('md-title');
+const mdImg   = document.getElementById('md-img');
+const mdCap   = document.getElementById('md-cap');
+const mdDesc  = document.getElementById('md-desc');
+const mdBul   = document.getElementById('md-bullets');
+
+grid.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.btn'); if(!btn) return;
+  const art = e.target.closest('.card'); const i = +art.dataset.i;
+  const it = itens[i];
+
+  mdTitle.textContent = it.t;
+  // usa a mesma imagem do card; se falhar, aplica o placeholder
+  const src = `https://picsum.photos/seed/${i+111}/1000/700`;
+  mdImg.onerror = ()=>{ mdImg.src = placeholder(it.t, it.cap); };
+  mdImg.src = src;
+  mdImg.alt = it.t;
+  mdCap.textContent = it.cap;
+  typewrite(mdDesc, `${it.long}\n\nImpacto medido: +24% conversão / -32% erros.`);
+  mdBul.innerHTML = (it.bullets||[]).map(x=>`<li>${x}</li>`).join('');
+  modal.classList.add('open'); document.body.style.overflow='hidden';
+});
+document.getElementById('close').onclick = ()=>{ modal.classList.remove('open'); document.body.style.overflow=''; };
+modal.addEventListener('click', (e)=>{ if(e.target===modal) document.getElementById('close').click(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.classList.contains('open')) document.getElementById('close').click(); });
+
+function typewrite(el, text){
+  el.textContent = "";
+  el.classList.add('typewriter');
+  let i=0; const speed = 10;
+  (function step(){
+    el.textContent = text.slice(0, i++);
+    if(i<=text.length) setTimeout(step, speed);
+    else el.classList.remove('typewriter');
+  })();
+}
+
+/* Contadores */
+const counters = [...document.querySelectorAll('[data-counter]')].map(el=>({el, target:+el.dataset.counter}));
+const counterIO = new IntersectionObserver((ents)=>{
+  ents.forEach(ent=>{
+    if(!ent.isIntersecting) return;
+    const el = ent.target; counterIO.unobserve(el);
+    const target = +el.dataset.counter; const isTime = String(target).includes('.');
+    const t0 = performance.now(), dur=900;
+    (function tick(ts){
+      const p=Math.min(1,(ts-t0)/dur);
+      const v = target * (0.2 + 0.8*Math.pow(p,0.85));
+      el.textContent = isTime ? v.toFixed(1)+'s' : Math.round(v)+'%';
+      if(p<1) requestAnimationFrame(tick);
+    })(t0);
+  });
+},{threshold:.6});
+counters.forEach(c=> counterIO.observe(c.el));
+
+/* ===== Helpers runners (start/stop ao entrar na tela) ===== */
+function makeRunner(rootEl, start, stop){
+  let running=false;
+  const obs=new IntersectionObserver((ents)=>{
+    ents.forEach(e=>{
+      if(e.isIntersecting && !running){ running=true; start(); }
+      else if(!e.isIntersecting && running){ running=false; stop && stop(); }
+    });
+  },{threshold:.35});
+  obs.observe(rootEl);
+  return ()=>obs.disconnect();
+}
+
+/* ===== Motor de Vendas — Live ===== */
+(()=>{
+  const sec = document.getElementById('sales-live');
+  const cv = document.getElementById('salesChart'); const ctx=cv.getContext('2d');
+  function size(){ cv.width=cv.clientWidth; cv.height=260; } size(); addEventListener('resize', size);
+  const dataLen=60; const leads=Array(dataLen).fill(0), carts=Array(dataLen).fill(0), buys=Array(dataLen).fill(0);
+  let t=0, L=0,C=0,B=0, timer=null;
+  const kLeads=document.getElementById('kLeads'), kCart=document.getElementById('kCart'), kBuy=document.getElementById('kBuy');
+  const stream=document.getElementById('salesStream');
+  const NAMES=["Ana","Bruno","Carla","Diego","Eva","Fábio","Gabi","Heitor","Iris","João","Nina","Otto","Paula","Sofia","Tiago","Vini"];
+  function line(arr, color, yMax){
+    ctx.beginPath();
+    arr.forEach((v,i)=>{
+      const x = i*(cv.width/(dataLen-1));
+      const y = cv.height - (v/yMax)*(cv.height-30) - 10;
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    });
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke();
+  }
+  function grid(){
+    ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.lineWidth=1; ctx.setLineDash([4,6]);
+    for(let i=0;i<5;i++){ const y = 10+i*((cv.height-20)/4); ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(cv.width,y); ctx.stroke(); }
+    ctx.setLineDash([]);
+  }
+  function push(arr, v){ arr.push(v); if(arr.length>dataLen) arr.shift(); }
+  function log(msg){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${msg}`; stream.appendChild(p); stream.scrollTop=stream.scrollHeight; }
+  function tick(){
+    const addL = Math.max(0, Math.round(8 + Math.sin(t/8)*6 + Math.random()*4));
+    const addC = Math.max(0, Math.round(addL * (0.35 + Math.random()*0.1)));
+    const addB = Math.max(0, Math.round(addC * (0.25 + Math.random()*0.1)));
+    L+=addL; C+=addC; B+=addB;
+    push(leads, L); push(carts, C); push(buys, B);
+    const who=NAMES[Math.floor(Math.random()*NAMES.length)];
+    const r=Math.random();
+    if(r<.5) log(`${who} visitou sua página`);
+    else if(r<.75) log(`${who} adicionou ao carrinho`);
+    else log(`${who} finalizou a compra • Pix aprovado ✅`);
+    kLeads.textContent=L.toLocaleString('pt-BR'); kCart.textContent=C.toLocaleString('pt-BR'); kBuy.textContent=B.toLocaleString('pt-BR');
+    ctx.clearRect(0,0,cv.width,cv.height); grid();
+    line(leads,'#20d3ff', Math.max(40, L));
+    line(carts,'#7c4dff', Math.max(30, C));
+    line(buys, '#19c37d', Math.max(20, B));
+    t++;
+  }
+  makeRunner(sec, ()=>{ if(!timer){ timer=setInterval(tick, 700); } }, ()=>{ clearInterval(timer); timer=null; });
+})();
+
+/* ===== 1) Tradução ao Vivo — Multilíngue (→ PT) ===== */
+(()=>{
+  const sec = document.getElementById('live-trad');
+  const cv = document.getElementById('tradChart'); const ctx=cv.getContext('2d');
+  function size(){ cv.width=cv.clientWidth; cv.height=260; } size(); addEventListener('resize', size);
+  const stream=document.getElementById('tradStream');
+  const tLang=document.getElementById('tLang'), tRate=document.getElementById('tRate'), tErr=document.getElementById('tErr');
+  const LANGS=["EN","ES","FR","DE","IT","JA","ZH","AR","HI"];
+  let langsActive=3, rate=0, errs=0, timer=null, z=0;
+
+  const samples={
+    EN:[["Do you ship worldwide?","Vocês enviam para todo o mundo?"],["Is it in stock?","Está em estoque?"]],
+    ES:[["¿Cuánto cuesta el envío?","Quanto custa o frete?"],["¿Hay talla M?","Tem tamanho M?"]],
+    FR:[["Je veux payer par PIX","Quero pagar por PIX"],["C'est original?","É original?"]],
+    DE:[["Wie lange dauert die Lieferung?","Quanto tempo leva a entrega?"],["Gibt es Garantie?","Tem garantia?"]],
+    IT:[["Posso restituire il prodotto?","Posso devolver o produto?"],["È disponibile in nero?","Tem na cor preta?"]],
+    JA:[["サイズはありますか？","Tem tamanho disponível?"],["いつ届きますか？","Quando chega?"]],
+    ZH:[["有黑色的吗？","Tem na cor preta?"],["可以快递吗？","Pode enviar por expresso?"]],
+    AR:[["هل لديكم توصيل سريع؟","Tem entrega expressa?"],["هل هذا أصلي؟","Isso é original?"]],
+    HI:[["क्या यह स्टॉक में है?","Está em estoque?"],["डिलीवरी कितने दिन में होगी?","Em quantos dias entrega?"]]
+  };
+
+  function log(msg){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${msg}`; stream.appendChild(p); stream.scrollTop=stream.scrollHeight; }
+  function noise(x,y){ return Math.sin(x*.015+z)*Math.cos(y*.018+z); }
+
+  function tick(){
+    z+=0.02;
+    ctx.fillStyle='#0b122e'; ctx.fillRect(0,0,cv.width,cv.height);
+    // flow de mensagens
+    for(let y=8;y<cv.height;y+=10){
+      for(let x=8;x<cv.width;x+=12){
+        const a=noise(x,y); const x2=x+Math.cos(a)*5, y2=y+Math.sin(a)*5;
+        ctx.strokeStyle='rgba(137,201,255,.28)'; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x2,y2); ctx.stroke();
+      }
+    }
+    // KPIs & Logs
+    const msgNow = Math.floor(10+Math.random()*18);
+    rate = msgNow;
+    if(Math.random()<.05){ errs++; log('⚠ Fallback ativo: tradução neural degradada'); }
+    if(Math.random()<.2 && langsActive<LANGS.length){ langsActive++; log('🌐 Novo idioma habilitado: '+LANGS[langsActive-1]); }
+    tLang.textContent = langsActive;
+    tRate.textContent = rate;
+    tErr.textContent  = errs;
+
+    // exemplo de tradução X→PT
+    const l = LANGS[Math.floor(Math.random()*langsActive)];
+    const pair = samples[l][Math.floor(Math.random()*samples[l].length)];
+    if(Math.random()<.5) log(`${l}→PT: "${pair[0]}" → "${pair[1]}" • 120ms`);
+  }
+  makeRunner(sec, ()=>{ if(!timer){ timer=setInterval(tick, 700);} }, ()=>{ clearInterval(timer); timer=null; });
+})();
+
+/* ===== 2) Distribuição Personalizada — TasteMatch ===== */
+(()=>{
+  const sec = document.getElementById('taste');
+  const cv = document.getElementById('tasteChart'); const ctx=cv.getContext('2d');
+  function size(){ cv.width=cv.clientWidth; cv.height=260; } size(); addEventListener('resize', size);
+  const stream=document.getElementById('tasteStream');
+  const impr=document.getElementById('impr'), ctr=document.getElementById('ctr'), conv=document.getElementById('conv');
+  const SEGS=["Tech Lovers","Fashion Seekers","Gourmet","Fitness","Gamer","Books"];
+  let data = SEGS.map(()=>({imp:100+Math.random()*200, ctr:2+Math.random()*3, conv:10+Math.random()*30}));
+  let timer=null;
+
+  function log(msg){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${msg}`; stream.appendChild(p); stream.scrollTop=stream.scrollHeight; }
+
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    const P=24, w=cv.width-P*2, h=cv.height-P*2;
+    ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.setLineDash([4,6]);
+    for(let i=0;i<=4;i++){ const y=P+i*h/4; ctx.beginPath(); ctx.moveTo(P,y); ctx.lineTo(P+w,y); ctx.stroke(); }
+    ctx.setLineDash([]);
+    const barW = w/SEGS.length*.7;
+    const maxImp = Math.max(...data.map(d=>d.imp))*1.2;
+    const maxConv = Math.max(...data.map(d=>d.conv))*1.2;
+    data.forEach((d,i)=>{
+      const x = P + i*(w/SEGS.length) + ((w/SEGS.length-barW)/2);
+      const hImp = (d.imp/maxImp)*h, hConv = (d.conv/maxConv)*h*0.6;
+      ctx.fillStyle='#20d3ff'; ctx.fillRect(x, P+h-hImp, barW, hImp);
+      ctx.fillStyle='#19c37d'; ctx.fillRect(x+barW*0.15, P+h-hConv, barW*0.7, hConv);
+      ctx.fillStyle='#cfe0ff'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText(SEGS[i], x+barW/2, P+h+16);
+    });
+  }
+
+  function tick(){
+    const idx = Math.floor(Math.random()*SEGS.length);
+    data[idx].imp += 20 + Math.random()*60;
+    data[idx].conv += Math.random()<.4 ? 2 : 0;
+    data[idx].ctr = (data[idx].conv / data[idx].imp)*100;
+
+    const totImp = Math.round(data.reduce((s,d)=>s+d.imp,0));
+    const totConv= Math.round(data.reduce((s,d)=>s+d.conv,0));
+    const avgCtr = (totConv/totImp)*100;
+
+    impr.textContent = totImp.toLocaleString('pt-BR');
+    conv.textContent = totConv.toLocaleString('pt-BR');
+    ctr.textContent  = avgCtr.toFixed(2)+'%';
+
+    draw();
+    if(Math.random()<.5){
+      const seg = SEGS[idx];
+      log(`TasteMatch distribuiu ${Math.round(data[idx].imp)} imp. para ${seg} • CTR ${data[idx].ctr.toFixed(2)}%`);
+    }
+  }
+  makeRunner(sec, ()=>{ tick(); var t=setInterval(tick, 800); sec._t=t; }, ()=>{ clearInterval(sec._t); });
+})();
+
+/* ===== 3) Recomendador IA — Uplift ===== */
+(()=>{
+  const sec = document.getElementById('reco');
+  const cv = document.getElementById('recoChart'); const ctx=cv.getContext('2d');
+  function size(){ cv.width=cv.clientWidth; cv.height=260; } size(); addEventListener('resize', size);
+  const stream=document.getElementById('recoStream');
+  const up=document.getElementById('up'), aov=document.getElementById('aov'), rpm=document.getElementById('rpm');
+  let nodes = Array.from({length:18}, ()=>({
+    x: Math.random()*1, y: Math.random()*1, vx:(Math.random()-.5)*.002, vy:(Math.random()-.5)*.002
+  }));
+  let uplift=0, avg=120, recPerMin=0;
+
+  function log(msg){ const p=document.createElement('div'); p.textContent=`[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}] ${msg}`; stream.appendChild(p); stream.scrollTop=stream.scrollHeight; }
+
+  function draw(){
+    const w=cv.width, h=cv.height;
+    ctx.clearRect(0,0,w,h);
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=nodes[i], b=nodes[j];
+        const dx=(a.x-b.x)*w, dy=(a.y-b.y)*h, d=Math.hypot(dx,dy);
+        if(d<120){
+          ctx.strokeStyle=`rgba(137,201,255,${1-d/120})`;
+          ctx.beginPath(); ctx.moveTo(a.x*w,a.y*h); ctx.lineTo(b.x*w,b.y*h); ctx.stroke();
+        }
+      }
+    }
+    nodes.forEach(n=>{
+      ctx.beginPath(); ctx.arc(n.x*w,n.y*h,3,0,Math.PI*2);
+      ctx.fillStyle='rgba(124,77,255,.9)'; ctx.fill();
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>1) n.vx*=-1; if(n.y<0||n.y>1) n.vy*=-1;
+    });
+  }
+
+  function tick(){
+    uplift = Math.min(28, uplift + (Math.random()*1.2));
+    avg += Math.sin(Date.now()/900)*0.6 + (Math.random()-.5)*1.2;
+    recPerMin = Math.round(40 + Math.random()*30);
+    up.textContent  = uplift.toFixed(1)+'%';
+    aov.textContent = 'R$ '+avg.toFixed(2);
+    rpm.textContent = recPerMin;
+
+    const items=['Tênis Pro','Fone ANC','Smartwatch','Jaqueta Tech','Teclado Mech','Garrafa Térmica'];
+    if(Math.random()<.6) log(`Recomendado "${items[Math.floor(Math.random()*items.length)]}" • clique ${Math.random()<.5?'sim ✅':'não'}`);
+    else log('Modelo ajustou pesos por similaridade • MAPE 7.9%');
+
+    draw();
+  }
+  makeRunner(sec, ()=>{ draw(); var t=setInterval(tick, 750); sec._t=t; }, ()=>{ clearInterval(sec._t); });
+})();
+</script>
+</body>
+</html>
