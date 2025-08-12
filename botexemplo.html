@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bot Suporte Vendas | Pesquisa & Promoções</title>
+<style>
+:root{
+  --header-h:64px;
+  --bg:#070b16; --card:#10183b; --surface:#0d1534;
+  --text:#eaf2ff; --muted:#9bb0d3; --accent:#20d3ff; --brand:#7c4dff;
+  --pill-bg:rgba(124,77,255,.16); --border:rgba(255,255,255,.10);
+  --shadow:0 18px 40px rgba(0,0,0,.38);
+  --ok:#19c37d; --warn:#ffd166; --bad:#ff6363;
+}
+*{ box-sizing:border-box }
+html{ scroll-behavior:smooth }
+body{
+  margin:0; font-family:Inter,system-ui,Segoe UI,Arial,sans-serif; color:var(--text);
+  background:
+    radial-gradient(1000px 600px at 10% 10%, rgba(124,77,255,.16), transparent 60%),
+    radial-gradient(900px 600px at 90% 90%, rgba(32,211,255,.12), transparent 60%),
+    var(--bg);
+  overflow-x:hidden; /* impede scroll lateral */
+}
+.container{ max-width:1200px; margin:0 auto; padding:0 18px; }
+
+/* HEADER */
+header{
+  position:sticky; top:0; z-index:50; background:rgba(7,11,22,.6);
+  border-bottom:1px solid rgba(255,255,255,.08); backdrop-filter:saturate(120%) blur(8px);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; }
+.logo{ font-weight:900; letter-spacing:-.3px; background:linear-gradient(90deg,var(--brand),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.nav a{ color:var(--text); text-decoration:none; font-weight:800; padding:8px 12px; border-radius:999px; background:var(--pill-bg); border:1px solid var(--border); transition:transform .15s }
+.nav a:hover{ transform:translateY(-1px) }
+
+/* REVEAL */
+.reveal{ opacity:0; transform:translateY(14px); transition:opacity .45s ease, transform .45s ease }
+.reveal.show{ opacity:1; transform:none }
+
+.hero{ padding:28px 0 10px }
+h1{ margin:8px 0 4px }
+.muted{ color:var(--muted) }
+
+/* GRID & CARDS */
+.grid{ display:grid; grid-template-columns:1.2fr .8fr; gap:14px; }
+@media (max-width:1000px){ .grid{ grid-template-columns:1fr; } }
+.card{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:var(--shadow); position:relative; overflow:hidden }
+.card::after{ content:""; position:absolute; inset:-40% -40% auto auto; height:140px; width:140px; background:radial-gradient(circle at 50% 50%, rgba(124,77,255,.18), transparent 60%); transform:translate(30px,-30px); filter:blur(12px) }
+.card:hover{ transform:translateY(-1px); transition:transform .15s }
+
+/* BUSCA */
+.searchbar{ display:flex; gap:10px; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:10px 12px; }
+.searchbar input{ flex:1; background:transparent; border:0; outline:0; color:var(--text); font-weight:700 }
+.tagline{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center }
+.tag{ border:1px solid var(--border); background:var(--surface); color:var(--text); padding:6px 10px; border-radius:999px; font-weight:800; cursor:pointer; transition:transform .12s }
+.tag:hover{ transform:translateY(-1px) }
+.owner-inline{ margin-left:auto; border:1px solid var(--border); background:linear-gradient(90deg,rgba(124,77,255,.22),rgba(32,211,255,.22)); padding:6px 10px; border-radius:999px; font-weight:900 }
+.results{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px }
+@media (max-width:900px){ .results{ grid-template-columns:repeat(2,1fr) } }
+@media (max-width:620px){ .results{ grid-template-columns:1fr } }
+.prod{ border:1px solid var(--border); background:var(--card); border-radius:12px; padding:10px; overflow:hidden; position:relative; animation:slideUp .22s ease both }
+.prod .thumb{ height:110px; border-radius:10px; background:linear-gradient(135deg,#7c4dff,#20d3ff) }
+.price{ font:900 18px/1 Inter,sans-serif; margin-top:6px }
+.prod small{ color:var(--muted) }
+@keyframes slideUp{ from{ transform:translateY(8px); opacity:.0 } to{ transform:translateY(0); opacity:1 } }
+
+/* loader & skeleton */
+.loader{ height:6px; border-radius:999px; background:rgba(255,255,255,.12); overflow:hidden; margin-top:10px; display:none }
+.loader span{ display:block; height:100%; width:30%; transform:translateX(-40%); background:linear-gradient(90deg,#7c4dff,#20d3ff); animation:load 1s infinite }
+@keyframes load{ 50%{ transform:translateX(130%) } 100%{ transform:translateX(260%) } }
+.skel{ border:1px solid var(--border); background:var(--card); border-radius:12px; padding:10px }
+.skel .bar{ height:14px; border-radius:8px; background:linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.16), rgba(255,255,255,.08)); background-size:220% 100%;
+  animation:shimmer 1.1s infinite; margin:8px 0 }
+.skel .img{ height:110px; border-radius:10px; background:linear-gradient(90deg, rgba(255,255,255,.04), rgba(255,255,255,.12), rgba(255,255,255,.04)); background-size:220% 100%; animation:shimmer 1.1s infinite }
+@keyframes shimmer{ 50%{ background-position:120% 0 } }
+
+/* BOT FLUTUANTE */
+.bot-launch{ position:fixed; right:16px; bottom:16px; display:flex; align-items:center; gap:8px;
+  border:1px solid var(--border); background:linear-gradient(90deg,rgba(124,77,255,.25),rgba(32,211,255,.25)); color:var(--text); padding:10px 12px; border-radius:999px;
+  box-shadow:var(--shadow); font-weight:900; cursor:pointer; z-index:46; transition:transform .15s }
+.bot-launch:hover{ transform:translateY(-1px) }
+.botwin{ position:fixed; right:16px; bottom:78px; width:min(390px,92vw); height:560px; background:var(--card);
+  border:1px solid var(--border); border-radius:16px; box-shadow:0 30px 60px rgba(0,0,0,.45); display:none; overflow:hidden; z-index:47 }
+.botwin.show{ display:block }
+.bot-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid var(--border); font-weight:900;
+  background:linear-gradient(90deg,rgba(124,77,255,.22),rgba(32,211,255,.22));
+  backdrop-filter: blur(6px) }
+.bot-body{ position:relative; height:calc(100% - 52px); display:grid; grid-template-rows:1fr auto; background:
+  radial-gradient(600px 400px at 100% 0%, rgba(124,77,255,.10), transparent 60%) }
+.bot-chat{ overflow:auto; padding:10px }
+.msgwrap{ margin:6px 0 }
+.msg{ margin:0; padding:10px 12px; border-radius:14px; max-width:92%; display:inline-block; box-shadow:0 6px 20px rgba(0,0,0,.20) }
+.bot{ background:rgba(124,77,255,.22); border:1px solid rgba(124,77,255,.35) }
+.user{ background:rgba(32,211,255,.18); border:1px solid rgba(32,211,255,.35); margin-left:auto }
+.optline{ display:flex; gap:8px; flex-wrap:wrap; margin-top:6px }
+.opt{ border:1px solid var(--border); background:var(--surface); color:var(--text); padding:8px 10px; border-radius:10px; font-weight:900; cursor:pointer; transition:transform .12s, background .12s }
+.opt:hover{ transform:translateY(-1px); background:rgba(255,255,255,.04) }
+.typing{ display:inline-flex; gap:3px; padding:6px 8px; border-radius:10px; border:1px solid rgba(124,77,255,.35); background:rgba(124,77,255,.14) }
+.typing i{ width:6px; height:6px; border-radius:50%; background:#e6dbff; opacity:.6; animation:blink .9s infinite }
+.typing i:nth-child(2){ animation-delay:.15s } .typing i:nth-child(3){ animation-delay:.3s }
+@keyframes blink{ 50%{ opacity:1; transform:translateY(-1px) } }
+
+/* CTA + MODAL PROMOÇÕES/CUPONS */
+.btn{ border:1px solid var(--border); background:var(--surface); color:var(--text); padding:10px 14px; border-radius:12px; font-weight:900; cursor:pointer }
+.btn.primary{ background:linear-gradient(90deg,#7c4dff,#20d3ff); border:0 }
+.modal{ position:fixed; inset:0; display:none; z-index:60 }
+.modal.show{ display:block }
+.back{ position:absolute; inset:0; background:rgba(0,0,0,.44) }
+.box{ position:absolute; left:50%; top:6vh; transform:translateX(-50%) scale(.98); width:min(920px,94vw); background:var(--card); border:1px solid var(--border); border-radius:18px; box-shadow:0 30px 60px rgba(0,0,0,.45); overflow:hidden; animation:pop .2s ease both }
+@keyframes pop{ to{ transform:translateX(-50%) scale(1) } }
+.box-head{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--border); background:linear-gradient(90deg,rgba(124,77,255,.22),rgba(32,211,255,.22)) }
+.box-body{
+  padding:12px; display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  max-height:70vh; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+}
+@media(max-width:860px){ .box-body{ grid-template-columns:1fr } }
+.tabs{ display:flex; gap:8px; flex-wrap:wrap }
+.tab{ padding:8px 12px; border:1px solid var(--border); border-radius:999px; cursor:pointer; font-weight:900; background:var(--surface) }
+.tab.active{ background:linear-gradient(90deg,#7c4dff,#20d3ff); border:0 }
+.list{ display:grid; gap:10px }
+.promo{ border:1px dashed var(--border); background:linear-gradient(180deg,#10183b,#0d1534); border-radius:14px; padding:12px; animation:slideUp .22s ease both }
+.coupon{ border:1px dashed var(--border); background:var(--surface); border-radius:12px; padding:10px }
+
+/* NOVOS CARDS (COMÉRCIO) */
+.cards-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px }
+@media(max-width:1000px){ .cards-3{ grid-template-columns:1fr } }
+.kpi{ display:grid; grid-template-columns:auto 1fr; gap:8px; align-items:center }
+.grow{ font:900 22px/1 Inter,sans-serif }
+.spark{ height:60px; width:100%; border-radius:10px; background:linear-gradient(180deg,#10183b,#0d1534); border:1px solid var(--border); position:relative; overflow:hidden }
+.spark canvas{ position:absolute; inset:0 }
+
+/* CONFETTI */
+.confetti{ position:fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; overflow:hidden; z-index:70 }
+
+/* FOOTER */
+footer{ text-align:center; padding:28px 0; color:var(--muted) }
+</style>
+</head>
+<body>
+
+<header class="reveal">
+  <div class="container nav">
+    <div class="logo">Bot Suporte Vendas</div>
+    <div><a href="sistemas2.html">← Voltar aos Sistemas</a></div>
+  </div>
+</header>
+
+<section class="container hero reveal">
+  <h1>Pesquisa rápida. Promoções inteligentes. Conversão no talo.</h1>
+  <p class="muted">Subsite do <b>Bot Suporte Vendas</b> com busca animada, card único de promoções & cupons e chat mais dinâmico (estrutura 1–5 / 6 • 1–9 / 10).</p>
+</section>
+
+<section class="container grid reveal" id="main">
+  <!-- BUSCA -->
+  <div class="card">
+    <div class="searchbar">
+      <input id="q" placeholder="Busque por produto, categoria ou tag (ex: câmera, roteador, pix, poe, nvr, nobreak)"/>
+      <button class="btn primary" id="btnSearch">Pesquisar</button>
+    </div>
+    <div class="loader" id="loader"><span></span></div>
+    <div class="tagline" id="quick">
+      <span class="tag">Câmera IP</span><span class="tag">Roteador</span><span class="tag">Sensor</span><span class="tag">NVR/DVR</span>
+      <span class="tag">Cabo UTP</span><span class="tag">Switch</span><span class="tag">PIX</span><span class="tag">PoE</span>
+      <span class="tag">Nobreak</span><span class="tag">Mesh</span><span class="tag">Acesso</span><span class="tag">Impressora</span>
+      <span class="tag">Leitor 2D</span><span class="tag">Etiqueta</span><span class="tag">Gateway</span><span class="tag">CRM</span>
+      <span class="owner-inline">Carlos Henrique</span>
+    </div>
+    <div class="results" id="results"></div>
+  </div>
+
+  <!-- PROMOÇÕES & CUPONS -->
+  <div class="card">
+    <h3 style="margin:6px 0 2px">Promoções & Cupons</h3>
+    <p class="muted" id="promo-count">Ative cupons e aplique no cálculo de preço.</p>
+    <div class="card-cta">
+      <div class="muted" id="wallet-mini">Carteira: 0 cupom(ns)</div>
+      <button class="btn primary" id="openPromo">Ver promoções & cupons</button>
+    </div>
+  </div>
+</section>
+
+<!-- 3 NOVOS CARDS -->
+<section class="container cards-3 reveal">
+  <div class="card">
+    <h3 style="margin:6px 0 2px">Relatórios de Vendas (tempo real)</h3>
+    <div class="kpi"><div class="grow" id="kpi-faturamento">R$ 0,00</div><div class="muted">Hoje</div></div>
+    <div class="kpi"><div class="grow" id="kpi-conversao">0,0%</div><div class="muted">Conversão</div></div>
+    <div class="spark"><canvas id="spark-canvas"></canvas></div>
+    <p class="muted">Atualização automática a cada ~2s (do Bot LM).</p>
+  </div> 
+  <div class="card">
+    <h3 style="margin:6px 0 2px">Simulador de Frete</h3>
+    <label class="muted">Peso (kg)</label>
+    <input id="frete-peso" type="range" min="0.1" max="30" step="0.1" value="2" style="width:100%">
+    <label class="muted">Distância (km)</label>
+    <input id="frete-dist" type="range" min="1" max="1500" step="1" value="120" style="width:100%">
+    <div class="kpi"><div class="grow" id="frete-total">R$ 0,00</div><div class="muted">Estimativa</div></div>
+    <p class="muted">Cálculo ilustrativo com faixas e seguro opcional.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin:6px 0 2px">Recuperação de Carrinho</h3>
+    <div class="kpi"><div class="grow" id="rc-tax">0,0%</div><div class="muted">Taxa recuperada</div></div>
+    <div class="kpi"><div class="grow" id="rc-envios">0</div><div class="muted">Mensagens enviadas</div></div>
+    <div class="spark"><canvas id="rc-canvas"></canvas></div>
+    <p class="muted">Testes A/B com prova social + urgência honesta.</p>
+  </div>
+</section>
+
+<!-- BOT -->
+<div class="bot-launch reveal" id="launch">🤖 Bot Suporte Vendas</div>
+<div class="botwin" id="bot">
+  <div class="bot-head">Bot Suporte Vendas <button class="btn" id="close">×</button></div>
+  <div class="bot-body">
+    <div class="bot-chat" id="chat"></div>
+    <div class="bot-input"><!-- mantido oculto --></div>
+  </div>
+</div>
+
+<!-- MODAL PROMOÇÕES/CUPONS -->
+<div class="modal" id="promoModal">
+  <div class="back"></div>
+  <div class="box">
+    <div class="box-head">
+      <div class="tabs">
+        <button class="tab active" data-tab="promos">Promoções</button>
+        <button class="tab" data-tab="wallet">Meus cupons</button>
+      </div>
+      <button class="btn" id="closePromo">Fechar</button>
+    </div>
+    <div class="box-body">
+      <div id="tab-promos">
+        <div class="list" id="promos"></div>
+      </div>
+      <div id="tab-wallet" style="display:none">
+        <div class="list" id="walletList"><div class="muted">Você ainda não salvou cupons. Clique em “Ativar”.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<footer class="container reveal"><p>&copy; 2025 Carlos Henrique. Todos os direitos reservados.</p></footer>
+
+<script>
+/* ===== REVEAL ON SCROLL ===== */
+const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); }),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ===== DADOS ===== */
+const DB_PRODUCTS=[ /* — catálogo maior — */
+  {id:1, name:'Câmera IP 1080p', price:249.90, cat:'Câmeras', stock:12, rating:4.7, tags:['câmera','ip','segurança'], eta:'2-4 dias'},
+  {id:2, name:'Roteador Dual-Band AC', price:199.00, cat:'Redes', stock:7, rating:4.5, tags:['roteador','wifi'], eta:'1-3 dias'},
+  {id:3, name:'Sensor de Movimento PIR', price:89.90, cat:'Sensores', stock:20, rating:4.2, tags:['sensor','alarme'], eta:'2-5 dias'},
+  {id:4, name:'NVR 8 canais H.265', price:699.00, cat:'Gravação', stock:5, rating:4.6, tags:['nvr','dvr','cftv'], eta:'3-6 dias'},
+  {id:5, name:'Cabo UTP Cat6 100m', price:299.00, cat:'Cabos', stock:9, rating:4.4, tags:['cabo','rede','utp'], eta:'1-2 dias'},
+  {id:6, name:'Switch 8 portas Gigabit', price:229.90, cat:'Redes', stock:14, rating:4.3, tags:['switch','rede','gigabit'], eta:'2-4 dias'},
+  {id:7, name:'Câmera Dome Varifocal', price:489.00, cat:'Câmeras', stock:4, rating:4.8, tags:['câmera','dome'], eta:'3-7 dias'},
+  {id:8, name:'Kit CFTV 4 câmeras + NVR', price:1499.00, cat:'Kits', stock:3, rating:4.6, tags:['kit','cftv'], eta:'3-7 dias'},
+  {id:9, name:'Leitor QR Pix PDV', price:159.00, cat:'Pagamentos', stock:25, rating:4.1, tags:['pix','pagamento'], eta:'1-2 dias'},
+  {id:10, name:'Injetor PoE 48V', price:119.00, cat:'Redes', stock:18, rating:4.0, tags:['poe','rede'], eta:'1-3 dias'},
+  {id:11, name:'Nobreak 1200VA', price:699.90, cat:'Energia', stock:6, rating:4.3, tags:['nobreak','energia'], eta:'3-6 dias'},
+  {id:12, name:'Cartão MicroSD 128GB Endurance', price:169.90, cat:'Armazenamento', stock:16, rating:4.6, tags:['sd','armazenamento'], eta:'2-5 dias'},
+  {id:13, name:'HD 2TB Surveillance', price:389.00, cat:'Armazenamento', stock:8, rating:4.5, tags:['hd','armazenamento'], eta:'2-5 dias'},
+  {id:14, name:'Kit Wi-Fi Mesh (3 nós)', price:999.00, cat:'Redes', stock:5, rating:4.7, tags:['mesh','wifi'], eta:'2-5 dias'},
+  {id:15, name:'Catraca Acesso RFID', price:2899.00, cat:'Acesso', stock:2, rating:4.4, tags:['acesso','rfid'], eta:'7-12 dias'},
+  {id:16, name:'Fechadura Smart', price:899.00, cat:'Acesso', stock:7, rating:4.6, tags:['acesso','smart'], eta:'4-8 dias'},
+  {id:17, name:'Interfone IP', price:749.00, cat:'Comunicação', stock:5, rating:4.1, tags:['voip','ip','interfone'], eta:'4-8 dias'},
+  {id:18, name:'Impressora Térmica 80mm', price:549.00, cat:'PDV', stock:10, rating:4.2, tags:['impressora','pdv'], eta:'2-4 dias'},
+  {id:19, name:'Leitor Código de Barras 2D', price:289.00, cat:'PDV', stock:15, rating:4.3, tags:['leitor','pdv'], eta:'1-3 dias'},
+  {id:20, name:'Câmera Bullet 4MP PoE', price:599.00, cat:'Câmeras', stock:6, rating:4.7, tags:['câmera','poe','4mp'], eta:'3-6 dias'},
+  {id:21, name:'Fonte 12V 5A Bivolt', price:79.90, cat:'Energia', stock:25, rating:4.2, tags:['fonte','12v','energia'], eta:'1-3 dias'},
+  {id:22, name:'No-Break Online 2000VA', price:1899.00, cat:'Energia', stock:3, rating:4.6, tags:['nobreak','online'], eta:'4-8 dias'},
+  {id:23, name:'Switch PoE 16p 150W', price:899.00, cat:'Redes', stock:4, rating:4.5, tags:['switch','poe','rede'], eta:'3-6 dias'},
+  {id:24, name:'ONU GPON 2 portas', price:249.00, cat:'Redes', stock:12, rating:4.1, tags:['fibra','gpon','rede'], eta:'2-5 dias'},
+  {id:25, name:'Conversor HDMI para IP', price:219.90, cat:'Acessórios', stock:11, rating:4.0, tags:['hdmi','ip','acessório'], eta:'2-4 dias'},
+  {id:26, name:'Etiquetadora Térmica 4\"', price:649.00, cat:'PDV', stock:6, rating:4.2, tags:['etiqueta','pdv'], eta:'2-5 dias'},
+  {id:27, name:'Balança Checkout 30kg', price:799.00, cat:'PDV', stock:5, rating:4.1, tags:['balança','pdv'], eta:'3-6 dias'},
+  {id:28, name:'Gateway de Pagamento (SDK)', price:0.00, cat:'Serviços', stock:99, rating:4.8, tags:['gateway','sdk','pagamento'], eta:'imediato'},
+  {id:29, name:'Integração ERP/CRM', price:0.00, cat:'Serviços', stock:99, rating:4.9, tags:['erp','crm','integração'], eta:'sob demanda'},
+  {id:30, name:'Servidor NAS 4 baias', price:3999.00, cat:'Armazenamento', stock:2, rating:4.6, tags:['nas','armazenamento'], eta:'7-12 dias'},
+  {id:31, name:'Antena Omni 9dBi', price:129.00, cat:'Redes', stock:20, rating:4.0, tags:['antena','wifi'], eta:'2-5 dias'},
+  {id:32, name:'Câmera Fisheye 360° 6MP', price:1099.00, cat:'Câmeras', stock:3, rating:4.5, tags:['câmera','360'], eta:'4-8 dias'},
+  {id:33, name:'Controle de Acesso FaceID', price:3499.00, cat:'Acesso', stock:1, rating:4.7, tags:['acesso','biometria'], eta:'10-15 dias'},
+  {id:34, name:'Cabo Fibra Óptica 50m', price:279.00, cat:'Cabos', stock:8, rating:4.4, tags:['fibra','cabo'], eta:'2-4 dias'},
+  {id:35, name:'Repetidor Wi-Fi AC1200', price:149.90, cat:'Redes', stock:18, rating:4.1, tags:['repetidor','wifi'], eta:'2-4 dias'},
+  {id:36, name:'Mini PC NVR Edge', price:2499.00, cat:'Gravação', stock:2, rating:4.5, tags:['mini pc','nvr'], eta:'7-12 dias'},
+  {id:37, name:'Câmera PTZ 25x', price:2999.00, cat:'Câmeras', stock:2, rating:4.6, tags:['câmera','ptz'], eta:'7-12 dias'},
+  {id:38, name:'Kit Alarme Completo', price:1299.00, cat:'Sensores', stock:4, rating:4.3, tags:['alarme','sensor'], eta:'4-8 dias'},
+  {id:39, name:'POS Android com TEF', price:1799.00, cat:'PDV', stock:5, rating:4.4, tags:['pos','pdv','tef'], eta:'3-6 dias'},
+  {id:40, name:'Coletor de Dados UHF', price:4999.00, cat:'Acesso', stock:1, rating:4.2, tags:['rfid','coletor'], eta:'12-18 dias'}
+];
+const PROMOS=[
+  {id:'BEMVINDO10', title:'10% na primeira compra', desc:'Válido para qualquer categoria acima de R$ 100', type:'percent', value:10},
+  {id:'FRETEGRATIS', title:'Frete Grátis Brasil', desc:'Compras acima de R$ 299', type:'shipping', value:0},
+  {id:'PIX5', title:'-R$ 5 pagando via Pix', desc:'Aplica desconto fixo em compras acima de R$ 50', type:'fixed', value:5},
+  {id:'COMBO15', title:'Combo 15% (Câmera + NVR)', desc:'Leve os dois e ganhe 15% OFF', type:'bundle', value:15},
+  {id:'FLASH20', title:'Flash 20% até as 23:59', desc:'Itens em estoque com tag “rede”', type:'tag', value:20, tag:'rede'},
+  {id:'CABO7', title:'7% em Cabos & Acessórios', desc:'Cabo UTP, fibra e conectores', type:'percent', value:7},
+  {id:'STORAGE10', title:'10% em Armazenamento', desc:'HDs e cartões Endurance', type:'percent', value:10},
+  {id:'PDV12', title:'12% PDV & Impressoras', desc:'Impressora térmica, leitores 2D', type:'percent', value:12},
+  {id:'ACESSO8', title:'8% em Controle de Acesso', desc:'Fechaduras, catracas e RFID', type:'percent', value:8}
+];
+const Wallet=new Map();
+
+/* ===== HELPERS ===== */
+const $=(s,d=document)=>d.querySelector(s), $$=(s,d=document)=>Array.from(d.querySelectorAll(s));
+function money(n){ return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+const confetti=$('#confetti');
+function confettiBoom(){
+  for(let i=0;i<70;i++){
+    const s=document.createElement('span');
+    const size=6+Math.random()*8;
+    s.style.cssText=`position:absolute;width:${size}px;height:${size}px;left:${Math.random()*100}%;top:50%;
+      background:hsl(${Math.random()*360}deg,90%,60%); transform:translateY(0) rotate(${Math.random()*360}deg)`;
+    confetti.appendChild(s);
+    const dx=(Math.random()-0.5)*260, dy=(-Math.random()*320)-140, rot=Math.random()*720;
+    s.animate([{transform:`translate(0,0) rotate(0deg)`},{transform:`translate(${dx}px,${dy}px) rotate(${rot}deg)`,opacity:.1}],{duration:1200+Math.random()*600,fill:'forwards',easing:'cubic-bezier(.2,.7,.2,1)'}).onfinish=()=>s.remove();
+  }
+}
+
+/* ===== BUSCA ===== */
+const q=$('#q'), btnSearch=$('#btnSearch'), results=$('#results'), loader=$('#loader'), quick=$('#quick');
+function renderSkeleton(n=6){
+  results.innerHTML='';
+  for(let i=0;i<n;i++){
+    const d=document.createElement('div'); d.className='skel';
+    d.innerHTML=`<div class="img"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:40%"></div><div class="bar" style="width:55%"></div>`;
+    results.appendChild(d);
+  }
+}
+function renderResults(list){
+  results.innerHTML='';
+  if(!list.length){ results.innerHTML='<div class="muted">Nenhum resultado. Tente outras palavras.</div>'; return; }
+  list.forEach(p=>{
+    const div=document.createElement('div'); div.className='prod';
+    div.innerHTML=`
+      <div class="thumb" aria-hidden="true"></div>
+      <h4 style="margin:8px 0 4px">${p.name}</h4>
+      <div class="price">${money(p.price)} <small class="muted">• ${p.cat}</small></div>
+      <small>⭐ ${p.rating} • estoque: ${p.stock} • entrega: ${p.eta}</small>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn primary" data-add="${p.id}">Comprar</button>
+        <button class="btn" data-calc="${p.id}">Calcular com cupom</button>
+      </div>`;
+    results.appendChild(div);
+    div.querySelector('[data-calc]').addEventListener('click',()=>calcWithCoupons(p));
+  });
+}
+async function doSearch(term){
+  loader.style.display='block'; renderSkeleton(6); await sleep(450+Math.random()*450);
+  const t=(term||'').toLowerCase().trim();
+  const filtered=DB_PRODUCTS.filter(p=>
+    p.name.toLowerCase().includes(t) ||
+    p.cat.toLowerCase().includes(t) ||
+    p.tags.some(tag=>tag.includes(t))
+  );
+  loader.style.display='none';
+  renderResults(filtered);
+}
+btnSearch.addEventListener('click',()=>{ doSearch(q.value); saveHist(q.value); });
+q.addEventListener('keydown',e=>{ if(e.key==='Enter'){ doSearch(q.value); saveHist(q.value); } });
+$$('.tag',quick).forEach(t=>t.addEventListener('click',()=>doSearch(t.textContent.toLowerCase())));
+
+/* ===== PROMOÇÕES/CUPONS ===== */
+const openPromo=$('#openPromo'), promoModal=$('#promoModal'), closePromo=$('#closePromo');
+const tabBtns=$$('.tab',promoModal), tabPromos=$('#tab-promos'), tabWallet=$('#tab-wallet');
+const promos=$('#promos'), walletList=$('#walletList'), walletMini=$('#wallet-mini'), promoCount=$('#promo-count');
+
+openPromo.addEventListener('click',()=>promoModal.classList.add('show'));
+closePromo.addEventListener('click',()=>promoModal.classList.remove('show'));
+promoModal.querySelector('.back').addEventListener('click',()=>promoModal.classList.remove('show'));
+
+tabBtns.forEach(b=>b.addEventListener('click',()=>{
+  tabBtns.forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  const id=b.dataset.tab; tabPromos.style.display=id==='promos'?'block':'none'; tabWallet.style.display=id==='wallet'?'block':'none';
+}));
+
+function renderPromos(){
+  promos.innerHTML='';
+  PROMOS.forEach(p=>{
+    const div=document.createElement('div'); div.className='promo';
+    div.innerHTML=`<span class="muted">Cupom: <b>${p.id}</b></span><h4>${p.title}</h4><p class="muted">${p.desc}</p>
+      <button class="btn primary" data-claim="${p.id}">Ativar</button>`;
+    promos.appendChild(div);
+    div.querySelector('[data-claim]').addEventListener('click',()=>{
+      Wallet.set(p.id,p); updateWallet(); confettiBoom();
+    });
+  });
+  promoCount.textContent=`${PROMOS.length} promoções ativas`;
+}
+function updateWallet(){
+  walletList.innerHTML='';
+  if(Wallet.size===0){ walletList.innerHTML='<div class="muted">Você ainda não salvou cupons. Clique em “Ativar”.</div>'; }
+  Wallet.forEach(p=>{
+    const c=document.createElement('div'); c.className='coupon';
+    c.innerHTML=`<b>${p.id}</b> — ${p.title}<div class="muted">${p.desc}</div>`;
+    walletList.appendChild(c);
+  });
+  walletMini.textContent=`Carteira: ${Wallet.size} cupom(ns)`;
+}
+renderPromos(); updateWallet();
+
+/* cálculo com cupons salvos */
+function calcWithCoupons(prod){
+  if(Wallet.size===0){ alert('Ative algum cupom primeiro.'); return; }
+  const price=prod.price;
+  let best={id:null, price};
+  Wallet.forEach(p=>{
+    let newPrice=price;
+    if(p.type==='percent') newPrice=price*(1-p.value/100);
+    else if(p.type==='fixed') newPrice=Math.max(0,price-p.value);
+    else if(p.type==='tag' && prod.tags.includes(p.tag)) newPrice=price*(1-p.value/100);
+    else if(p.type==='bundle' && /câmera|camera/i.test(prod.name)) newPrice=price*(1-p.value/100);
+    if(newPrice<best.price) best={id:p.id, price:newPrice};
+  });
+  alert(`Melhor cupom para ${prod.name}:\n${best.id? best.id : '—'} → ${money(best.price)} (de ${money(price)})`);
+}
+
+/* ===== BOT (1–5/6 → 1–9/10) ===== */
+const launch=$('#launch'), bot=$('#bot'), close=$('#close'), chat=$('#chat');
+function appendMsg(text,from='bot'){ const wrap=document.createElement('div'); wrap.className='msgwrap';
+  const b=document.createElement('div'); b.className='msg ' + (from==='bot'?'bot':'user'); b.textContent=text; wrap.appendChild(b); chat.appendChild(wrap); chat.scrollTop=chat.scrollHeight; return wrap; }
+function appendTyping(){ const w=document.createElement('div'); w.className='msgwrap'; const t=document.createElement('div'); t.className='typing';
+  t.innerHTML='<i></i><i></i><i></i>'; w.appendChild(t); chat.appendChild(w); chat.scrollTop=chat.scrollHeight; return w; }
+function appendOptions(wrap, labels, cb){ const line=document.createElement('div'); line.className='optline';
+  labels.forEach(l=>{ const b=document.createElement('button'); b.className='opt'; b.textContent=l; b.addEventListener('click',()=>cb(l)); line.appendChild(b); }); wrap.appendChild(line); chat.scrollTop=chat.scrollHeight; }
+
+const content={
+  main:{ title:'Escolha um tema (1–5). 6 para sair.',
+    items:{1:'Pesquisa',2:'Promoções & Cupons',3:'Produtos & Estoque',4:'Pedidos & Entregas',5:'Suporte Comercial'} },
+  sub:{
+    1:[
+      {q:'Buscar por palavra-chave', a:()=>showQuickSearch()},
+      {q:'Sugestões populares', a:()=>showSuggest(['Câmera IP','Roteador','Sensor','Switch','Cabo UTP','PoE','Mesh','Impressora','ERP'])},
+      {q:'Comparar preços', a:()=>comparePrices(['Câmera IP 1080p','Roteador Dual-Band AC'])},
+      {q:'Filtrar por categoria', a:()=>answerText('Categorias: Câmeras, Redes, Sensores, Gravação, Cabos, Energia, Armazenamento, PDV, Acesso, Serviços.')},
+      {q:'Recomenda pra mim', a:()=>recommend()},
+      {q:'Entrega rápida', a:()=>renderResults(DB_PRODUCTS.filter(p=>/1-2|1-3|imediato/.test(p.eta)))},
+      {q:'Itens em promoção', a:()=>appendMsg('Veja o card → “Ver promoções & cupons”.','bot')},
+      {q:'Histórico de buscas', a:()=>showHistory()},
+      {q:'Orçamento rápido (novo)', a:()=>quickBudget()}
+    ],
+    2:[
+      {q:'Ver promoções', a:()=>openPromo.click()},
+      {q:'Ver meus cupons', a:()=>{ openPromo.click(); setTab('wallet'); }},
+      {q:'Cupom para primeira compra', a:()=>claim('BEMVINDO10')},
+      {q:'Frete grátis', a:()=>claim('FRETEGRATIS')},
+      {q:'Desconto no Pix', a:()=>claim('PIX5')},
+      {q:'Combo câmera+NVR', a:()=>claim('COMBO15')},
+      {q:'Flash 20% em “rede”', a:()=>claim('FLASH20')},
+      {q:'Como aplicar cupom?', a:()=>answerText('Clique “Calcular com cupom” no card do produto. O melhor desconto da carteira é aplicado.')},
+      {q:'Remover último cupom', a:()=>removeCoupon()}
+    ],
+    3:[
+      {q:'Checar disponibilidade', a:()=>answerText('Todos os cards mostram “estoque”. Itens com estoque baixo aparecem primeiro para urgência.')},
+      {q:'Mais vendidos', a:()=>renderResults(DB_PRODUCTS.slice().sort((a,b)=>b.rating-a.rating).slice(0,6))},
+      {q:'Preço com desconto estimado', a:()=>comparePrices(['Câmera IP 1080p','NVR 8 canais H.265'], true)},
+      {q:'Somente PoE', a:()=>renderResults(DB_PRODUCTS.filter(p=>p.tags.includes('poe')))},
+      {q:'Somente Mesh/Wi-Fi', a:()=>renderResults(DB_PRODUCTS.filter(p=>p.tags.includes('mesh')||p.tags.includes('wifi')))},
+      {q:'Acessórios PDV', a:()=>renderResults(DB_PRODUCTS.filter(p=>p.cat==='PDV'))},
+      {q:'Armazenamento', a:()=>renderResults(DB_PRODUCTS.filter(p=>p.cat==='Armazenamento'))},
+      {q:'Energia/Nobreak', a:()=>renderResults(DB_PRODUCTS.filter(p=>p.cat==='Energia'))},
+      {q:'Serviços/Integrações', a:()=>renderResults(DB_PRODUCTS.filter(p=>p.cat==='Serviços'))}
+    ],
+    4:[
+      {q:'Prazo de entrega', a:()=>answerText('Estimativas no card: ex. “2–4 dias”. Em produção, calculo via CEP e transportadora.')},
+      {q:'Rastrear pedido', a:()=>answerText('Integro rastreio com link direto + notificações por WhatsApp/E-mail.')},
+      {q:'Retirada na loja', a:()=>answerText('Disponível conforme estoque local. Reservo no balcão com confirmação.')},
+      {q:'Trocas e devoluções', a:()=>answerText('Processo simples com etiqueta reversa e reembolso em até 7 dias úteis.')},
+      {q:'Erro no endereço', a:()=>answerText('Consigo interceptar antes da expedição. Caso enviado, aciono transportadora.')},
+      {q:'Pedido urgente', a:()=>answerText('Faço cotação express se disponível na sua região (taxa adicional).')},
+      {q:'Seguro de transporte', a:()=>answerText('Pedidos acima de R$ 500 podem ter seguro opcional.')},
+      {q:'Embalagem para presente', a:()=>answerText('Ofereço embalagem e mensagem personalizada.')},
+      {q:'Multi-envio', a:()=>answerText('Divido por CD para agilizar SLA, mantendo 1 cobrança.')}
+    ],
+    5:[
+      {q:'Falar com humano', a:()=>window.location.href='contato.html'},
+      {q:'Agendar apresentação', a:()=>answerText('Agendo uma demo de 20 minutos. Envie data/horário em contato.html.')},
+      {q:'Proposta comercial', a:()=>answerText('Envio proposta com escopo, prazos e valor (transparente).')},
+      {q:'Condições de pagamento', a:()=>answerText('Pix, boleto e cartão. Parcelamento via gateway quando aplicável.')},
+      {q:'Suporte pós-venda', a:()=>answerText('Planos mensais e pacotes de horas. Monitoro erros e desempenho.')},
+      {q:'Segurança/LGPD', a:()=>answerText('Boas práticas, mínimos acessos e logs. Consentimento registrado.')},
+      {q:'Portfólio', a:()=>window.location.href='index.html#portfolio'},
+      {q:'Tecnologias', a:()=>answerText('JS/TS, Node, Canvas, APIs (Whats/ERPs), cloud com CI/CD.')},
+      {q:'SLA e atendimento', a:()=>answerText('Atendimento com SLA acordado e status em painel.')}
+    ]
+  }
+};
+
+let mainSel=null, idle=null, interacted=false;
+function appendOptionsBlock(list, cb){ const w=appendMsg('Selecione abaixo.','bot'); appendOptions(w,list,cb); }
+function clearIdle(){ if(idle){ clearTimeout(idle); idle=null; } }
+function scheduleIdle(){ clearIdle(); idle=setTimeout(()=>{ if(!interacted) bot.classList.remove('show'); }, 6000); }
+
+function showMain(){
+  chat.innerHTML='';
+  const w=appendMsg(content.main.title,'bot');
+  Object.entries(content.main.items).forEach(([k,v])=> appendMsg(`${k}. ${v}`,'bot'));
+  appendOptions(w, ['1','2','3','4','5','6'], onMain);
+}
+function listSub(n){
+  chat.innerHTML='';
+  appendMsg(`Tema: ${content.main.items[n]}. Escolha 1–9 ou 10 para voltar.`,'bot');
+  content.sub[n].forEach((it,i)=> appendMsg(`${i+1}. ${it.q}`,'bot'));
+  appendOptionsBlock(['1','2','3','4','5','6','7','8','9','10 (voltar)'], onSub);
+}
+async function answer(opt){
+  const idx=Math.max(0, Math.min(8, (parseInt(opt)||1)-1));
+  const item=content.sub[mainSel][idx];
+  const t = appendTyping(); await sleep(320+Math.random()*280); t.remove();
+  if(typeof item.a==='function'){ item.a(); } else { appendMsg(item.a,'bot'); }
+  const w=appendMsg('Resolveu? 1) OK  •  2) Falar com humano','bot');
+  appendOptions(w, ['1','2'], (c)=>{
+    appendMsg(c,'user');
+    if(c==='1'){ showMain(); } else { window.location.href='contato.html'; }
+  });
+}
+function onMain(opt){
+  interacted=true; appendMsg(opt,'user');
+  const n=parseInt(opt,10);
+  if(n===6){ bot.classList.remove('show'); return; }
+  if(content.main.items[n]){ mainSel=n; listSub(n); scheduleIdle(); }
+}
+function onSub(opt){
+  interacted=true; appendMsg(opt,'user');
+  if(String(opt).startsWith('10')){ showMain(); scheduleIdle(); return; }
+  answer(opt); scheduleIdle();
+}
+
+/* extras do bot */
+function answerText(txt){ appendMsg(txt,'bot'); }
+function showSuggest(arr){ const w=appendMsg('Sugestões rápidas:','bot'); appendOptions(w, arr, (p)=>{ appendMsg(p,'user'); doSearch(String(p).toLowerCase()); }); }
+function showQuickSearch(){ const w=appendMsg('Digite no campo acima e clique em Pesquisar, ou use uma tag abaixo:','bot'); appendOptions(w,['Câmera IP','Roteador','Sensor','Switch','Cabo UTP','PoE','Mesh','ERP','CRM'],(p)=>{ doSearch(String(p).toLowerCase()); }); }
+function comparePrices(names, withDiscount=false){
+  const list=DB_PRODUCTS.filter(p=>names.some(n=>p.name.includes(n)));
+  if(!list.length){ answerText('Sem itens para comparar.'); return; }
+  let out='Comparativo:\n';
+  list.forEach(p=>{
+    let pr=p.price;
+    if(withDiscount && Wallet.size){ Wallet.forEach(c=>{ if(c.type==='percent') pr=Math.min(pr, p.price*(1-c.value/100)); }); }
+    out+=`• ${p.name}: ${money(pr)} ${withDiscount?'(est. c/ desconto)':''}\n`;
+  });
+  appendMsg(out.trim(),'bot');
+}
+function recommend(){ const picks=DB_PRODUCTS.slice().sort((a,b)=>b.rating-a.rating).slice(0,6); appendMsg('Recomendações com base em avaliações/estoque:','bot'); renderResults(picks); }
+function showHistory(){ const arr=JSON.parse(sessionStorage.getItem('mb_hist')||'[]'); if(!arr.length){ answerText('Sem histórico nesta sessão.'); return; } const w=appendMsg('Histórico (clique para repetir):','bot'); appendOptions(w, arr.slice(-6), (t)=>doSearch(t.toLowerCase())); }
+function quickBudget(){
+  const budgetStr=prompt('Qual seu orçamento máximo (R$)?','500');
+  const budget=Number(String(budgetStr).replace(',','.'))||0;
+  if(budget<=0){ answerText('Orçamento inválido.'); return; }
+  const sorted=DB_PRODUCTS.slice().sort((a,b)=>a.price-b.price);
+  const pick=[]; let sum=0;
+  for(const p of sorted){ if(sum+p.price<=budget && pick.length<4){ pick.push(p); sum+=p.price; } }
+  if(!pick.length){ answerText('Nenhum conjunto cabe no orçamento. Posso sugerir alternativas se aumentar um pouco.'); return; }
+  appendMsg(`Combo sugerido (${money(sum)}):\n`+pick.map(p=>'• '+p.name+' — '+money(p.price)).join('\n'),'bot');
+}
+
+/* abrir/fechar bot */
+launch.addEventListener('click',()=>{ bot.classList.add('show'); interacted=false; mainSel=null; showMain(); scheduleIdle(); });
+close.addEventListener('click',()=> bot.classList.remove('show'));
+
+/* histórico */
+function saveHist(term){ if(!term) return; const key='mb_hist'; const arr=JSON.parse(sessionStorage.getItem(key)||'[]'); arr.push(term); sessionStorage.setItem(key, JSON.stringify(arr.slice(-20))); }
+
+/* tabs helper */
+function setTab(id){
+  tabBtns.forEach(x=>x.classList.remove('active'));
+  tabBtns.find(x=>x.dataset.tab===id).classList.add('active');
+  tabPromos.style.display=id==='promos'?'block':'none';
+  tabWallet.style.display=id==='wallet'?'block':'none';
+}
+
+/* ===== ANIMAÇÕES COMÉRCIO ===== */
+const kpiFat=$('#kpi-faturamento'), kpiConv=$('#kpi-conversao'), spCv=$('#spark-canvas'), rcCv=$('#rc-canvas');
+let total=0, conv=0.0;
+function sparkline(canvas){
+  const c=canvas.getContext('2d'); const W=canvas.width=canvas.parentElement.clientWidth; const H=canvas.height=canvas.parentElement.clientHeight;
+  const data=Array.from({length:28},()=>Math.random()*1);
+  function draw(){ c.clearRect(0,0,W,H); c.strokeStyle='rgba(124,77,255,.9)'; c.lineWidth=2; c.beginPath();
+    data.forEach((v,i)=>{ const x=(i/(data.length-1))*W; const y=H-(v*H*0.8+H*0.1); i?c.lineTo(x,y):c.moveTo(x,y); }); c.stroke(); }
+  draw(); return ()=>{ data.shift(); data.push(Math.random()); draw(); };
+}
+const tickSpark=sparkline(spCv), tickRC=sparkline(rcCv);
+setInterval(()=>{ const inc=100+Math.random()*600; total+=inc; const cadd=(Math.random()*0.3); conv=Math.min(12, conv+cadd);
+  kpiFat.textContent=money(total); kpiConv.textContent=(conv).toFixed(1)+'%'; tickSpark(); tickRC(); },1800);
+
+/* simulador frete */
+const fretePeso=$('#frete-peso'), freteDist=$('#frete-dist'), freteTotal=$('#frete-total');
+function calcFrete(){ const p=Number(fretePeso.value), d=Number(freteDist.value); const base=12 + p*2 + Math.min(80, d*0.05); const seguro = base>50 ? base*0.05 : 0; freteTotal.textContent=money(base+seguro); }
+[fretePeso,freteDist].forEach(i=>i.addEventListener('input',calcFrete)); calcFrete();
+
+/* recuperação carrinho */
+const rcTax=$('#rc-tax'), rcEnv=$('#rc-envios'); let rc=0, env=0;
+setInterval(()=>{ rc=Math.min(18, rc+Math.random()*0.7); env+=Math.floor(Math.random()*4); rcTax.textContent=rc.toFixed(1)+'%'; rcEnv.textContent=env; },1600);
+
+/* cupons helpers (bot) */
+function claim(id){ const p=PROMOS.find(x=>x.id===id); if(p){ Wallet.set(p.id,p); updateWallet(); openPromo.click(); confettiBoom(); } }
+function removeCoupon(){ const last=[...Wallet.keys()].pop(); if(last){ Wallet.delete(last); updateWallet(); } }
+</script>
+</body>
+</html>

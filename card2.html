@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Projeto 3 — Relatórios de Marketing (Segurança)</title>
+<style>
+:root{
+  --bg:#070b16; --surface:#0d1534; --surface-2:#0f1a45;
+  --fg:#eaf2ff; --muted:#9bb0d3; --line:#1a2550;
+  --brand:#7c4dff; --accent:#20d3ff; --ok:#19c37d; --bad:#ff6363; --warn:#ffd166;
+  --radius:18px; --shadow:0 22px 42px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--fg);
+  font:15px ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+  background:
+    radial-gradient(1400px 700px at 10% 10%, rgba(124,77,255,.18), transparent 60%),
+    radial-gradient(900px 600px at 90% 90%, rgba(32,211,255,.12), transparent 60%),
+    var(--bg);
+}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1200px;margin:0 auto;padding:16px 20px}
+
+/* Header */
+header{position:sticky;top:0;z-index:10;backdrop-filter:blur(10px);
+  background:linear-gradient(180deg,rgba(7,11,22,.85),rgba(7,11,22,.5));
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.back{color:#a8b1c8;font-weight:700;display:inline-flex;gap:8px;align-items:center}
+
+/* Filtros */
+.filters{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:12px;margin:14px 0 4px}
+@media(max-width:980px){.filters{grid-template-columns:1fr 1fr}}
+select,.chip{background:var(--surface);border:1px solid rgba(255,255,255,.08);color:var(--fg);border-radius:12px;padding:10px 12px;width:100%}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;gap:8px;align-items:center;cursor:pointer;user-select:none}
+.chip input{appearance:none;width:18px;height:18px;border-radius:4px;border:1px solid #3a4682}
+.chip input:checked{background:linear-gradient(90deg,var(--brand),var(--accent));border-color:transparent}
+
+/* KPIs */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(4,1fr);margin-top:12px}
+@media(max-width:980px){.kpis{grid-template-columns:1fr 1fr}}
+.card{position:relative;background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);overflow:hidden}
+.card h3{margin:0 0 6px;font-size:clamp(13px,1.5vw,15px);color:#cfe0ff;font-weight:700}
+.kpi{font-weight:900;font-size:clamp(24px,3.2vw,28px)}
+.delta{font-size:12px;opacity:.85}
+.delta.up{color:var(--ok)} .delta.down{color:var(--bad)}
+.card::after{
+  content:"";position:absolute;inset:-42% -30% auto auto;aspect-ratio:1/1;width:220px;opacity:.22;
+  background:
+    radial-gradient(closest-side, transparent 61%, rgba(124,77,255,.8) 63% 66%, transparent 70%),
+    conic-gradient(from 0deg, rgba(32,211,255,.8), rgba(124,77,255,.8), rgba(32,211,255,.8));
+  border-radius:50%;animation:spin 12s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Gráficos */
+.grid{display:grid;gap:12px;grid-template-columns:2fr 1fr;margin-top:12px}
+@media(max-width:1100px){.grid{grid-template-columns:1fr}}
+.chart{background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:12px;position:relative;min-height:clamp(300px,42vw,360px)}
+.chart h4{margin:2px 0 8px}
+.tools{position:absolute;right:10px;top:10px;display:flex;gap:8px;z-index:2}
+.tool-btn{border:none;cursor:pointer;padding:8px 10px;border-radius:999px;color:#0a0f20;font-weight:800;background:linear-gradient(90deg,var(--brand),var(--accent));box-shadow:0 8px 20px rgba(124,77,255,.35)}
+svg{width:100%;height:100%}
+
+/* Pizza + texto */
+.donut-wrap{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:16px;align-items:center}
+@media(max-width:900px){.donut-wrap{grid-template-columns:1fr}}
+.donut-desc{color:var(--muted);margin:0}
+.donut-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.badge{font-size:12px;padding:6px 10px;border-radius:999px;background:#111b45;border:1px solid rgba(255,255,255,.08)}
+
+/* Tabela */
+.table{background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);overflow:auto;margin-top:12px;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;white-space:nowrap}
+th{position:sticky;top:0;background:var(--surface-2);cursor:pointer}
+tr:hover td{background:#0f1a45}
+
+/* Módulos */
+.modblock{margin:18px 0}
+.modblock h2{margin:0 0 8px}
+.modgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:950px){.modgrid{grid-template-columns:1fr}}
+.module{background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px;display:grid;grid-template-columns:1.1fr .9fr;gap:12px;align-items:stretch;overflow:hidden}
+@media(max-width:900px){.module{grid-template-columns:1fr}}
+.mod-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.mod-canvas{width:100%;height:clamp(240px,34vw,320px);border:1px solid rgba(255,255,255,.08);border-radius:14px;background:#0b122e}
+.stream{font:13px ui-monospace,Menlo,Consolas;background:#000;color:#d6e0ff;border-radius:12px;border:1px solid rgba(255,255,255,.12);padding:10px;height:clamp(240px,34vw,320px);overflow:auto}
+.tagPill{font-size:12px;padding:6px 8px;border-radius:999px;background:#142256;border:1px solid rgba(255,255,255,.08)}
+small.p{color:#9bb0d3}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:.6s ease}
+.reveal.on{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{transition:none}}
+
+/* evita estouro */
+.filters>*,.kpis>*,.grid>*,.donut-wrap>*,.modgrid>*,.module>*{min-width:0;max-width:100%}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap header-row">
+    <a class="back" href="projetos.html">← Voltar</a>
+    <strong>Relatórios de Marketing de Segurança</strong>
+    <span style="opacity:.7">Alarmes • Cerca Elétrica • CFTV • Acesso • Monitoramento 24h</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- CONTROLES -->
+  <section class="filters card reveal">
+    <div>
+      <h3>Período</h3>
+      <select id="period">
+        <option value="6">Últimos 6 meses</option>
+        <option value="12">Últimos 12 meses</option>
+      </select>
+    </div>
+    <div>
+      <h3>Região</h3>
+      <select id="region">
+        <option value="br">Brasil (geral)</option>
+        <option value="sul">Sul</option>
+        <option value="sudeste">Sudeste</option>
+        <option value="centro">Centro-Oeste</option>
+        <option value="norte">Norte</option>
+        <option value="nordeste">Nordeste</option>
+      </select>
+    </div>
+    <div>
+      <h3>Produtos</h3>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div>
+      <h3>Canal</h3>
+      <select id="channel">
+        <option value="all">Todos</option>
+        <option value="organico">Orgânico</option>
+        <option value="anuncios">Anúncios</option>
+        <option value="social">Social</option>
+        <option value="indicacao">Indicações</option>
+        <option value="parcerias">Parcerias</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- KPIs -->
+  <section class="kpis reveal" id="kpis">
+    <div class="card"><h3>Leads</h3><div class="kpi" id="k-leads">0</div><div class="delta" id="d-leads">—</div></div>
+    <div class="card"><h3>Conversão</h3><div class="kpi" id="k-cvr">0%</div><div class="delta" id="d-cvr">—</div></div>
+    <div class="card"><h3>Receita</h3><div class="kpi" id="k-rev">R$ 0</div><div class="delta" id="d-rev">—</div></div>
+    <div class="card"><h3>Ticket Médio</h3><div class="kpi" id="k-atv">R$ 0</div><div class="delta" id="d-atv">—</div></div>
+  </section>
+
+  <!-- GRÁFICOS -->
+  <section class="grid">
+    <article class="chart reveal">
+      <h4>Leads por Mês (por produto)</h4>
+      <div class="tools"><button class="tool-btn" data-export="#chart-line">Exportar PNG</button></div>
+      <svg id="chart-line" viewBox="0 0 800 320" role="img" aria-label="Leads por mês"></svg>
+    </article>
+
+    <article class="chart reveal">
+      <h4>Receita por Produto (mês atual)</h4>
+      <div class="tools"><button class="tool-btn" data-export="#chart-bars">Exportar PNG</button></div>
+      <svg id="chart-bars" viewBox="0 0 360 320" role="img" aria-label="Receita por produto"></svg>
+    </article>
+
+    <article class="chart reveal" style="grid-column:1 / -1">
+      <h4>Distribuição por Canal</h4>
+      <div class="tools"><button class="tool-btn" data-export="#chart-donut">Exportar PNG</button></div>
+      <div class="donut-wrap">
+        <svg id="chart-donut" viewBox="0 0 360 260" role="img" aria-label="Canais de aquisição"></svg>
+        <div>
+          <p class="donut-desc">O círculo mostra a <b>participação de cada canal</b> na geração de <b>leads</b> deste mês. Use para decidir onde investir.</p>
+          <div class="donut-legend" id="legend"></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- TABELA -->
+  <section class="table reveal">
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th data-s="campanha">Campanha</th>
+          <th data-s="produto">Produto</th>
+          <th data-s="cliques">Cliques</th>
+          <th data-s="leads">Leads</th>
+          <th data-s="cvr">Conv.</th>
+          <th data-s="cpa">CPA</th>
+          <th data-s="receita">Receita</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- MÓDULOS -->
+  <section class="modblock reveal">
+    <h2>Varredura Nacional de Preços & Proteção</h2>
+    <small class="p">Os módulos abaixo iniciam/pausam sozinhos quando entram/saem da tela.</small>
+    <div class="modgrid">
+      <article class="module" id="m-bradar">
+        <div>
+          <div class="mod-head"><b>Radar Brasil — Ofertas em tempo real</b> <span class="tagPill">Cobertura nacional</span></div>
+          <canvas class="mod-canvas" id="cv-br"></canvas>
+        </div>
+        <div>
+          <div class="mod-head"><b>CMD</b><span class="tagPill">Scanner ativo</span></div>
+          <div class="stream" id="log-br"></div>
+        </div>
+      </article>
+
+      <article class="module" id="m-crawler">
+        <div>
+          <div class="mod-head"><b>Crawler de Preços — Marketplaces</b> <span class="tagPill">Comparador</span></div>
+          <canvas class="mod-canvas" id="cv-cw"></canvas>
+        </div>
+        <div>
+          <div class="mod-head"><b>CMD</b><span class="tagPill">Scraping seguro</span></div>
+          <div class="stream" id="log-cw"></div>
+        </div>
+      </article>
+
+      <article class="module" id="m-reg">
+        <div>
+          <div class="mod-head"><b>Preço Médio por Região</b> <span class="tagPill">N • NE • CO • SE • S</span></div>
+          <canvas class="mod-canvas" id="cv-reg"></canvas>
+        </div>
+        <div>
+          <div class="mod-head"><b>CMD</b><span class="tagPill">Geo-pricing</span></div>
+          <div class="stream" id="log-reg"></div>
+        </div>
+      </article>
+
+      <article class="module" id="m-coupon">
+        <div>
+          <div class="mod-head"><b>Motor de Cupons & Cashback</b> <span class="tagPill">$ Melhor preço</span></div>
+          <canvas class="mod-canvas" id="cv-cpn"></canvas>
+        </div>
+        <div>
+          <div class="mod-head"><b>CMD</b><span class="tagPill">Promo detector</span></div>
+          <div class="stream" id="log-cpn"></div>
+        </div>
+      </article>
+
+      <article class="module" id="m-intel">
+        <div>
+          <div class="mod-head"><b>Proteção — Central Intelbras</b> <span class="tagPill">NVR • Alarmes • CFTV</span></div>
+          <canvas class="mod-canvas" id="cv-intel"></canvas>
+        </div>
+        <div>
+          <div class="mod-head"><b>CMD</b><span class="tagPill">Saúde da central</span></div>
+          <div class="stream" id="log-intel"></div>
+        </div>
+      </article>
+
+      <article class="module" id="m-fraud">
+        <div>
+          <div class="mod-head"><b>Anti-Fraude — Score em tempo real</b> <span class="tagPill">PCI-like</span></div>
+          <canvas class="mod-canvas" id="cv-fr"></canvas>
+        </div>
+        <div>
+          <div class="mod-head"><b>CMD</b><span class="tagPill">Verificações</span></div>
+          <div class="stream" id="log-fr"></div>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ===== dados/base (iguais) ===== */
+var PRODUCTS=[{key:'alarmes',name:'Alarmes',color:'#7c4dff'},{key:'cerca',name:'Cerca Elétrica',color:'#20d3ff'},{key:'cftv',name:'CFTV',color:'#ff71c6'},{key:'acesso',name:'Controle de Acesso',color:'#ffd166'},{key:'monitoramento',name:'Monitoramento 24h',color:'#19c37d'}];
+var CHANNELS=['organico','anuncios','social','indicacao','parcerias'];
+var CH_COLORS={organico:'#40e0ff',anuncios:'#7c4dff',social:'#ff71c6',indicacao:'#19c37d',parcerias:'#ffd166'};
+var MONTHS_PT=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+function getMonthLabels(n){var now=new Date(),arr=[];for(var i=n-1;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth()-i,1);arr.push(MONTHS_PT[d.getMonth()]+'/'+String(d.getFullYear()).slice(-2));}return arr;}
+function seeded(i,j){var x=Math.sin((i+1)*9283+(j+1)*123)*10000;return x-Math.floor(x);}
+function generateData(months,region){
+  region=region||'br';
+  var data={months:getMonthLabels(months),byProd:{},byChannel:{}};
+  var regionBoost={br:1,sul:.95,sudeste:1.12,centro:.9,norte:.8,nordeste:.88}[region]||1;
+  PRODUCTS.forEach(function(p,pi){
+    var base=120+pi*40,trend=(pi%2?8:5),arr=[];
+    for(var m=0;m<months;m++){
+      var season=.8+.4*Math.sin((m+pi)/2),noise=.85+seeded(m,pi)*.3;
+      var leads=Math.round((base+m*trend)*season*noise*regionBoost);
+      var cvr=.06+(pi*.005)+(seeded(m+3,pi)/50);
+      var vendas=Math.round(leads*cvr);
+      var ticket=850+pi*120+Math.round(seeded(pi,m)*120);
+      var receita=vendas*ticket;
+      var dist={organico:.30+seeded(pi,m)*.1,anuncios:.38+seeded(m,pi)*.12,social:.12+seeded(pi+2,m)*.06,indicacao:.14+seeded(m+2,pi)*.05,parcerias:.06+seeded(m+7,pi)*.04};
+      var sum=0;for(var k in dist)sum+=dist[k];for(var k2 in dist)dist[k2]/=sum;
+      arr.push({leads:leads,vendas:vendas,receita:receita,ticket:ticket,cvr:cvr,channels:dist});
+    }
+    data.byProd[p.key]=arr;
+  });
+  var last=months-1;var channels={organico:0,anuncios:0,social:0,indicacao:0,parcerias:0};
+  PRODUCTS.forEach(function(p){var m=data.byProd[p.key][last];var tot=m.leads;CHANNELS.forEach(function(k){channels[k]+=tot*m.channels[k];});});
+  data.byChannel=channels;return data;
+}
+
+/* ===== UI chips ===== */
+var state={months:6,region:'br',channel:'all',enabled:new Set(PRODUCTS.map(function(p){return p.key}))};
+var chips=document.getElementById('chips');
+chips.innerHTML=PRODUCTS.map(function(p){return '<label class="chip"><input type="checkbox" checked data-key="'+p.key+'"><span style="width:10px;height:10px;border-radius:50%;background:'+p.color+'"></span>'+p.name+'</label>';}).join('');
+chips.addEventListener('change',function(e){var box=e.target.closest('input[type=checkbox]');if(!box)return;box.checked?state.enabled.add(box.dataset.key):state.enabled.delete(box.dataset.key);renderAll();});
+document.getElementById('period').onchange=function(e){state.months=+e.target.value;renderAll(true);};
+document.getElementById('region').onchange=function(e){state.region=e.target.value;renderAll(true);};
+document.getElementById('channel').onchange=function(e){state.channel=e.target.value;renderAll(true);};
+
+/* ===== reveal ===== */
+(function(){
+  if('IntersectionObserver'in window){
+    var io=new IntersectionObserver(function(ents){ents.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}})},{threshold:.1});
+    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+  }else{document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('on')});}
+})();
+
+/* ===== helpers SVG ===== */
+function elt(n,a,t){var e=document.createElementNS('http://www.w3.org/2000/svg',n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;return e;}
+function arcPath(cx,cy,r,a0,a1){var x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0),x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);var large=(a1-a0)>Math.PI?1:0;return"M "+x0+" "+y0+" A "+r+" "+r+" 0 "+large+" 1 "+x1+" "+y1;}
+function labelChannel(k){return{organico:'Orgânico',anuncios:'Anúncios',social:'Social',indicacao:'Indicações',parcerias:'Parcerias'}[k]||k;}
+
+/* ===== charts ===== */
+var DATA=generateData(state.months,state.region);
+function lineChart(svg,data){
+  svg.innerHTML='';var W=800,H=280,P=36;var g=elt('g',{transform:'translate(0,20)'});svg.appendChild(g);
+  var max=0;PRODUCTS.forEach(function(p){data.byProd[p.key].forEach(function(d){if(d.leads>max)max=d.leads;});});
+  var yMax=Math.ceil(max/50)*50;
+  for(var i=0;i<=5;i++){var y=P+i*(H-P*2)/5;g.appendChild(elt('line',{x1:P,y1:y,x2:W-P,y2:y,stroke:'#213061'}))}
+  var n=data.months.length;var x=function(i){return P+i*((W-P*2)/(n-1))};var y=function(v){return H-P-(v/yMax)*(H-P*2)};
+  data.months.forEach(function(m,i){g.appendChild(elt('text',{x:x(i),y:H-P+18,'text-anchor':'middle',fill:'#a8b1c8','font-size':12},m));});
+  PRODUCTS.forEach(function(p){
+    if(!state.enabled.has(p.key))return;
+    var pts=data.byProd[p.key].map(function(d,i){return x(i)+','+y(d.leads)}).join(' ');
+    var path=elt('polyline',{points:pts,fill:'none',stroke:p.color,'stroke-width':3,'stroke-linecap':'round','stroke-linejoin':'round',opacity:.95});
+    var totalLen=1500;path.style.strokeDasharray=totalLen;path.style.strokeDashoffset=totalLen;g.appendChild(path);
+    requestAnimationFrame(function(){path.style.transition='stroke-dashoffset .9s ease';path.style.strokeDashoffset='0';});
+    data.byProd[p.key].forEach(function(d,i){g.appendChild(elt('circle',{cx:x(i),cy:y(d.leads),r:3.6,fill:'#0a0f20',stroke:p.color,'stroke-width':2}));});
+  });
+  g.appendChild(elt('text',{x:P-6,y:P,'text-anchor':'end',fill:'#a8b1c8','font-size':12},yMax));
+}
+function barChart(svg,data){
+  svg.innerHTML='';var W=360,H=280,P=36;var g=elt('g',{transform:'translate(0,20)'});svg.appendChild(g);
+  var last=data.months.length-1;var vals=PRODUCTS.map(function(p){return data.byProd[p.key][last].receita});var max=vals.reduce(function(a,b){return a>b?a:b},0);
+  var y0=H-P;var bw=(W-P*2)/PRODUCTS.length*.8;
+  PRODUCTS.forEach(function(p,i){var v=vals[i];var h=(v/max)*(H-P*2);var x=P+i*((W-P*2)/PRODUCTS.length)+((W-P*2)/PRODUCTS.length-bw)/2;
+    var rect=elt('rect',{x:x,y:y0-h,width:bw,height:h,rx:6,fill:p.color,opacity:.95});rect.style.height='0';rect.setAttribute('y',y0);
+    g.appendChild(rect);requestAnimationFrame(function(){rect.style.transition='height .6s ease,y .6s ease';rect.setAttribute('y',y0-h);rect.style.height=h+'px';});
+    g.appendChild(elt('text',{x:x+bw/2,y:y0+16,'text-anchor':'middle',fill:'#a8b1c8','font-size':12},p.name.split(' ')[0]));
+  });
+}
+function donutChart(svg,data){
+  svg.innerHTML='';var cx=130,cy=130,r=70;var g=elt('g',{});svg.appendChild(g);
+  var total=0;for(var k in data.byChannel)total+=data.byChannel[k];
+  g.appendChild(elt('text',{x:cx,y:cy-6,'text-anchor':'middle',fill:'#cfe0ff','font-size':13,'font-weight':'700'},'Canais'));
+  g.appendChild(elt('text',{x:cx,y:cy+14,'text-anchor':'middle',fill:'#9bb0d3','font-size':11},'Leads do mês'));
+  var a0=-Math.PI/2;
+  CHANNELS.forEach(function(k){
+    var v=data.byChannel[k];var ang=(v/total)*Math.PI*2;var a1=a0+ang;
+    var p=arcPath(cx,cy,r,a0,a1);
+    var path=elt('path',{d:p,fill:'none',stroke:CH_COLORS[k],'stroke-width':18,'stroke-linecap':'round'});
+    path.style.strokeDasharray=440;path.style.strokeDashoffset=440;g.appendChild(path);
+    requestAnimationFrame(function(){path.style.transition='stroke-dashoffset .9s ease';path.style.strokeDashoffset='0';});
+    a0=a1;
+  });
+  var legend=document.getElementById('legend');
+  legend.innerHTML=CHANNELS.map(function(k){var pct=Math.round((data.byChannel[k]/total)*100);return '<span class="badge"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+CH_COLORS[k]+';margin-right:6px"></span>'+labelChannel(k)+': '+pct+'%</span>';}).join('');
+}
+
+/* ===== KPIs + Tabela ===== */
+function animateCount(el,target,fmt){fmt=fmt||function(v){return v};var t0=performance.now(),dur=900,from=0;function tick(t){var p=Math.min(1,(t-t0)/dur);var val=from+(target-from)*(0.15+0.85*Math.pow(p,0.85));el.textContent=fmt(val);if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}
+var fmtMoney=function(v){return'R$ '+Math.round(v).toLocaleString('pt-BR')};
+var tblBody=document.querySelector('#tbl tbody');var sortKey='receita',sortAsc=false;
+Array.prototype.forEach.call(document.querySelectorAll('#tbl thead th'),function(th){th.addEventListener('click',function(){var k=th.dataset.s;if(sortKey===k)sortAsc=!sortAsc;else{sortKey=k;sortAsc=k!=='receita';}renderTable();});});
+function buildCampaigns(data){
+  var last=data.months.length-1,arr=[];
+  PRODUCTS.forEach(function(p){var m=data.byProd[p.key][last];
+    arr.push(
+      {campanha:'Search '+p.name,produto:p.name,cliques:Math.round(m.leads*1.8),leads:m.leads,cvr:Math.round(m.cvr*100)+'%',cpa:'R$ '+Math.round((m.receita/m.vendas)*0.25).toLocaleString('pt-BR'),receita:m.receita},
+      {campanha:'Social '+p.name,produto:p.name,cliques:Math.round(m.leads*1.2),leads:Math.round(m.leads*0.7),cvr:Math.round(m.cvr*85)+'%',cpa:'R$ '+Math.round((m.receita/m.vendas)*0.18).toLocaleString('pt-BR'),receita:Math.round(m.receita*0.6)}
+    );
+  });return arr;
+}
+function renderKPIs(){
+  var last=DATA.months.length-1;var leads=0,vendas=0,receita=0,ticket=0;var prevLeads=0,prevReceita=0,prevVendas=0;
+  PRODUCTS.forEach(function(p){if(!state.enabled.has(p.key))return;var a=DATA.byProd[p.key];leads+=a[last].leads;vendas+=a[last].vendas;receita+=a[last].receita;ticket+=a[last].ticket;
+    if(last>0){prevLeads+=a[last-1].leads;prevReceita+=a[last-1].receita;prevVendas+=a[last-1].vendas;}});
+  var cvr=vendas/(leads||1)*100,atv=receita/(vendas||1);
+  animateCount(document.getElementById('k-leads'),leads,function(v){return Math.round(v).toLocaleString('pt-BR')});
+  animateCount(document.getElementById('k-cvr'),cvr,function(v){return(Math.round(v*10)/10)+'%'});
+  animateCount(document.getElementById('k-rev'),receita,function(v){return fmtMoney(v)});
+  animateCount(document.getElementById('k-atv'),atv,function(v){return fmtMoney(v)});
+  function delta(cur,prev,el){if(prev===0){el.textContent='—';return;}var d=((cur-prev)/prev)*100;el.className='delta '+(d>=0?'up':'down');el.textContent=(d>=0?'▲ +':'▼ ')+Math.abs(Math.round(d))+'% vs mês anterior';}
+  delta(leads,prevLeads,document.getElementById('d-leads'));
+  delta(cvr,(prevVendas/(prevLeads||1))*100,document.getElementById('d-cvr'));
+  delta(receita,prevReceita,document.getElementById('d-rev'));
+  delta(atv,(prevReceita/(prevVendas||1)),document.getElementById('d-atv'));
+}
+function lineBarsDonut(){lineChart(document.getElementById('chart-line'),DATA);barChart(document.getElementById('chart-bars'),DATA);donutChart(document.getElementById('chart-donut'),DATA);}
+var CAMPAIGNS=[];function renderTable(){CAMPAIGNS.sort(function(a,b){var A=a[sortKey],B=b[sortKey];if(typeof A==='number'&&typeof B==='number')return(sortAsc?A-B:B-A);return(sortAsc?(''+A).localeCompare(''+B):(''+B).localeCompare(''+A));});tblBody.innerHTML=CAMPAIGNS.map(function(r){return'<tr><td>'+r.campanha+'</td><td>'+r.produto+'</td><td>'+r.cliques.toLocaleString('pt-BR')+'</td><td>'+r.leads.toLocaleString('pt-BR')+'</td><td>'+r.cvr+'</td><td>'+r.cpa+'</td><td>'+fmtMoney(r.receita)+'</td></tr>'}).join('');}
+function renderAll(regen){if(regen){DATA=generateData(state.months,state.region);}renderKPIs();lineBarsDonut();CAMPAIGNS=buildCampaigns(DATA);renderTable();}
+renderAll(true);
+
+/* ===== Canvas sizing + clip util ===== */
+function syncCanvasSize(cv, redraw){
+  function set(){
+    var dpr=window.devicePixelRatio||1;
+    var w=cv.clientWidth|0, h=cv.clientHeight|0;
+    if(cv.width!==w*dpr||cv.height!==h*dpr){
+      cv.width=w*dpr; cv.height=h*dpr;
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      if(redraw) redraw();
+    }
+  }
+  set();
+  var raf; function onR(){cancelAnimationFrame(raf);raf=requestAnimationFrame(set);}
+  addEventListener('resize',onR); addEventListener('orientationchange',onR);
+}
+function clipRounded(ctx,x,y,w,h,r){
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+  ctx.clip();
+}
+
+/* ===== runners (start/stop) ===== */
+function makeRunner(rootEl,start,stop){
+  var running=false, timer=null;
+  if('IntersectionObserver'in window){
+    var obs=new IntersectionObserver(function(ents){
+      ents.forEach(function(e){
+        if(e.isIntersecting && !running){ running=true; timer=start(); }
+        else if(!e.isIntersecting && running){ running=false; if(stop) stop(timer); }
+      });
+    },{threshold:.35});
+    obs.observe(rootEl);
+  }else{ timer=start(); }
+}
+
+/* ===== 1) Radar (com clip e rebounds) ===== */
+(function(){
+  var sec=document.getElementById('m-bradar');
+  var cv=document.getElementById('cv-br'), ctx=cv.getContext('2d');
+  syncCanvasSize(cv);
+  var logEl=document.getElementById('log-br'); function log(m){var d=document.createElement('div'); d.textContent='['+new Date().toLocaleTimeString('pt-BR',{hour12:false})+'] '+m; logEl.appendChild(d); if(logEl.children.length>200)logEl.removeChild(logEl.firstChild); logEl.scrollTop=logEl.scrollHeight;}
+  var prod=['Câmera IP 1080p','DVR 8 canais','Kit Cerca Elétrica','Alarme Wi-Fi','Sensor de Presença','Fechadura Smart'];
+  var lojas=['ShopTudo','EletroMax','SegurTech','LojaX','OfertasBR','Mercadão+'];
+  var dots=[]; for(var i=0;i<26;i++){dots.push({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.003,vy:(Math.random()-.5)*.003});}
+  var pulses=[];
+  function tick(){
+    var W=cv.clientWidth,H=cv.clientHeight,M=12, rx=M, ry=M, rw=W-2*M, rh=H-2*M;
+    ctx.clearRect(0,0,W,H);
+    clipRounded(ctx,rx,ry,rw,rh,12);
+
+    // grid
+    ctx.strokeStyle='rgba(137,201,255,.16)'; ctx.setLineDash([4,8]);
+    for(var i=0;i<5;i++){var y=ry+i*(rh/4); ctx.beginPath(); ctx.moveTo(rx,y); ctx.lineTo(rx+rw,y); ctx.stroke();}
+    ctx.setLineDash([]);
+
+    // moving dots
+    dots.forEach(function(d){
+      d.x+=d.vx; d.y+=d.vy;
+      if(d.x<0||d.x>1){d.vx*=-1; d.x=Math.max(0,Math.min(1,d.x));}
+      if(d.y<0||d.y>1){d.vy*=-1; d.y=Math.max(0,Math.min(1,d.y));}
+      var x=rx+d.x*rw, y=ry+d.y*rh;
+      ctx.fillStyle='#7c4dff'; ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+    });
+
+    // pulses (eco) dentro do retângulo
+    pulses=pulses.filter(function(p){return p.a>0});
+    pulses.forEach(function(p){p.a-=0.02;p.r+=2;ctx.strokeStyle='rgba(32,211,255,'+p.a+')'; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.stroke();});
+
+    ctx.restore();
+
+    if(Math.random()<.5){
+      var x=rx+Math.random()*rw, y=ry+Math.random()*rh;
+      pulses.push({x:x,y:y,r:6,a:1}); if(pulses.length>40)pulses.shift();
+      var item=prod[Math.floor(Math.random()*prod.length)];
+      var loja=lojas[Math.floor(Math.random()*lojas.length)];
+      var preco=(120+Math.random()*1200).toFixed(2).replace('.',','); var off=Math.round(8+Math.random()*35);
+      log('🔎 oferta: '+item+' em '+loja+' por R$ '+preco+' (−'+off+'%)');
+    }
+  }
+  makeRunner(sec,function(){return setInterval(tick,80);},function(t){clearInterval(t);});
+})();
+
+/* ===== 2) Crawler (clip + margem interna) ===== */
+(function(){
+  var sec=document.getElementById('m-crawler');
+  var cv=document.getElementById('cv-cw'), ctx=cv.getContext('2d');
+  syncCanvasSize(cv);
+  var logEl=document.getElementById('log-cw');function log(m){var d=document.createElement('div');d.textContent='['+new Date().toLocaleTimeString('pt-BR',{hour12:false})+'] '+m;logEl.appendChild(d);if(logEl.children.length>200)logEl.removeChild(logEl.firstChild);logEl.scrollTop=logEl.scrollHeight;}
+  var sites=['ShopTudo','OfertasBR','Mercadão+'], colors=['#20d3ff','#7c4dff','#ff71c6'], series=sites.map(function(){return Array(90).fill(60)}), t=0;
+  function line(arr,color,rx,ry,rw,rh){
+    ctx.beginPath();
+    for(var i=0;i<arr.length;i++){
+      var x=rx+i*(rw/(arr.length-1));
+      var y=ry+rh-arr[i];
+      if(i)ctx.lineTo(x,y); else ctx.moveTo(x,y);
+    }
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+  }
+  function tick(){
+    var W=cv.clientWidth,H=cv.clientHeight,M=12,rx=M,ry=M,rw=W-2*M,rh=H-2*M-8;
+    ctx.clearRect(0,0,W,H);
+    clipRounded(ctx,rx,ry,rw,rh,12);
+
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.setLineDash([4,8]);
+    for(var i=0;i<5;i++){var y=ry+i*(rh/4);ctx.beginPath();ctx.moveTo(rx,y);ctx.lineTo(rx+rw,y);ctx.stroke();}
+    ctx.setLineDash([]);
+
+    series.forEach(function(s,si){
+      var last=s[s.length-1]||50;
+      var next=Math.max(10,Math.min(220,last+(Math.random()-.5)*12+Math.sin((t+si)/6)*3));
+      s.push(next); if(s.length>90)s.shift();
+      line(s,colors[si],rx,ry,rw,rh);
+    });
+
+    ctx.restore();
+    if(Math.random()<.45){
+      var site=sites[Math.floor(Math.random()*sites.length)];
+      var produto=['DVR 8c','Câmera Dome','Fechadura','Sensor PIR','Kit Cerca'][Math.floor(Math.random()*5)];
+      var preco=(150+Math.random()*1200).toFixed(2).replace('.',',');
+      log('🕷️ scraping '+site+' → '+produto+' R$ '+preco);
+    }
+    t++;
+  }
+  makeRunner(sec,function(){return setInterval(tick,120);},function(t){clearInterval(t);});
+})();
+
+/* ===== 3) Regiões (clip + easing) ===== */
+(function(){
+  var sec=document.getElementById('m-reg');
+  var cv=document.getElementById('cv-reg'), ctx=cv.getContext('2d');
+  syncCanvasSize(cv);
+  var logEl=document.getElementById('log-reg');function log(m){var d=document.createElement('div');d.textContent='['+new Date().toLocaleTimeString('pt-BR',{hour12:false})+'] '+m;logEl.appendChild(d);if(logEl.children.length>200)logEl.removeChild(logEl.firstChild);logEl.scrollTop=logEl.scrollHeight;}
+  var regs=['Norte','Nordeste','Centro-Oeste','Sudeste','Sul'], base=[980,920,990,1040,1010], smooth=[980,920,990,1040,1010];
+  function tick(){
+    var W=cv.clientWidth,H=cv.clientHeight,M=16,rx=M,ry=M,rw=W-2*M,rh=H-2*M;
+    ctx.clearRect(0,0,W,H);
+    clipRounded(ctx,rx,ry,rw,rh,12);
+
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.setLineDash([4,8]);
+    for(var i=0;i<=4;i++){var y=ry+i*(rh/4);ctx.beginPath();ctx.moveTo(rx,y);ctx.lineTo(rx+rw,y);ctx.stroke();}
+    ctx.setLineDash([]);
+
+    var bw=rw/regs.length*.7;
+    regs.forEach(function(r,i){
+      base[i]+=(Math.random()-.5)*16; base[i]=Math.max(600,Math.min(1500,base[i]));
+      smooth[i]+= (base[i]-smooth[i]) * 0.12;
+      var val=smooth[i], norm=(val-600)/(1500-600), x=rx+i*(rw/regs.length)+((rw/regs.length-bw)/2), bh=norm*rh;
+      var grd=ctx.createLinearGradient(0,ry+rh-bh,0,ry+rh); grd.addColorStop(0,'#20d3ff'); grd.addColorStop(1,'#0f1a45');
+      ctx.fillStyle=grd; ctx.fillRect(x,ry+rh-bh,bw,bh);
+      ctx.fillStyle='#cfe0ff'; ctx.font='12px Segoe UI'; ctx.textAlign='center'; ctx.fillText(r,x+bw/2,ry+rh+16);
+    });
+
+    ctx.restore();
+    if(Math.random()<.5){var i=Math.floor(Math.random()*regs.length);log('📍 '+regs[i]+': preço médio R$ '+Math.round(base[i]).toLocaleString('pt-BR')+' (CFTV)');}
+  }
+  makeRunner(sec,function(){return setInterval(tick,600);},function(t){clearInterval(t);});
+})();
+
+/* ===== 4) Cupons (clip + bounce) ===== */
+(function(){
+  var sec=document.getElementById('m-coupon');
+  var cv=document.getElementById('cv-cpn'), ctx=cv.getContext('2d');
+  syncCanvasSize(cv);
+  var logEl=document.getElementById('log-cpn');function log(m){var d=document.createElement('div');d.textContent='['+new Date().toLocaleTimeString('pt-BR',{hour12:false})+'] '+m;logEl.appendChild(d);if(logEl.children.length>200)logEl.removeChild(logEl.firstChild);logEl.scrollTop=logEl.scrollHeight;}
+  var parts=[];function new$(){return{x:Math.random(),y:1,vy:(.4+Math.random()*1.2),vx:(Math.random()-.5)*.6,a:1,s:12+Math.random()*10};}
+  function tick(){
+    var W=cv.clientWidth,H=cv.clientHeight,M=12,rx=M,ry=M,rw=W-2*M,rh=H-2*M;
+    ctx.clearRect(0,0,W,H);
+    clipRounded(ctx,rx,ry,rw,rh,12);
+
+    if(parts.length<60 && Math.random()<.8) parts.push(new$());
+    parts.forEach(function(p){
+      p.y-=p.vy/60; p.x+=p.vx/60; p.a-=0.004;
+      if(p.x<0){p.x=0;p.vx*=-1} if(p.x>1){p.x=1;p.vx*=-1}
+      if(p.y<0){p.y=0;p.vy*=-1}
+      var cx=rx+p.x*rw, cy=ry+p.y*rh;
+      ctx.globalAlpha=Math.max(0,p.a); ctx.fillStyle='#ffd166'; ctx.font=p.s+'px Segoe UI'; ctx.fillText('$',cx,cy); ctx.globalAlpha=1;
+    });
+    parts=parts.filter(function(p){return p.a>0});
+
+    ctx.restore();
+    if(Math.random()<.35){var cupom=['PIX10','FRETEGRATIS','CFTV20','ALARMES15'][Math.floor(Math.random()*4)],cash=[3,5,8,10,12][Math.floor(Math.random()*5)];log('🎟️ cupom '+cupom+' aplicado • cashback '+cash+'%');}
+  }
+  makeRunner(sec,function(){return setInterval(tick,16);},function(t){clearInterval(t);});
+})();
+
+/* ===== 5) Intelbras (clip + conexões) ===== */
+(function(){
+  var sec=document.getElementById('m-intel');
+  var cv=document.getElementById('cv-intel'), ctx=cv.getContext('2d');
+  syncCanvasSize(cv);
+  var logEl=document.getElementById('log-intel');function log(m){var d=document.createElement('div');d.textContent='['+new Date().toLocaleTimeString('pt-BR',{hour12:false})+'] '+m;logEl.appendChild(d);if(logEl.children.length>200)logEl.removeChild(logEl.firstChild);logEl.scrollTop=logEl.scrollHeight;}
+  var blocks=[{n:'NVR',x:.18,y:.30},{n:'Alarmes',x:.18,y:.72},{n:'CFTV',x:.70,y:.30},{n:'Acesso',x:.70,y:.72}], t=0;
+  function draw(){
+    var W=cv.clientWidth,H=cv.clientHeight,M=16,rx=M,ry=M,rw=W-2*M,rh=H-2*M;
+    ctx.clearRect(0,0,W,H); clipRounded(ctx,rx,ry,rw,rh,12);
+
+    // ligações
+    for(var i=0;i<blocks.length;i++)for(var j=i+1;j<blocks.length;j++){
+      var a=blocks[i], b=blocks[j], ax=rx+a.x*rw, ay=ry+a.y*rh, bx=rx+b.x*rw, by=ry+b.y*rh;
+      var dash=8+Math.sin((t+i+j)/10)*4; ctx.setLineDash([dash,12]); ctx.lineWidth=2; ctx.strokeStyle='rgba(32,211,255,.75)';
+      ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    // blocos
+    blocks.forEach(function(b){
+      var x=rx+b.x*rw-70, y=ry+b.y*rh-30, w=160, h=64;
+      ctx.fillStyle='#0f1a45'; ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(x+12,y); ctx.arcTo(x+w,y,x+w,y+h,12); ctx.arcTo(x+w,y+h,x,y+h,12);
+      ctx.arcTo(x,y+h,x,y,12); ctx.arcTo(x,y,x+w,y,12); ctx.closePath(); ctx.fill(); ctx.stroke();
+      var ok=Math.random()>.04; ctx.fillStyle=ok?'#19c37d':'#ff6363'; ctx.beginPath(); ctx.arc(x+16,y+18,6,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#cfe0ff'; ctx.font='14px Segoe UI'; ctx.fillText(b.n,x+34,y+23);
+      ctx.fillStyle='#9bb0d3'; ctx.font='12px Segoe UI'; ctx.fillText(ok?'OK • lat 11ms':'Falha • re-tentando',x+34,y+42);
+      if(!ok && Math.random()<.5){log('⚠ '+b.n+': pacote perdido • tentativa de reconexão');}
+      else if(Math.random()<.15){log('✅ '+b.n+': verificação concluída • integridade OK');}
+    });
+
+    ctx.restore(); t++;
+  }
+  makeRunner(sec,function(){draw();return setInterval(draw,650);},function(t){clearInterval(t);});
+})();
+
+/* ===== 6) Anti-fraude (clip + ponteiro amortecido) ===== */
+(function(){
+  var sec=document.getElementById('m-fraud');
+  var cv=document.getElementById('cv-fr'), ctx=cv.getContext('2d');
+  syncCanvasSize(cv);
+  var logEl=document.getElementById('log-fr');function log(m){var d=document.createElement('div');d.textContent='['+new Date().toLocaleTimeString('pt-BR',{hour12:false})+'] '+m;logEl.appendChild(d);if(logEl.children.length>200)logEl.removeChild(logEl.firstChild);logEl.scrollTop=logEl.scrollHeight;}
+  var target=28, value=28, t=0;
+  function draw(){
+    var W=cv.clientWidth,H=cv.clientHeight,M=16,rx=M,ry=M,rw=W-2*M,rh=H-2*M;
+    ctx.clearRect(0,0,W,H); clipRounded(ctx,rx,ry,rw,rh,12);
+
+    var cx=rx+rw/2, cy=ry+rh*0.78, r=Math.min(rw, rh*1.25)/3;
+    for(var i=0;i<180;i+=2){
+      var a=(Math.PI*i/180), x=cx+r*Math.cos(Math.PI+a), y=cy+r*Math.sin(Math.PI+a),
+          x2=cx+(r+14)*Math.cos(Math.PI+a), y2=cy+(r+14)*Math.sin(Math.PI+a);
+      ctx.strokeStyle='hsl('+(120 - i*0.65)+',80%,55%)'; ctx.lineWidth=6;
+      ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x2,y2); ctx.stroke();
+    }
+    var ang=Math.PI + (value/100)*Math.PI, xg=cx+(r+18)*Math.cos(ang), yg=cy+(r+18)*Math.sin(ang);
+    ctx.strokeStyle='#eaf2ff'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(xg,yg); ctx.stroke();
+    ctx.fillStyle='#cfe0ff'; ctx.font='16px Segoe UI'; ctx.textAlign='center'; ctx.fillText('Risco de Fraude',cx,cy+32);
+    ctx.font='22px Segoe UI'; ctx.fillText((value|0)+'%',cx,cy+58);
+
+    ctx.restore();
+  }
+  function tick(){
+    target=Math.max(4,Math.min(92, target+(Math.random()-.5)*8 + Math.sin(t/5)*2));
+    value += (target - value) * 0.12;
+    if(Math.random()<.5){
+      var res=value>65?'⚠ recusa automática':(value>45?'🟡 revisão manual':'✅ aprovado');
+      var val=(50+Math.random()*2400).toFixed(2).replace('.',',');
+      log('Transação R$ '+val+' • score='+(value|0)+' → '+res);
+    }
+    draw(); t++;
+  }
+  makeRunner(sec,function(){draw();return setInterval(tick,800);},function(t){clearInterval(t);});
+})();
+
+/* ===== export PNG dos SVGs ===== */
+document.querySelectorAll('[data-export]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var sel=btn.getAttribute('data-export'), svg=document.querySelector(sel);
+    var xml=new XMLSerializer().serializeToString(svg), img=new Image();
+    var blob=new Blob([xml],{type:'image/svg+xml;charset=utf-8'}), url=URL.createObjectURL(blob);
+    img.onload=function(){var c=document.createElement('canvas');c.width=svg.viewBox.baseVal.width||svg.clientWidth;c.height=svg.viewBox.baseVal.height||svg.clientHeight;
+      var ctx=c.getContext('2d');ctx.fillStyle='#070b16';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0);URL.revokeObjectURL(url);
+      var a=document.createElement('a');a.download=(sel.replace('#',''))+'.png';a.href=c.toDataURL('image/png');a.click();};
+    img.src=url;
+  });
+});
+</script>
+</body>
+</html>

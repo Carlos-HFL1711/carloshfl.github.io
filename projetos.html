@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Projetos | Carlos Henrique</title>
+
+<style>
+/* ===== base segura (evita “cortes” e overflow) ===== */
+*,*::before,*::after{ box-sizing:border-box; }
+
+/* ================== VARS / TEMA (dark por padrão) ================== */
+:root{
+  --header-h: 64px;
+  --bg:#070b16;
+  --card:#10183b;
+  --surface:#0d1534;
+  --text:#eaf2ff;
+  --muted:#9bb0d3;
+  --accent:#20d3ff;
+  --brand:#7c4dff;
+  --pill-bg:rgba(124,77,255,.16);
+  --border:rgba(255,255,255,.10);
+  --shadow:0 18px 40px rgba(0,0,0,.38);
+  --ok:#19c37d; --warn:#ffd166; --bad:#ff6363;
+}
+body.light{
+  --bg:#f7f9ff; --card:#ffffff; --surface:#f2f5ff;
+  --text:#1e2530; --muted:#647184;
+  --accent:#2b8eff; --brand:#1f6ed6;
+  --pill-bg:rgba(43,142,255,.12);
+  --border:rgba(0,0,0,.10);
+  --shadow:0 12px 28px rgba(0,0,0,.12);
+}
+
+/* =============== BASE =============== */
+html{ scroll-behavior:smooth; }
+html,body{ overflow-x:hidden; touch-action:pan-y; overscroll-behavior-x:none; }
+body{
+  margin:0; color:var(--text); font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  transition:background .35s,color .35s;
+  background:
+    radial-gradient(1200px 700px at 10% 10%, rgba(124,77,255,.18), transparent 60%),
+    radial-gradient(900px 600px at 90% 90%, rgba(32,211,255,.12), transparent 60%),
+    var(--bg);
+}
+.container{ max-width:1000px; margin:0 auto; padding:0 16px; }
+.muted{ color:var(--muted); }
+body.scroll-lock{ position:fixed; width:100%; overflow:hidden; }
+
+/* ================== HEADER ================== */
+header{
+  position:sticky; top:0; z-index:2200;
+  background:rgba(7,11,22,.60);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:saturate(120%) blur(8px);
+  padding-inline:14px;
+}
+body.light header{ background:var(--bg); border-bottom:1px solid var(--border); }
+.pill-nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; }
+.logo{
+  font-weight:800;
+  background:linear-gradient(90deg,var(--brand),var(--accent) 60%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+/* nav */
+#primary-nav{ display:flex; align-items:center; gap:10px; list-style:none; margin:0; padding:0; }
+#primary-nav a{
+  text-decoration:none; color:var(--text);
+  padding:8px 16px; border-radius:999px; font-weight:800;
+  transition:background-color .25s,color .25s,transform .12s;
+  border:1px solid transparent;
+}
+#primary-nav a:hover{ transform:translateY(-1px); }
+#primary-nav .pill{ background:var(--pill-bg); color:var(--accent); border-color:var(--border); }
+#primary-nav .pill[aria-current="page"]{
+  background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border-color:transparent;
+}
+
+/* Botão ☰/❌ — sempre branco */
+#menu-toggle{
+  background:transparent; border:0; cursor:pointer; width:46px; height:42px;
+  border-radius:12px; display:grid; place-items:center; margin-right:6px; z-index:2400;
+  font-size:22px; line-height:1; color:#fff !important;
+}
+#menu-toggle:hover{ background:rgba(255,255,255,.06); }
+body.light #menu-toggle:hover{ background:rgba(0,0,0,.06); }
+
+/* ================== SIDE MENU ================== */
+#side-menu{
+  position:fixed; top:var(--header-h); right:0;
+  width:78%; max-width:360px; height:calc(100dvh - var(--header-h));
+  padding-bottom:max(18px,env(safe-area-inset-bottom));
+  background:var(--card); border-left:1px solid var(--border);
+  box-shadow:-12px 0 28px rgba(0,0,0,.35);
+  transform:translateX(100%); transition:transform .26s cubic-bezier(.2,.7,.2,1);
+  padding:18px; display:flex; flex-direction:column; gap:12px; pointer-events:none; z-index:2300;
+}
+#side-menu.open{ transform:translateX(0); pointer-events:auto; }
+.menu-heading{ font-weight:900; opacity:.85; margin-top:6px; }
+.menu-sep{ border:0; border-top:1px solid var(--border); }
+#side-menu a{ text-decoration:none; color:var(--text); font-weight:700; padding:8px 10px; border-radius:10px; }
+#side-menu a:hover{ background:rgba(255,255,255,.06); }
+body.light #side-menu a:hover{ background:rgba(0,0,0,.06); }
+
+/* Theme switch */
+.menu-switch{ display:flex; align-items:center; gap:10px; }
+#theme-switch{ position:absolute; opacity:0; width:0; height:0; }
+.switch{
+  width:46px; height:26px; background:#3a4159; border-radius:999px; position:relative; display:inline-block; cursor:pointer; border:1px solid var(--border);
+}
+.switch::before{ content:""; position:absolute; width:22px; height:22px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform .25s ease; }
+#theme-switch:checked + .switch{ background:linear-gradient(90deg,var(--brand),var(--accent)); }
+#theme-switch:checked + .switch::before{ transform:translateX(20px); }
+
+/* ================== SEÇÕES + HERO microanimação ================== */
+.section{ padding:48px 0; opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+.section.visible{ opacity:1; transform:translateY(0); }
+.hero-line{
+  height:3px; border-radius:999px; margin:8px 0 2px;
+  background:linear-gradient(90deg,var(--brand),var(--accent));
+  box-shadow:0 0 18px rgba(32,211,255,.45), 0 0 24px rgba(124,77,255,.35);
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+@keyframes pulseGlow{ 0%,100%{opacity:.9} 50%{opacity:.5} }
+
+/* ================== CONTROLES ================== */
+.controls{ display:grid; grid-template-columns: 1fr 220px; gap:10px; align-items:center; }
+@media (max-width:720px){ .controls{ grid-template-columns:1fr; } }
+.filters .tabs{
+  display:flex; gap:10px; overflow:auto; padding:6px 0 2px;
+  -webkit-overflow-scrolling:touch; scrollbar-width:thin;
+}
+.tab{
+  appearance:none; border:1px solid var(--border); background:var(--pill-bg); color:var(--text);
+  font-weight:900; border-radius:999px; padding:8px 14px; cursor:pointer; white-space:nowrap;
+  transition:background .2s, color .2s, border-color .2s, transform .12s;
+}
+.tab:hover{ transform:translateY(-1px); }
+.tab .count{ opacity:.85; font-weight:800; margin-left:6px; }
+.tab.is-active{ background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border-color:transparent; }
+#buscar-proj{
+  width:100%; font:inherit; color:var(--text); background:var(--card);
+  border:1px solid var(--border); border-radius:12px; padding:10px 12px; outline:none; transition:border-color .2s, box-shadow .2s;
+}
+#buscar-proj:focus{
+  border-color: var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+.sort{ display:flex; gap:8px; align-items:center; justify-content:flex-end; color:var(--muted); }
+select.sortby{
+  background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px 12px; font-weight:700;
+}
+
+/* ================== CARDS (6) ================== */
+.proj-grid{
+  display:grid; gap:16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+@media (max-width:420px){
+  .proj-grid{ grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+}
+.proj-card{
+  position:relative; background:var(--card); border:1px solid var(--border);
+  border-radius:16px; overflow:hidden; box-shadow:var(--shadow);
+  display:flex; flex-direction:column; transform:translateY(10px) scale(.995); opacity:0;
+  animation: cardIn .55s ease forwards;
+}
+@keyframes cardIn{ to{ transform:none; opacity:1; } }
+.proj-card:hover{ transform:translateY(-2px); transition:transform .18s; }
+
+/* hero com imagem + brilho */
+.proj-hero{
+  height:140px; position:relative; overflow:hidden;
+  background:linear-gradient(135deg,#1a2248,#0c153f);
+}
+/* A IMAGEM DO CARD */
+.proj-hero .hero-img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover; display:block;
+  filter:brightness(.95) saturate(1.05);
+}
+.proj-hero::after{
+  content:""; position:absolute; inset:-40% -20%; transform:rotate(8deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
+  animation: shine 4s linear infinite; pointer-events:none;
+}
+@keyframes shine{ 0%{ transform:translateX(-120%) rotate(8deg); } 100%{ transform:translateX(120%) rotate(8deg); } }
+
+/* gradientes de fallback caso a imagem não carregue */
+.grad-blue{ background:linear-gradient(135deg,#2b8eff,#21c1ff); }
+.grad-cyan{ background:linear-gradient(135deg,#0fd1ff,#48f5ff); }
+.grad-purple{ background:linear-gradient(135deg,#7b61ff,#a67cff); }
+.grad-orange{ background:linear-gradient(135deg,#ff9b3f,#ffc062); }
+.grad-teal{ background:linear-gradient(135deg,#00c6d1,#4df2ff); }
+.grad-pink{ background:linear-gradient(135deg,#ff5fb7,#ff94d0); }
+
+.proj-badge{
+  position:absolute; top:10px; left:10px; font-size:.8rem; font-weight:900;
+  background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.2); color:#fff; padding:6px 10px; border-radius:999px; backdrop-filter: blur(4px);
+  animation: floaty 6s ease-in-out infinite;
+}
+@keyframes floaty{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-4px) } }
+body.light .proj-badge{ background:rgba(255,255,255,.65); color:#173050; border-color:rgba(0,0,0,.08); }
+
+.proj-body{ padding:14px; display:flex; flex-direction:column; gap:8px; }
+.proj-title{ margin:0; letter-spacing:-.2px; overflow-wrap:anywhere; }
+.proj-desc{ margin:0; color:var(--muted); overflow-wrap:anywhere; }
+.tags{ display:flex; flex-wrap:wrap; gap:6px; }
+.tag{ font-size:.75rem; font-weight:800; padding:5px 8px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text); opacity:.9; }
+
+.proj-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:6px; }
+.btn{
+  display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:10px 14px; font-weight:900;
+  text-decoration:none; border:1px solid var(--border); color:var(--text); background:var(--card);
+  transition:transform .12s, background .2s, color .2s, border-color .2s, box-shadow .2s;
+}
+.btn:hover{ transform:translateY(-1px); }
+.btn.primary{ background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border-color:transparent; box-shadow:0 10px 24px rgba(32,211,255,.28); }
+.btn.outline{ background:transparent; }
+
+/* esconder via filtro */
+.proj-card.is-hidden{ display:none !important; }
+
+/* ================== MODAL ================== */
+#modal{ position:fixed; inset:0; display:none; z-index:2400; }
+#modal.show{ display:block; }
+.modal-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.44); }
+.modal-box{
+  position:absolute; left:50%; top:6vh; transform:translateX(-50%);
+  width:min(820px, 92vw); max-height:88dvh;
+  background:var(--card); border-radius:18px; border:1px solid var(--border);
+  box-shadow:0 30px 60px rgba(0,0,0,.35); overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.modal-hero{ height:190px; background:linear-gradient(135deg,var(--brand),var(--accent)); flex:0 0 auto; position:relative; }
+/* IMAGEM DO MODAL (preenchida via JS) */
+.modal-hero #modal-photo{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover; display:block;
+  filter:brightness(.95) saturate(1.05);
+}
+.modal-content{ padding:16px; overflow:auto; }
+@media (max-width:480px){
+  .modal-hero{ height:140px; }
+}
+.modal-top{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.modal-close{
+  border:1px solid var(--border); background:var(--card); color:var(--text);
+  border-radius:999px; padding:6px 10px; font-size:18px; cursor:pointer; font-weight:800;
+}
+.bullets{ margin:10px 0 0 18px; padding:0; }
+.bullets li{ margin:6px 0; }
+.modal-tags{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.modal-kpis{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px; }
+@media (max-width:520px){ .modal-kpis{ grid-template-columns:1fr; } }
+.kpi{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center; }
+.kpi b{ display:block; font-size:1.2rem; }
+
+/* ================== TOAST + TOP BUTTON ================== */
+.toast{
+  position:fixed; left:50%; bottom:18px; transform:translateX(-50%) translateY(20px);
+  background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-weight:800;
+  box-shadow:var(--shadow); opacity:0; transition:opacity .25s, transform .25s; z-index:2600;
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+#to-top{
+  position:fixed; right:16px; bottom:calc(84px + env(safe-area-inset-bottom));
+  z-index:2200; opacity:0; transform:translateY(10px);
+  background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border:0; border-radius:999px; padding:10px 14px; font-weight:900; cursor:pointer;
+  box-shadow:0 10px 24px rgba(32,211,255,.28); transition:opacity .2s, transform .2s;
+}
+#to-top.show{ opacity:1; transform:none; }
+
+/* ================== FOOTER ================== */
+footer{ text-align:center; padding:28px 0; color:var(--muted); }
+
+/* ======= MÓDULOS ANIMADOS (3) ======= */
+.section-title{ margin:6px 0 14px; }
+.mod{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:12px; margin:18px 0; }
+.mod h3{ margin:0 0 8px; }
+.cmd{ font:13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  background:#0b122e; color:#cfe0ff; border:1px solid rgba(255,255,255,.09); border-radius:12px; padding:10px; height:180px; overflow:auto; }
+.row{ display:grid; grid-template-columns:1fr 320px; gap:12px; align-items:center; }
+@media (max-width:980px){ .row{ grid-template-columns:1fr; } }
+
+/* 1) ROBÔ SCANNER (SVG) */
+#scanner{ width:100%; height:auto; display:block; background:radial-gradient(800px 320px at 10% 10%, rgba(124,77,255,.14), transparent 60%), #0e1540; border-radius:12px; border:1px solid rgba(255,255,255,.08); }
+#scanner .page{ fill:#091234; stroke:#203065; stroke-width:1.2; rx:8; }
+#scanner .cursor{ transform-box:fill-box; transform-origin:50% 50%; }
+@keyframes clicker{ 0%,100%{ transform:scale(1)} 50%{ transform:scale(.85)} }
+
+/* 2) PIPELINE */
+.pipe{ display:grid; grid-template-columns:1fr; }
+.pipe-canvas{ width:100%; height:240px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:#0e1540; }
+
+/* 3) CONVERSÃO */
+.conv{ position:relative; height:260px; border:1px solid rgba(255,255,255,.08); border-radius:12px; background:linear-gradient(180deg,#0e1540,#0b122e); overflow:hidden; }
+.conv .item{ position:absolute; font-weight:900; user-select:none; pointer-events:none; opacity:0; transform:translate(-50%,-50%) scale(.8); }
+@keyframes pop{ 0%{ opacity:0; transform:translate(var(--x),var(--y)) scale(.4) } 30%{ opacity:1; transform:translate(var(--x),var(--y)) scale(1) } 100%{ opacity:0; transform:translate(var(--x2),var(--y2)) scale(.6) } }
+
+/* pequenas polidas para telas bem estreitas */
+@media (max-width:420px){
+  .container{ padding:0 12px; }
+  #menu-toggle{ width:42px; height:40px; font-size:21px; }
+  .proj-hero{ height:120px; }
+}
+</style>
+</head>
+
+<body>
+  <!-- ============ HEADER ============ -->
+  <header>
+    <nav class="pill-nav">
+      <div class="logo">Carlos Henrique</div>
+
+      <ul id="primary-nav">
+        <li><a class="link" href="index.html">inicio</a></li>
+        <li><a class="pill" href="sistemas2.html">Sistema</a></li>
+        <li><a class="pill" href="botexemplo.html" aria-current="page">Robô</a></li>
+      </ul>
+
+      <!-- Botão único -->
+      <button id="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+
+      <!-- Painel lateral -->
+      <aside id="side-menu" aria-hidden="true">
+        <p class="menu-heading">Outros sites</p>
+        <a href="https://github.com/seuuser" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/seuuser" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.figma.com/@seuuser" target="_blank" rel="noopener">Figma</a>
+        <a href="cv.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+        <hr class="menu-sep" />
+        <div class="menu-switch">
+          <input type="checkbox" id="theme-switch" checked />
+          <label class="switch" for="theme-switch"></label>
+          <span class="switch-label">Tema escuro</span>
+        </div>
+      </aside>
+    </nav>
+  </header>
+
+  <!-- ============ INTRO ============ -->
+  <section class="section container">
+    <div class="hero-line"></div>
+    <h1 class="page-title">Projetos em destaque</h1>
+    <p class="muted">Use as abas, busca e ordenação. Clique em “Detalhes” para ver tecnologias, KPIs e escopo.</p>
+  </section>
+
+  <!-- ============ ABAS + BUSCA + SORT ============ -->
+  <section class="filters container">
+    <div class="controls">
+      <div>
+        <div class="tabs" role="tablist" aria-label="Filtrar projetos">
+          <button class="tab is-active" role="tab" aria-selected="true"  data-filter="all">Todos <span class="count">0</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="cftv">CFTV <span class="count">0</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="sites">Sites <span class="count">0</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="automacao">Automação <span class="count">0</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="suporte">Suporte T.I. <span class="count">0</span></button>
+        </div>
+        <input id="buscar-proj" type="search" inputmode="search" placeholder="Pesquisar projeto..." aria-label="Pesquisar projeto" />
+        <p id="no-results" class="muted" hidden aria-live="polite">Nenhum projeto encontrado.</p>
+      </div>
+      <div class="sort">
+        Ordenar:
+        <select id="sort-by" class="sortby" aria-label="Ordenar por">
+          <option value="recent">Mais recentes</option>
+          <option value="az">A → Z</option>
+          <option value="za">Z → A</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GRID (6 PROJETOS) ============ -->
+  <main class="container section">
+    <div id="grid" class="proj-grid">
+
+      <!-- 1 Site -->
+      <article class="proj-card" data-tags="sites,uiux,landing,seo" data-date="2025-01-28">
+        <div class="proj-hero grad-blue">
+          <!-- CORRIGIDO: aspas e data-detail -->
+          <img class="hero-img" src="docs/suporte.png" data-detail="docs/camera.jpg" alt="Landing 1" loading="lazy">
+        </div>
+        <span class="proj-badge">Sites</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Relatórios De Automatização & CFTV</h3>
+          <p class="proj-desc">Landing rápida com alto score de performance.</p>
+          <div class="tags">
+            <span class="tag">Acessível</span><span class="tag">Core Web Vitals</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="card1.html" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li>Design system leve e reutilizável</li>
+              <li>Formulários com validação e analytics</li>
+              <li>Deploy otimizado (cache, imagens responsivas)</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 CFTV/IoT -->
+      <article class="proj-card" data-tags="automacao,iot,cftv" data-date="2025-02-05">
+        <div class="proj-hero grad-cyan">
+          <img class="hero-img" src="docs/cftv.jpg" data-detail="docs/relatorios2.png" alt="CFTV & IoT" loading="lazy">
+        </div>
+        <span class="proj-badge">CFTV & IoT</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Sistema de Segurança Automatizadas</h3>
+          <p class="proj-desc">Sensores e dashboard em tempo real.</p>
+          <div class="tags">
+            <span class="tag">MQTT</span><span class="tag">WebSocket</span><span class="tag">Alertas</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="card2.html" target="_blank">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li>Mapas de movimentos e eventos por detecção I.A.</li>
+              <li>Retenção de logs e trilha de auditoria</li>
+              <li>Exportação CSV/PDF sob demanda</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3 Automação -->
+      <article class="proj-card" data-tags="automacao,scripts,integ" data-date="2025-01-22">
+        <div class="proj-hero grad-purple">
+          <!-- MANTIDO e com data-detail p/ modal -->
+          <img class="hero-img" src="docs/relatoriocftv.png" data-detail="docs/relatoriocftv.png" alt="Bot de automação" loading="lazy">
+        </div>
+        <span class="proj-badge">Automação</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Bot de automação para sua Empresa</h3>
+          <p class="proj-desc">Integrações com APIs e tarefas agendadas.</p>
+          <div class="tags">
+            <span class="tag">Jobs</span><span class="tag">REST</span><span class="tag">Relatórios</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="card4.html" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li>Agendador com retries e logs</li>
+              <li>Integrações Google Sheets/Drive</li>
+              <li>Alertas por e-mail/WhatsApp</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4 Suporte -->
+      <article class="proj-card" data-tags="suporte,ti,manutencao" data-date="2024-12-18">
+        <div class="proj-hero grad-orange">
+          <img class="hero-img" src="docs/suporteti.jpg" data-detail="docs/camera.jpg" alt="Suporte T.I." loading="lazy">
+        </div>
+        <span class="proj-badge">Suporte T.I.</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Suporte T.I. remoto</h3>
+          <p class="proj-desc">Atendimento remoto e documentação de ativos.</p>
+          <div class="tags">
+            <span class="tag">Inventário</span><span class="tag">Padronização</span><span class="tag">KPIs</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="card3.html">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li>Base de conhecimento e FAQs</li>
+              <li>Checklists e scripts de diagnóstico</li>
+              <li>Relatórios de SLA e disponibilidade</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5 Dashboard -->
+      <article class="proj-card" data-tags="sites,uiux,dashboard" data-date="2025-02-01">
+        <div class="proj-hero grad-teal">
+          <img class="hero-img" src="docs/dashboard.jpg" data-detail="docs/casestudy.png" alt="Dashboard" loading="lazy">
+        </div>
+        <span class="proj-badge">Dashboard</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Dashboard administrativo</h3>
+          <p class="proj-desc">Painel com gráficos e cards responsivos.</p>
+          <div class="tags">
+            <span class="tag">Charts</span><span class="tag">Filtros</span><span class="tag">Dark Mode</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="card6.html" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li>Linhas, barras e designs com tooltips</li>
+              <li>Intervalos e agrupamentos (dia/sem/mês)</li><!-- corrigido -->
+              <li>Exportar imagem do gráfico</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6 Loja -->
+      <article class="proj-card" data-tags="sites,loja,ecommerce" data-date="2024-11-30">
+        <div class="proj-hero grad-pink">
+          <img class="hero-img" src="docs/interfacewebdesign.jpg" data-detail="docs/e-comercce.jpg" alt="Loja Virtual" loading="lazy">
+        </div>
+        <span class="proj-badge">E-commerce</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Loja virtual</h3>
+          <p class="proj-desc">Catálogo, carrinho e checkout simplificado.</p>
+          <div class="tags">
+            <span class="tag">Busca</span><span class="tag">Favoritos</span><span class="tag">Pagamentos</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="card5.html" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li>Filtros por preço/categoria</li>
+              <li>Frete e cupons</li>
+              <li>Recuperação de carrinho</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- ======= 3 ANIMAÇÕES ======= -->
+  <section class="container section">
+    <h2 class="section-title">Laboratório de Automação • Visual</h2>
+
+    <!-- 1) Robô Scanner -->
+    <article class="mod">
+      <div class="row">
+        <div>
+          <h3>Robô Scanner de Páginas</h3>
+          <svg id="scanner" viewBox="0 0 720 280" role="img" aria-label="Robô analisando páginas">
+            <!-- páginas -->
+            <g id="pages">
+              <rect class="page" x="60" y="40" width="120" height="80" rx="10"/>
+              <rect class="page" x="220" y="60" width="120" height="80" rx="10"/>
+              <rect class="page" x="380" y="40" width="120" height="80" rx="10"/>
+              <rect class="page" x="540" y="60" width="120" height="80" rx="10"/>
+              <rect class="page" x="140" y="150" width="120" height="80" rx="10"/>
+              <rect class="page" x="300" y="160" width="120" height="80" rx="10"/>
+              <rect class="page" x="460" y="150" width="120" height="80" rx="10"/>
+            </g>
+            <!-- braço -->
+            <g id="arm" transform="translate(90,240)">
+              <rect x="0" y="-10" width="140" height="12" fill="#2de1ff"/>
+              <circle cx="0" cy="-4" r="10" fill="#2de1ff"/>
+              <g class="cursor" id="cursor" transform="translate(140,-6)">
+                <circle r="10" fill="#7c4dff"/>
+                <circle r="5" fill="#fff"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <div class="cmd" id="cmd-scan" aria-live="polite"></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2) Pipeline Dinâmico -->
+    <article class="mod">
+      <div class="row">
+        <div>
+          <h3>Pipeline de Dados</h3>
+          <canvas id="pipe" class="pipe-canvas"></canvas>
+        </div>
+        <div>
+          <div class="cmd" id="cmd-pipe"></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3) Conversão & Engajamento -->
+    <article class="mod">
+      <div class="row">
+        <div>
+          <h3>Conversão & Engajamento</h3>
+          <div id="conv" class="conv"></div>
+        </div>
+        <div>
+          <div class="cmd" id="cmd-conv"></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ MODAL ============ -->
+  <div id="modal" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-hero" id="modal-hero">
+        <!-- IMAGEM DO MODAL — preenchida via JS -->
+        <img id="modal-photo" alt="">
+      </div>
+      <div class="modal-content">
+        <div class="modal-top">
+          <h3 id="modal-title"></h3>
+          <button class="modal-close" id="modal-close" aria-label="Fechar">Fechar ✕</button>
+        </div>
+        <p id="modal-desc" class="muted"></p>
+        <div id="modal-extra"></div>
+        <div class="modal-tags" id="modal-tags"></div>
+        <div class="modal-kpis">
+          <div class="kpi"><small>Prazo médio</small><b>2–4 sem</b></div>
+          <div class="kpi"><small>Satisfação</small><b>97%</b></div>
+          <div class="kpi"><small>Perf. (CWV)</small><b>90+ </b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB Contato + Top -->
+  <a href="https://wa.me/5543996593590" class="fab-contact btn primary" target="_blank" rel="noopener" style="position:fixed;right:16px;bottom:16px;z-index:2200;text-decoration:none;">Contato</a>
+  <button id="to-top" aria-label="Voltar ao topo">↑ Topo</button>
+
+  <footer class="container">
+    <p>&copy; 2025 Carlos Henrique. Todos os direitos reservados.</p>
+  </footer>
+
+<!-- ================== JS ================== -->
+<script>
+/* Util */
+const $ = (s,doc=document)=>doc.querySelector(s);
+const $$ = (s,doc=document)=>Array.from(doc.querySelectorAll(s));
+const norm = s => (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+
+/* 1) Reveal sections */
+(() => {
+  const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:.12});
+  $$('.section').forEach(s => io.observe(s));
+})();
+
+/* 2) Menu lateral + bloqueio de rolagem */
+(() => {
+  const btn = $('#menu-toggle'), side = $('#side-menu');
+  let scrollTop=0;
+  const lock=()=>{ scrollTop=window.scrollY||0; document.body.classList.add('scroll-lock'); document.body.style.top=`-${scrollTop}px`; };
+  const unlock=()=>{ document.body.classList.remove('scroll-lock'); document.body.style.top=''; window.scrollTo(0,scrollTop); };
+  function openMenu(o){
+    side.classList.toggle('open', o);
+    btn.setAttribute('aria-expanded', o?'true':'false');
+    btn.textContent = o ? '❌' : '☰';
+    o ? lock() : unlock();
+  }
+  btn?.addEventListener('click',()=>openMenu(!side.classList.contains('open')));
+  side?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>openMenu(false)));
+  addEventListener('keydown',e=>{ if(e.key==='Escape') openMenu(false); });
+})();
+
+/* 3) Tema: checkbox CHECKED = escuro; desmarcar = claro (.light) */
+(() => {
+  const sw = $('#theme-switch');
+  if(!sw) return;
+  document.body.classList.toggle('light', !sw.checked);
+  sw.addEventListener('change', ()=>document.body.classList.toggle('light', !sw.checked));
+})();
+
+/* 4) Filtros, Busca (debounce), Contadores, Ordenação */
+(() => {
+  const tabs = $$('.filters .tab');
+  const input = $('#buscar-proj');
+  const grid = $('#grid');
+  const cards = $$('.proj-card');
+  const noResults = $('#no-results');
+  const sortSel = $('#sort-by');
+
+  let active = 'all', q = '';
+
+  function countByFilter(){
+    const counts = { all: cards.length, cftv:0, sites:0, automacao:0, suporte:0 };
+    cards.forEach(c=>{
+      const tags = norm(c.dataset.tags).split(',');
+      if(tags.includes('cftv')) counts.cftv++;
+      if(tags.includes('sites')) counts.sites++;
+      if(tags.includes('automacao')) counts.automacao++;
+      if(tags.includes('suporte')) counts.suporte++;
+    });
+    tabs.forEach(t=>{
+      const f=t.dataset.filter; const span=t.querySelector('.count');
+      if(span) span.textContent = `(${counts[f] ?? counts.all})`;
+    });
+  }
+
+  function apply(){
+    let shown=0;
+    const nq = norm(q);
+    cards.forEach(c=>{
+      const tags = norm(c.dataset.tags);
+      const text = norm(c.innerText);
+      const okCat = (active==='all') || tags.split(',').includes(active);
+      const okTxt = !nq || text.includes(nq) || tags.includes(nq);
+      const show = okCat && okTxt;
+      c.classList.toggle('is-hidden', !show);
+      if(show) shown++;
+    });
+    noResults.hidden = shown>0;
+  }
+
+  function sortCards(){
+    const arr = [...cards];
+    const val = sortSel.value;
+    arr.sort((a,b)=>{
+      if(val==='recent'){
+        return (new Date(b.dataset.date) - new Date(a.dataset.date));
+      }else if(val==='az'){
+        return a.querySelector('.proj-title').textContent.localeCompare(b.querySelector('.proj-title').textContent);
+      }else{
+        return b.querySelector('.proj-title').textContent.localeCompare(a.querySelector('.proj-title').textContent);
+      }
+    });
+    arr.forEach(el=>grid.appendChild(el));
+  }
+
+  tabs.forEach(t=>{
+    t.addEventListener('click', ()=>{
+      tabs.forEach(b=>{ b.classList.remove('is-active'); b.setAttribute('aria-selected','false'); });
+      t.classList.add('is-active'); t.setAttribute('aria-selected','true');
+      active = t.dataset.filter || 'all';
+      apply();
+    });
+  });
+
+  let timer=null;
+  input?.addEventListener('input', e=>{
+    clearTimeout(timer);
+    timer=setTimeout(()=>{ q = e.target.value || ''; apply(); }, 220);
+  });
+
+  sortSel?.addEventListener('change', sortCards);
+
+  sortCards();
+  countByFilter();
+  apply();
+})();
+
+/* 5) Modal — usa a <img.hero-img> do card (ou data-detail) como imagem do topo */
+(() => {
+  const modal = $('#modal');
+  const closeBtn = $('#modal-close');
+  const modalPhoto = $('#modal-photo');
+  const title = $('#modal-title');
+  const desc = $('#modal-desc');
+  const extra = $('#modal-extra');
+  const tags = $('#modal-tags');
+
+  // fallback: se imagem do modal falhar, esconde a <img> e fica só o gradiente
+  modalPhoto.addEventListener('error', ()=>{ modalPhoto.style.display='none'; });
+
+  function open(card){
+    title.textContent = card.querySelector('.proj-title')?.textContent || 'Projeto';
+    desc.textContent  = card.querySelector('.proj-desc')?.textContent  || '';
+
+    const imgEl = card.querySelector('.hero-img');
+    const src = imgEl?.getAttribute('data-detail') || imgEl?.getAttribute('src') || '';
+    if(modalPhoto){
+      modalPhoto.style.display='block';
+      modalPhoto.src = src;
+      modalPhoto.alt = `Foto do projeto: ${title.textContent}`;
+    }
+
+    tags.innerHTML='';
+    card.querySelectorAll('.tags .tag').forEach(t=>{
+      const span=document.createElement('span'); span.className='tag'; span.textContent=t.textContent; tags.appendChild(span);
+    });
+
+    extra.innerHTML='';
+    const more = card.querySelector('.proj-more');
+    if(more){ const clone=more.cloneNode(true); clone.hidden=false; extra.appendChild(clone); }
+
+    modal.classList.add('show'); document.body.style.overflow='hidden';
+  }
+  function close(){ modal.classList.remove('show'); document.body.style.overflow=''; }
+
+  $$('.open-modal').forEach(b=> b.addEventListener('click', e=> open(e.currentTarget.closest('.proj-card')) ));
+  closeBtn?.addEventListener('click', close);
+  modal?.querySelector('.modal-backdrop')?.addEventListener('click', close);
+  addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+})();
+
+/* 6) Top button */
+(() => {
+  const topBtn = $('#to-top');
+  addEventListener('scroll', ()=>{
+    const y=window.scrollY||0;
+    topBtn.classList.toggle('show', y>400);
+  });
+  topBtn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+})();
+
+/* ======= MÓDULOS ANIMADOS ======= */
+function log(el,msg){
+  const h=new Date().toTimeString().slice(0,8);
+  el.insertAdjacentHTML('beforeend', `<div>[${h}] ${msg}</div>`);
+  el.scrollTop = el.scrollHeight;
+}
+function onVisible(el, cbIn, cbOut){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){ cbIn?.(); } else { cbOut?.(); }
+  }),{threshold:.4});
+  io.observe(el);
+  return ()=>io.disconnect();
+}
+
+/* 1) Robô Scanner */
+(() => {
+  const svg = $('#scanner'); const cmd=$('#cmd-scan');
+  const cursor = $('#cursor'); const pages=[...svg.querySelectorAll('.page')];
+  let i=0, tm=null;
+
+  function moveNext(){
+    const r=pages[i%pages.length].getBBox();
+    const cx=r.x+r.width*0.8, cy=r.y+r.height*0.65;
+    cursor.style.transition='transform .45s cubic-bezier(.2,.7,.2,1)';
+    cursor.style.transform=`translate(${cx} ${cy})`;
+    cursor.style.animation='clicker .5s ease';
+    const label = ['meta title','links','imagem','scripts','seo','forms'][i%6];
+    log(cmd,`Scanner: analisando página ${i%pages.length+1} • checando ${label}…`);
+    i++;
+  }
+  function start(){ if(tm) return; moveNext(); tm=setInterval(moveNext,900); log(cmd,'Scanner iniciado'); }
+  function stop(){ clearInterval(tm); tm=null; log(cmd,'Scanner pausado'); }
+  onVisible(svg,start,stop);
+})();
+
+/* 2) Pipeline */
+(() => {
+  const cvs = $('#pipe'); const ctx=cvs.getContext('2d'); const cmd=$('#cmd-pipe');
+  let w,h,raf,t=0; function resize(){ w=cvs.clientWidth; h=cvs.clientHeight; cvs.width=w; cvs.height=h; } resize(); addEventListener('resize', resize,{passive:true});
+  const nodes=[{x:.15,y:.5},{x:.38,y:.3},{x:.38,y:.7},{x:.62,y:.4},{x:.62,y:.7},{x:.85,y:.5}];
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle='#203065'; ctx.lineWidth=3;
+    function L(a,b){ ctx.beginPath(); ctx.moveTo(a.x*w,a.y*h); ctx.lineTo(b.x*w,b.y*h); ctx.stroke(); }
+    L(nodes[0],nodes[1]); L(nodes[0],nodes[2]); L(nodes[1],nodes[3]); L(nodes[2],nodes[4]); L(nodes[3],nodes[5]); L(nodes[4],nodes[5]);
+    const paths=[[0,1,3,5],[0,2,4,5]];
+    ctx.fillStyle='#40e0ff';
+    paths.forEach((p,pi)=>{
+      const seg = (t*0.002 + (pi?0.3:0)) % 1;
+      let idx = Math.floor(seg*(p.length-1));
+      const a = nodes[p[idx]], b = nodes[p[idx+1]];
+      const local = (seg*(p.length-1))%1;
+      const x=a.x + (b.x-a.x)*local, y=a.y+(b.y-a.y)*local;
+      ctx.beginPath(); ctx.arc(x*w,y*h,6,0,Math.PI*2); ctx.fill();
+    });
+    nodes.forEach((n,i)=>{
+      ctx.fillStyle=i===0?'#7c4dff':(i===nodes.length-1?'#19c37d':'#2de1ff');
+      ctx.beginPath(); ctx.arc(n.x*w,n.y*h,10,0,Math.PI*2); ctx.fill();
+    });
+    t+=16; raf=requestAnimationFrame(draw);
+  }
+  function start(){ if(raf) return; draw(); log(cmd,'Pipeline: ingest → transform → serve'); }
+  function stop(){ cancelAnimationFrame(raf); raf=0; log(cmd,'Pipeline pausado'); }
+  onVisible(cvs,start,stop);
+})();
+
+/* 3) Conversão & Engajamento */
+(() => {
+  const box = $('#conv'); const cmd=$('#cmd-conv');
+  let tm=null; const items=['❤️','👍','💬','💥','★','$','$','$'];
+  function spawn(){
+    const el=document.createElement('div');
+    el.className='item';
+    el.textContent=items[Math.floor(Math.random()*items.length)];
+    const x=Math.random()*90+5, y=Math.random()*70+15;
+    const x2=x+(Math.random()*10-5), y2=y-20-Math.random()*20;
+    el.style.setProperty('--x', x+'%'); el.style.setProperty('--y', y+'%');
+    el.style.setProperty('--x2', x2+'%'); el.style.setProperty('--y2', y2+'%');
+    el.style.left=x+'%'; el.style.top=y+'%';
+    el.style.animation=`pop ${800+Math.random()*900}ms ease forwards`;
+    box.appendChild(el);
+    setTimeout(()=>el.remove(),1600);
+    const msg = ['clique detectado','like registrado','comentário','checkout iniciado','pagamento aprovado'][Math.floor(Math.random()*5)];
+    log(cmd,'Evento: '+msg);
+  }
+  function start(){ if(tm) return; tm=setInterval(spawn,260); log(cmd,'Módulo de conversão ativo'); }
+  function stop(){ clearInterval(tm); tm=null; log(cmd,'Conversão/engajamento pausado'); }
+  onVisible(box,start,stop);
+})();
+</script>
+</body>
+</html>

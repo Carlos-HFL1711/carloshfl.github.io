@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projeto 5 — Relatórios CFTV (Persistência + Auto Mensagens)</title>
+<style>
+:root{
+  --bg:#070b16; --fg:#eaf2ff; --muted:#9bb0d3;
+  --surface:#0d1534; --surface-2:#10183b; --surface-3:#0f1a45;
+  --brand:#7c4dff; --accent:#20d3ff; --ok:#19c37d; --bad:#ff6363; --warn:#ffd166;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+html,body{margin:0; overflow-x:hidden}
+body{
+  color:var(--fg);
+  font:15px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background:
+    radial-gradient(1200px 700px at 10% 10%, rgba(124,77,255,.18), transparent 60%),
+    radial-gradient(900px 600px at 90% 90%, rgba(32,211,255,.12), transparent 60%),
+    var(--bg);
+}
+.wrap{max-width:1200px; margin:0 auto; padding:16px 20px; overflow-x:clip}
+h1{margin:.5rem 0 .3rem; font-size:clamp(26px,5vw,40px); line-height:1.05}
+.p{color:var(--muted); margin:0}
+
+/* header */
+header{position:sticky; top:0; z-index:10; backdrop-filter: blur(10px);
+  background:rgba(7,11,22,.6); border-bottom:1px solid rgba(255,255,255,.06)}
+.head{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+a.link{display:inline-flex; gap:8px; align-items:center; padding:10px 14px; border-radius:999px; font-weight:800; color:#0a0f20; text-decoration:none; background:linear-gradient(90deg, var(--brand), var(--accent)); box-shadow:0 10px 24px rgba(124,77,255,.35)}
+
+/* toolbar */
+.toolbar{display:grid; grid-template-columns: 1.3fr 1fr; gap:12px; margin-top:12px}
+@media (max-width:1000px){ .toolbar{grid-template-columns:1fr} }
+.box{background:var(--surface-2); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:14px}
+.box h3{margin:0 0 6px}
+.controls{display:grid; grid-template-columns: repeat(3, minmax(160px,1fr)); gap:10px}
+@media (max-width:820px){ .controls{grid-template-columns:1fr 1fr} }
+select, input[type=text], .btn, .chip{
+  background:var(--surface); border:1px solid rgba(255,255,255,.1); color:var(--fg);
+  padding:10px 12px; border-radius:12px; width:100%
+}
+.actions{display:flex; gap:8px; flex-wrap:wrap}
+.btn{display:inline-flex; align-items:center; justify-content:center; font-weight:800; color:#0a0f20; background:linear-gradient(90deg, var(--brand), var(--accent)); cursor:pointer}
+.btn.secondary{color:#cfe0ff; background:#152057}
+
+/* chips filtros */
+.filters{display:flex; gap:8px; flex-wrap:wrap}
+.chip{display:inline-flex; gap:8px; align-items:center; cursor:pointer; user-select:none}
+.chip input{appearance:none; width:18px; height:18px; border-radius:4px; border:1px solid #3a4682}
+.chip input:checked{background:linear-gradient(90deg, var(--brand), var(--accent)); border-color:transparent}
+
+/* kpis */
+.kpis{display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px; margin-top:12px}
+@media (max-width:920px){ .kpis{grid-template-columns:1fr 1fr} }
+.card{background:var(--surface); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:14px}
+.card h4{margin:0 0 4px; color:#cfe0ff}
+.k{font:700 26px/1 ui-sans-serif, system-ui}
+.tag{font-size:12px; opacity:.85}
+.delta.up{color:var(--ok)} .delta.down{color:var(--bad)}
+
+/* logs */
+.term{font:13px ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; background:#0b122e; color:#cfe0ff;
+  border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:10px; height:200px; overflow:auto}
+.line{white-space:pre}
+
+/* tabela */
+.table{background:var(--surface); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:8px; margin-top:12px}
+.table h3{margin:6px 8px}
+table{width:100%; border-collapse:collapse; min-width:860px}
+th,td{padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); text-align:left; vertical-align:top}
+th{position:sticky; top:0; background:var(--surface-3)}
+.row-actions{display:flex; gap:6px; flex-wrap:wrap}
+.badge{font-size:12px; padding:5px 8px; border-radius:999px; background:#111b45; border:1px solid rgba(255,255,255,.1)}
+.badge.warn{background:#3b2d10; border-color:#6b5200}
+.badge.ok{background:#103b1f; border-color:#1e6b34}
+.badge.bad{background:#3b1010; border-color:#6b1e1e}
+
+/* reveal */
+.reveal{opacity:0; transform: translateY(18px); transition:.6s ease}
+.reveal.on{opacity:1; transform:none}
+@media (prefers-reduced-motion: reduce){ .reveal{transition:none} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap head">
+    <strong>Relatórios CFTV — Incidentes & Mensagens Automáticas</strong>
+    <div class="actions">
+      <a class="link" href="card1.html">← Voltar</a>
+      <a class="link" href="projetos.html">🤖 ← Voltar (Projetos)</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Relatórios CFTV</h1>
+  <p class="p">Gere incidentes aleatórios, salve no navegador (localStorage), filtre, exporte e automatize mensagens.</p>
+
+  <!-- TOOLBAR -->
+  <section class="toolbar reveal">
+    <!-- Gerador / Form -->
+    <div class="box">
+      <h3>Gerar / Registrar incidente</h3>
+      <div class="controls" style="margin-bottom:8px">
+        <select id="selCamera">
+          <option value="">Câmera (aleatória)</option>
+        </select>
+        <select id="selTipo">
+          <option value="">Tipo (aleatório)</option>
+          <option>Pessoa</option><option>Veículo</option><option>Movimento</option><option>Objeto abandonado</option><option>Pacote</option><option>Falha de sinal</option>
+        </select>
+        <select id="selSev">
+          <option value="">Severidade (aleatória)</option>
+          <option>Baixa</option><option>Média</option><option>Alta</option><option>Crítica</option>
+        </select>
+      </div>
+      <div class="controls">
+        <input id="txtDetalhes" type="text" placeholder="Notas/Detalhes (opcional)" />
+        <select id="selCanal">
+          <option value="">Canal (aleatório)</option>
+          <option>WhatsApp</option><option>E-mail</option><option>Painel</option>
+        </select>
+        <button class="btn" id="btnAdd">Salvar incidente</button>
+      </div>
+      <div class="actions" style="margin-top:8px">
+        <button class="btn secondary" id="btnRand">➕ Gerar aleatório</button>
+        <button class="btn secondary" id="btnAuto">▶ Auto mensagens</button>
+        <select id="freq" style="max-width:160px">
+          <option value="2000">a cada 2s</option>
+          <option value="5000" selected>a cada 5s</option>
+          <option value="10000">a cada 10s</option>
+        </select>
+        <button class="btn secondary" id="btnStop" disabled>⏹ Parar</button>
+        <button class="btn" id="btnExportCsv">Exportar CSV</button>
+        <button class="btn" id="btnExportJson">Exportar JSON</button>
+        <button class="btn" id="btnClear">Limpar tudo</button>
+      </div>
+    </div>
+
+    <!-- Filtros e Logs -->
+    <div class="box">
+      <h3>Filtros & Mensagens</h3>
+      <div class="filters" id="filters"></div>
+      <p class="p" style="margin-top:8px">Mensagens automáticas (simulação de alertas Bot):</p>
+      <div id="term" class="term" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- KPIs -->
+  <section class="kpis reveal" id="kpis">
+    <div class="card"><h4>Total de ocorrencia</h4><div class="k" id="k-total">0</div><div class="tag" id="k-total-delta">—</div></div>
+    <div class="card"><h4>Abertos</h4><div class="k" id="k-open">0</div><div class="tag">Resolva direto na tabela</div></div>
+    <div class="card"><h4>Críticos</h4><div class="k" id="k-crit">0</div><div class="tag">Notificação imediata</div></div>
+    <div class="card"><h4>Top câmera</h4><div class="k" id="k-topcam">—</div><div class="tag">Mais ocorrências</div></div>
+  </section>
+
+  <!-- TABELA -->
+  <section class="table reveal">
+    <h3>Relatórios deste site</h3>
+    <div style="overflow:auto">
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th>Data/Hora</th>
+            <th>Camera</th>
+            <th>Tipo</th>
+            <th>Severidade</th>
+            <th>Canal</th>
+            <th>Status</th>
+            <th>Detalhes</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ============================ Utils ============================ */
+const LS_KEY='cftv_reports_v1';
+const CAMS = Array.from({length:8},(_,i)=>`CAM ${i+1}`);
+const TIPOS = ['Pessoa','Veículo','Movimento','Objeto abandonado','Pacote','Falha de sinal'];
+const SEVS = ['Baixa','Média','Alta','Crítica'];
+const CANAIS = ['WhatsApp','E-mail','Painel'];
+const COLORS = {Baixa:'#19c37d', 'Média':'#ffd166', 'Alta':'#ff71c6', 'Crítica':'#ff6363'};
+
+const $ = s => document.querySelector(s);
+function log(msg){ const term=$('#term'); const h=new Date().toTimeString().slice(0,8); const div=document.createElement('div'); div.className='line'; div.textContent=`${h}  ${msg}`; term.appendChild(div); term.scrollTop=term.scrollHeight; }
+function randFrom(arr){ return arr[Math.floor(Math.random()*arr.length)] }
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a }
+
+/* ============================ State ============================ */
+let reports = JSON.parse(localStorage.getItem(LS_KEY)||'[]');
+let autoTimer=null;
+
+/* ============================ Init UI ============================ */
+function initSelects(){
+  $('#selCamera').innerHTML = `<option value="">Câmera (aleatória)</option>` + CAMS.map(c=>`<option>${c}</option>`).join('');
+}
+function initFilters(){
+  const filters = $('#filters');
+  filters.innerHTML = `
+    <label class="chip"><input type="checkbox" data-filter="sev:Crítica">Crítica</label>
+    <label class="chip"><input type="checkbox" data-filter="sev:Alta">Alta</label>
+    <label class="chip"><input type="checkbox" data-filter="sev:Média">Média</label>
+    <label class="chip"><input type="checkbox" data-filter="sev:Baixa">Baixa</label>
+    <label class="chip"><input type="checkbox" data-filter="status:Aberto">Abertos</label>
+    <label class="chip"><input type="checkbox" data-filter="status:Resolvido">Resolvidos</label>
+  `;
+  filters.addEventListener('change', renderTable);
+}
+initSelects(); initFilters();
+
+/* ============================ Generate / Save ============================ */
+function buildIncident(opts={}){
+  const ts = new Date().toLocaleString();
+  const cam = opts.camera || $('#selCamera').value || randFrom(CAMS);
+  const tipo = opts.tipo || $('#selTipo').value || randFrom(TIPOS);
+  const sev = opts.sev || $('#selSev').value || randFrom(SEVS);
+  const canal = opts.canal || $('#selCanal').value || randFrom(CANAIS);
+  const det = opts.det || $('#txtDetalhes').value || [
+    'Objeto detectado próximo ao portão',
+    'Pessoa parada em área restrita',
+    'Veículo em marcha lenta por 5min',
+    'Luminosidade oscilante (possível falha)',
+    'Pacote deixado sem acompanhamento',
+    'Reinício automático do NVR concluído'
+  ][randInt(0,5)];
+  const status = 'Aberto';
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+  return {id, ts, cam, tipo, sev, canal, status, det};
+}
+function saveReports(){
+  localStorage.setItem(LS_KEY, JSON.stringify(reports));
+}
+function addIncident(incident, {silent=false}={}){
+  reports.unshift(incident);
+  saveReports();
+  if(!silent){
+    renderKPIs(); renderTable();
+    log(`Incidente salvo: ${incident.cam} • ${incident.tipo} • ${incident.sev}`);
+    if(incident.sev==='Crítica'){
+      log(`Notificação automática (${incident.canal}) enviada para Segurança.`);
+    }
+  }
+}
+
+/* Buttons */
+$('#btnRand').onclick = ()=> addIncident(buildIncident());
+$('#btnAdd').onclick = ()=>{
+  const inc = buildIncident({}); addIncident(inc);
+  $('#txtDetalhes').value=''; $('#selCamera').value=''; $('#selTipo').value=''; $('#selSev').value=''; $('#selCanal').value='';
+}
+
+/* Auto mensagens */
+$('#btnAuto').onclick = ()=>{
+  if(autoTimer) return;
+  $('#btnAuto').disabled = true; $('#btnStop').disabled = false;
+  const freq = +$('#freq').value || 5000;
+  autoTimer = setInterval(()=>{
+    const sev = Math.random()<0.18 ? 'Crítica' : randFrom(['Baixa','Média','Alta']);
+    const inc = buildIncident({sev});
+    addIncident(inc, {silent:false});
+  }, freq);
+  log(`Auto mensagens iniciadas (freq=${freq/1000}s)`);
+};
+$('#btnStop').onclick = ()=>{
+  clearInterval(autoTimer); autoTimer=null;
+  $('#btnAuto').disabled = false; $('#btnStop').disabled = true;
+  log('Auto mensagens pausadas');
+};
+
+/* Export / Clear */
+$('#btnExportCsv').onclick = ()=>{
+  const header='data_hora,camera,tipo,severidade,canal,status,detalhes\n';
+  const rows=reports.map(r=>[r.ts,r.cam,r.tipo,r.sev,r.canal,r.status,r.det].map(s=>`"${String(s).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([header+rows],{type:'text/csv;charset=utf-8;'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='relatorios_cftv.csv'; a.click();
+};
+$('#btnExportJson').onclick = ()=>{
+  const blob=new Blob([JSON.stringify(reports,null,2)],{type:'application/json'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='relatorios_cftv.json'; a.click();
+};
+$('#btnClear').onclick = ()=>{
+  if(!confirm('Apagar todos os relatórios salvos?')) return;
+  reports=[]; saveReports(); renderKPIs(); renderTable(); log('Todos os relatórios foram limpos');
+};
+
+/* ============================ KPIs ============================ */
+function animate(el, target, fmt=v=>v){ const t0=performance.now(), dur=700;
+  function tick(t){ const p=Math.min(1,(t-t0)/dur), v=target*(0.15+0.85*Math.pow(p,0.85)); el.textContent = fmt(v); if(p<1) requestAnimationFrame(tick); }
+  requestAnimationFrame(tick);
+}
+function renderKPIs(){
+  const total = reports.length;
+  const open = reports.filter(r=>r.status==='Aberto').length;
+  const crit = reports.filter(r=>r.sev==='Crítica').length;
+  const top = reports.reduce((acc,r)=>{acc[r.cam]=(acc[r.cam]||0)+1; return acc;}, {});
+  const topCam = Object.keys(top).sort((a,b)=>top[b]-top[a])[0] || '—';
+  animate($('#k-total'), total, v=>Math.round(v));
+  $('#k-total-delta').textContent = total>0 ? `+${Math.max(0,total-1)} vs. anterior` : '—';
+  animate($('#k-open'), open, v=>Math.round(v));
+  animate($('#k-crit'), crit, v=>Math.round(v));
+  $('#k-topcam').textContent = topCam;
+}
+
+/* ============================ Table ============================ */
+let sortKey='ts', sortAsc=false;
+$('#tbl thead').addEventListener('click', (e)=>{
+  const th = e.target.closest('th'); if(!th) return;
+  sortKey = (['Data/Hora','Camera','Tipo','Severidade','Canal','Status','Detalhes','Ações'][th.cellIndex]||'ts')
+    .replace('Data/Hora','ts').replace('Camera','cam').replace('Tipo','tipo').replace('Severidade','sev').replace('Canal','canal').replace('Status','status').replace('Detalhes','det');
+  sortAsc = sortKey==='ts' ? false : !sortAsc;
+  renderTable();
+});
+
+function matchesFilters(r){
+  const active = Array.from(document.querySelectorAll('#filters input:checked')).map(i=>i.dataset.filter);
+  if(active.length===0) return true;
+  return active.every(f=>{
+    const [k,v] = f.split(':');
+    if(k==='sev') return r.sev===v;
+    if(k==='status') return r.status===v;
+    return true;
+  });
+}
+
+function renderTable(){
+  const tb = $('#tbl tbody');
+  const data = reports.slice().filter(matchesFilters).sort((a,b)=>{
+    const A=a[sortKey], B=b[sortKey];
+    return sortAsc ? (''+A).localeCompare(''+B) : (''+B).localeCompare(''+A);
+  });
+  tb.innerHTML = data.map(r=>`
+    <tr>
+      <td>${r.ts}</td>
+      <td>${r.cam}</td>
+      <td>${r.tipo}</td>
+      <td><span class="badge ${r.sev==='Crítica'?'bad':(r.sev==='Alta'?'warn':(r.sev==='Média'?'warn':'ok'))}" style="border-color:${COLORS[r.sev]};">${r.sev}</span></td>
+      <td>${r.canal}</td>
+      <td>${r.status}</td>
+      <td>${r.det}</td>
+      <td>
+        <div class="row-actions">
+          ${r.status==='Aberto'? `<button class="btn secondary" data-act="resolve" data-id="${r.id}">Resolver</button>`:''}
+          <button class="btn secondary" data-act="notify" data-id="${r.id}">Notificar</button>
+          <button class="btn secondary" data-act="delete" data-id="${r.id}">Excluir</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* actions on table */
+$('#tbl').addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-act]'); if(!btn) return;
+  const id = btn.dataset.id; const idx = reports.findIndex(r=>r.id===id); if(idx<0) return;
+  const act = btn.dataset.act;
+  if(act==='resolve'){ reports[idx].status='Resolvido'; saveReports(); renderKPIs(); renderTable(); log(`Incidente resolvido: ${reports[idx].cam} • ${reports[idx].tipo}`); }
+  if(act==='notify'){ log(`Notificação manual (${reports[idx].canal||'WhatsApp'}) enviada sobre ${reports[idx].cam} • ${reports[idx].tipo}.`); }
+  if(act==='delete'){ reports.splice(idx,1); saveReports(); renderKPIs(); renderTable(); log('Incidente excluído.'); }
+});
+
+/* ============================ Reveal ============================ */
+const IO=new IntersectionObserver((ents)=>ents.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); IO.unobserve(e.target); } }),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=> IO.observe(el));
+
+/* ============================ Boot ============================ */
+function seedIfEmpty(){
+  if(reports.length>0) return;
+  // semente inicial
+  for(let i=0;i<5;i++){
+    addIncident(buildIncident({sev: randFrom(['Média','Alta','Crítica'])}), {silent:true});
+  }
+  log('Seed inicial inserida.');
+}
+seedIfEmpty();
+renderKPIs(); renderTable();
+</script>
+</body>
+</html>
