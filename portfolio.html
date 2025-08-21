@@ -43,89 +43,64 @@ header{
   border-bottom:1px solid rgba(255,255,255,.06); backdrop-filter:saturate(120%) blur(8px);
   padding-inline:14px; overflow:hidden;
 }
-header::after{ /* aurora sutil */
+header::after{
   content:""; position:absolute; inset:auto -20% 0 -20%; height:120%;
   background:radial-gradient(60% 50% at 20% 120%, rgba(124,77,255,.18), transparent 60%),
              radial-gradient(50% 40% at 80% 120%, rgba(32,211,255,.18), transparent 60%);
   pointer-events:none; filter:blur(14px);
 }
 body.light header{ background:var(--bg); border-bottom:1px solid var(--border); }
-.pill-nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; }
-.left-wrap{ display:flex; align-items:center; gap:18px; min-width:0; }
+
+/* Header com nav centralizada e sem hambúrguer */
+.pill-nav{
+  display:grid;
+  grid-template-columns:auto 1fr; /* logo | nav (centralizado) */
+  align-items:center;
+  gap:12px;
+  padding:10px 0;
+}
 .logo{
   font-weight:800; white-space:nowrap;
   background:linear-gradient(90deg,var(--brand),var(--accent) 60%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
-#primary-nav{ display:flex; align-items:center; gap:8px; list-style:none; margin:0; padding:0; }
+
+/* Nav centralizado e rolável no mobile */
+#primary-nav{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px; list-style:none; margin:0; padding:0; flex-wrap:wrap;
+}
 #primary-nav a{
   text-decoration:none; color:var(--text); padding:8px 14px; border-radius:999px; font-weight:800;
   transition:background-color .25s,color .25s,transform .12s; border:1px solid transparent; position:relative;
+  background:var(--pill-bg); border-color:var(--border);
 }
 #primary-nav a:hover{ transform:translateY(-1px); }
-#primary-nav .pill{ background:var(--pill-bg); color:var(--accent); border-color:var(--border); }
-
-/* Destaque extra em "Projetos" (pedido) */
 #primary-nav .is-projetos{
   color:#0a1020; background:linear-gradient(90deg,var(--brand),var(--accent)); border-color:transparent;
   box-shadow:0 8px 20px rgba(32,211,255,.25);
 }
-#primary-nav .is-projetos::after{
-  content:""; position:absolute; left:12px; right:12px; bottom:6px; height:3px;
+
+/* Números (ordem cronológica) nos botões */
+.nav-steps .step::before{
+  content: attr(data-step);
+  display:inline-flex; align-items:center; justify-content:center;
+  width:22px; height:22px; border-radius:999px; margin-right:8px;
+  font-weight:900; font-size:.82rem;
   background:linear-gradient(90deg,var(--brand),var(--accent));
-  border-radius:999px; filter:drop-shadow(0 0 8px rgba(32,211,255,.6));
-  animation:underlinePulse 2.2s ease-in-out infinite;
+  color:#0a1020; box-shadow:0 3px 8px rgba(32,211,255,.25);
 }
-@keyframes underlinePulse{0%,100%{opacity:.6;transform:scaleX(.85)}50%{opacity:1;transform:scaleX(1)}}
 
-@media (max-width:760px){ #primary-nav{ display:none; } }
-
-/* Hamburguer + fechar */
-.hamburger,.emoji-close{
-  background:transparent; border:0; cursor:pointer; width:46px; height:42px;
-  border-radius:12px; display:grid; place-items:center; margin-left:auto; z-index:2400;
+/* Mobile: nav sempre visível e rolável */
+@media (max-width:760px){
+  .pill-nav{ grid-template-columns:1fr; gap:8px; }
+  .logo{ justify-self:center; }
+  #primary-nav{
+    flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    justify-content:flex-start;
+  }
+  #primary-nav::-webkit-scrollbar{ display:none; }
 }
-.hamburger:hover,.emoji-close:hover{ background:rgba(255,255,255,.06); }
-body.light .hamburger:hover, body.light .emoji-close:hover{ background:rgba(0,0,0,.06); }
-.hamburger span{
-  width:26px; height:2px; background:#fff; margin:6px 0; transition:transform .22s,opacity .22s;
-  box-shadow:0 0 0 1px rgba(0,0,0,.35);
-}
-/* FIX: visibilidade no tema claro (hambúrguer) */
-body.light .hamburger span{
-  background:#1e2530;
-  box-shadow:0 0 0 1px rgba(0,0,0,.15);
-}
-.hamburger.active span:nth-child(1){ transform:translateY(8px) rotate(45deg); }
-.hamburger.active span:nth-child(2){ opacity:0; }
-.hamburger.active span:nth-child(3){ transform:translateY(-8px) rotate(-45deg); }
-.emoji-close{ font-size:20px; line-height:1; display:none; }
-.emoji-close.show{ display:grid; }
-
-/* Side menu */
-#side-menu{
-  position:fixed; top:var(--header-h); right:0; width:min(86%, 360px); height:calc(100vh - var(--header-h));
-  background:var(--card); border-left:1px solid var(--border);
-  box-shadow:-12px 0 28px rgba(0,0,0,.35); transform:translateX(100%); transition:transform .26s cubic-bezier(.2,.7,.2,1);
-  padding:18px; display:flex; flex-direction:column; gap:12px; pointer-events:none; z-index:2300;
-}
-#side-menu.open{ transform:translateX(0); pointer-events:auto; }
-.menu-heading{ font-weight:900; opacity:.85; margin-top:6px; }
-.menu-sep{ border:0; border-top:1px solid var(--border); }
-#side-menu a{ text-decoration:none; color:var(--text); font-weight:700; padding:8px 10px; border-radius:10px; }
-#side-menu a:hover{ background:rgba(255,255,255,.06); }
-body.light #side-menu a:hover{ background:rgba(0,0,0,.06); }
-
-/* Theme switch */
-.menu-switch{ display:flex; align-items:center; gap:10px; }
-#theme-switch{ position:absolute; opacity:0; width:0; height:0; }
-.switch{ width:46px; height:26px; background:#3a4159; border-radius:999px; display:inline-block; position:relative; border:1px solid var(--border); cursor:pointer; }
-.switch::before{ content:""; position:absolute; width:22px; height:22px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform .25s ease; }
-#theme-switch:checked + .switch{ background:linear-gradient(90deg,var(--brand),var(--accent)); }
-#theme-switch:checked + .switch::before{ transform:translateX(20px); }
-
-/* Barra de leitura */
-#scrollbar{ position:absolute; left:0; bottom:-1px; height:3px; width:0%; background:linear-gradient(90deg,var(--brand),var(--accent)); box-shadow:0 0 12px rgba(32,211,255,.45); }
 
 /* ============================= SEÇÕES / HERO ============================= */
 .section{ padding:48px 0; opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
@@ -174,7 +149,6 @@ body.light #side-menu a:hover{ background:rgba(0,0,0,.06); }
   clip-path:polygon(0 0,100% 0,100% 88%,0 100%);
   transform-origin:center; animation:zoompan 14s ease-in-out infinite;
   filter:brightness(.95) saturate(1.05);
-  /* proteção contra flicker sem pausar animação */
   backface-visibility:hidden; will-change:transform;
 }
 .hero-img.show{ display:block; }
@@ -200,38 +174,27 @@ body.light .badge{ background:rgba(255,255,255,.65); color:#173050; border-color
 }
 .btn:hover{ transform:translateY(-1px); }
 .btn.primary{ background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border-color:transparent; box-shadow:0 10px 24px rgba(32,211,255,.28); }
-
-/* efeito “magnético” sutil nos botões principais */
 .btn.primary.magnet{ transition:transform .08s linear; }
 
-/* ============================= RELATÓRIOS ============================= */
+/* ============================= RELATÓRIOS (idem) ============================= */
 .kpi-grid{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); }
 .kpi{ background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; text-align:center; box-shadow:var(--shadow); }
 .kpi b{ font-size:1.3rem; display:block; }
-
 .charts{ display:grid; gap:16px; grid-template-columns:1fr 1fr; }
 @media (max-width:860px){ .charts{ grid-template-columns:1fr; } }
 .chart-card{ background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:14px; }
-
 .grid-3{ display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
 @media (max-width:860px){ .grid-3{ grid-template-columns:1fr; } }
-.table{
-  width:100%; border-collapse:separate; border-spacing:0; overflow:hidden;
-  background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow);
-}
+.table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); }
 .table th,.table td{ padding:10px 12px; border-bottom:1px solid var(--border); }
 .table th{ text-align:left; font-weight:800; }
 .table tr:last-child td{ border-bottom:0; }
 
-/* ============================= PLANOS ============================= */
+/* ============================= PLANOS / EXTRAS / CFTV / CONTAINERS ============================= */
 .pricing{ display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
 @media (max-width:1020px){ .pricing{ grid-template-columns:1fr; } }
 .price-card{ position:relative; padding:18px; border-radius:16px; background:var(--card); border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden; }
-.price-card::after{
-  content:""; position:absolute; inset:-2px; border-radius:18px;
-  background:conic-gradient(from 180deg, transparent 0 30%, rgba(32,211,255,.3), transparent 70%);
-  filter:blur(14px); animation:spin 6s linear infinite; z-index:0; pointer-events:none;
-}
+.price-card::after{ content:""; position:absolute; inset:-2px; border-radius:18px; background:conic-gradient(from 180deg, transparent 0 30%, rgba(32,211,255,.3), transparent 70%); filter:blur(14px); animation:spin 6s linear infinite; z-index:0; pointer-events:none; }
 @keyframes spin{ to{ transform:rotate(360deg); } }
 .price-inner{ position:relative; z-index:1; }
 .price-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
@@ -240,14 +203,11 @@ body.light .badge{ background:rgba(255,255,255,.65); color:#173050; border-color
 .features{ margin:10px 0 0 18px; }
 .features li{ margin:6px 0; }
 .price-cta{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-
 .switch-wrap{ display:flex; align-items:center; gap:8px; margin:6px 0 14px; }
 .switch-plan{ width:46px; height:26px; background:#3a4159; border:1px solid var(--border); border-radius:999px; position:relative; cursor:pointer; }
 .switch-plan::before{ content:""; position:absolute; width:22px; height:22px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform .25s ease; }
 .switch-plan.active{ background:linear-gradient(90deg,var(--brand),var(--accent)); }
 .switch-plan.active::before{ transform:translateX(20px); }
-
-/* ============================= DEMOS / EXTRAS ============================= */
 .demo-grid{ display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
 @media (max-width:860px){ .demo-grid{ grid-template-columns:1fr; } }
 .demo-card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:var(--shadow); }
@@ -258,104 +218,119 @@ body.light .badge{ background:rgba(255,255,255,.65); color:#173050; border-color
 .tilt .inner{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; transition:transform .15s; transform-style:preserve-3d; }
 .skeleton{ border-radius:12px; background:linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.14), rgba(255,255,255,.06)); background-size:200% 100%; animation:sk 1.2s linear infinite; height:140px; }
 @keyframes sk{ to{ background-position:-200% 0; } }
-
-/* ============================= MODAL / TOAST ============================= */
 #modal{ position:fixed; inset:0; display:none; z-index:2400; }
 #modal.show{ display:block; }
 .modal-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.44); }
-.modal-box{
-  position:absolute; left:50%; top:6vh; transform:translateX(-50%);
-  width:min(900px, 92vw); background:var(--card); border-radius:18px; border:1px solid var(--border);
-  box-shadow:0 30px 60px rgba(0,0,0,.35); overflow:hidden;
-}
+.modal-box{ position:absolute; left:50%; top:6vh; transform:translateX(-50%); width:min(900px, 92vw); background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 30px 60px rgba(0,0,0,.35); overflow:hidden; }
 .modal-hero{ min-height:210px; background:linear-gradient(135deg,var(--brand),var(--accent)); display:grid; place-items:center; padding:10px; }
 .modal-content{ padding:16px; }
 .modal-top{ display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
 .modal-close{ border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:999px; padding:6px 10px; font-size:16px; cursor:pointer; font-weight:800; }
-
-.toast{
-  position:fixed; left:50%; bottom:18px; transform:translateX(-50%) translateY(20px);
-  background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-weight:800;
-  box-shadow:var(--shadow); opacity:0; transition:opacity .25s, transform .25s; z-index:2600;
-}
+.toast{ position:fixed; left:50%; bottom:18px; transform:translateX(-50%) translateY(20px); background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-weight:800; box-shadow:var(--shadow); opacity:0; transition:opacity .25s, transform .25s; z-index:2600; }
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
-#to-top{
-  position:fixed; right:16px; bottom:84px; z-index:2200; opacity:0; transform:translateY(10px);
-  background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border:0; border-radius:999px; padding:10px 14px; font-weight:900; cursor:pointer;
-  box-shadow:0 10px 24px rgba(32,211,255,.28); transition:opacity .2s, transform .2s;
-}
+#to-top{ position:fixed; right:16px; bottom:84px; z-index:2200; opacity:0; transform:translateY(10px); background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border:0; border-radius:999px; padding:10px 14px; font-weight:900; cursor:pointer; box-shadow:0 10px 24px rgba(32,211,255,.28); transition:opacity .2s, transform .2s; }
 #to-top.show{ opacity:1; transform:none; }
-
 footer{ text-align:center; padding:28px 0; color:var(--muted); }
-
-/* ============================= EXTRAS: Python/APIs & CFTV ============================= */
 .section .eyebrow{ font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 6px }
 .grid-xtra{ display:grid; gap:16px; grid-template-columns:repeat(3,1fr) }
 @media (max-width:1020px){ .grid-xtra{ grid-template-columns:1fr } }
-
-.card-x{
-  background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow);
-  padding:16px; position:relative; overflow:hidden;
-}
+.card-x{ background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:16px; position:relative; overflow:hidden; }
 .card-x h3{ margin:0 0 4px }
 .card-x p{ margin:0; color:var(--muted) }
-.card-x .tags{ margin-top:10px }
-.card-x .hero{
-  position:relative; height:160px; border-radius:12px; overflow:hidden; margin-bottom:10px;
-  background:linear-gradient(135deg,var(--brand),var(--accent));
-}
+.card-x .hero{ position:relative; height:160px; border-radius:12px; overflow:hidden; margin-bottom:10px; background:linear-gradient(135deg,var(--brand),var(--accent)); }
 .card-x .hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.9 }
-.badge-top{
-  position:absolute; top:10px; left:10px; background:rgba(0,0,0,.35);
-  color:#fff; border:1px solid rgba(255,255,255,.2); padding:6px 10px; border-radius:999px; font-weight:900
-}
+.badge-top{ position:absolute; top:10px; left:10px; background:rgba(0,0,0,.35); color:#fff; border:1px solid rgba(255,255,255,.2); padding:6px 10px; border-radius:999px; font-weight:900 }
 body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-color:rgba(0,0,0,.08) }
-
 .kv{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px }
 .kv div{ background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px }
 .kv b{ display:block; font-size:1.05rem }
 .kv small{ color:var(--muted) }
-
 .pipeline{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:10px }
 @media (max-width:800px){ .pipeline{ grid-template-columns:1fr 1fr } }
-.pipe{
-  background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center;
-  animation:pop .5s ease both
-}
+.pipe{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center; animation:pop .5s ease both }
 .pipe i{ display:block; font-style:normal; font-weight:900; font-size:1.1rem }
 .pipe small{ color:var(--muted) }
-
-.diagram{
-  background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:10px; overflow:auto
-}
+.diagram{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:10px; overflow:auto }
 .diagram svg text{ fill:var(--text); font:700 12px 'Segoe UI',sans-serif }
 .diagram .node{ fill:url(#g2) }
 .diagram .edge{ stroke:rgba(255,255,255,.25); stroke-width:2; marker-end:url(#arrow) }
-
 .mini-grid{ display:grid; gap:12px; grid-template-columns:repeat(3,1fr); margin-top:12px }
 @media (max-width:900px){ .mini-grid{ grid-template-columns:1fr } }
 .mini{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px }
 .mini h4{ margin:0 0 6px }
 .mini ul{ margin:0 0 0 18px }
 .mini li{ margin:6px 0 }
-
 .techs{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px }
 .techs .chip{ padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--card); font-weight:800 }
-
-.cta-bar{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; align-items:center;
-  background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px }
-
-/* ============================= CONTAINERS EXTRAS (para fotos) ============================= */
+.cta-bar{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px }
 .containers{ display:grid; gap:16px; grid-template-columns:repeat(3,1fr); }
 @media (max-width:1000px){ .containers{ grid-template-columns:1fr; } }
-.container-card{
-  background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); overflow:hidden;
-}
+.container-card{ background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); overflow:hidden; }
 .container-card .head{ padding:14px; display:flex; align-items:center; justify-content:space-between; gap:10px }
 .container-card .media{ position:relative; height:220px; overflow:hidden; background:var(--surface); }
 .container-card .media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-/* COLOQUE SUA FOTO AQUI: defina o src da <img> dentro de .media */
 .container-card .body{ padding:14px; }
+
+/* ====== Barra de progresso visível ====== */
+#scrollbar{
+  height:3px; width:0;
+  background:linear-gradient(90deg, var(--brand), var(--accent));
+  box-shadow:0 0 10px rgba(32,211,255,.45), 0 0 16px rgba(124,77,255,.28);
+  transition:width .15s linear;
+}
+
+/* ====== Moldura viva (hover) — aplicada via JS somente em nav + botões ====== */
+@property --angle { syntax:"<angle>"; initial-value:0deg; inherits:false; }
+.has-frame{
+  position:relative; z-index:0;
+  --angle:0deg; --frame-size:2px; --frame-alpha:.95; --frame-blur:16px;
+}
+.has-frame::before,
+.has-frame::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0;
+  transition:opacity .35s ease;
+}
+.has-frame::before{
+  padding:var(--frame-size);
+  background: conic-gradient(from var(--angle), var(--accent), var(--brand), var(--accent));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  z-index:1;
+}
+.has-frame::after{
+  background: radial-gradient(160px 160px at var(--mx,50%) var(--my,50%),
+             color-mix(in oklab, var(--accent) 30%, transparent), transparent 60%);
+  filter: blur(var(--frame-blur)); z-index:0;
+}
+.has-frame:hover::before,
+.has-frame:hover::after{ opacity:var(--frame-alpha); }
+@keyframes spinAngle { to{ --angle:360deg; } }
+.has-frame:hover{ animation: spinAngle 2s linear infinite; }
+.has-frame:focus-visible::before,
+.has-frame:focus-visible::after{ opacity:var(--frame-alpha); }
+
+/* ===== Fallback seguro p/ browsers sem mask-composite ===== */
+@supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+  .has-frame::before,
+  .has-frame::after { display:none !important; }
+  .has-frame:hover {
+    box-shadow:
+      0 0 0 2px color-mix(in oklab, var(--accent) 50%, transparent),
+      0 0 24px color-mix(in oklab, var(--accent) 30%, transparent);
+  }
+}
+
+/* Evita tilt interferir no clique do botão */
+@supports (selector(:has(*))) {
+  .proj-card:has(.open-flow:hover){ transform:none !important; }
+}
+
+/* respeita reduce-motion */
+@media (prefers-reduced-motion: reduce){
+  .has-frame:hover{ animation:none; }
+}
 </style>
 </head>
 
@@ -363,40 +338,17 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
   <!-- ============================= HEADER ============================= -->
   <header>
     <nav class="pill-nav">
-      <div class="left-wrap">
-        <div class="logo">Carlos Henrique</div>
-        <!-- LINKS AO LADO DO NOME -->
-        <ul id="primary-nav">
-          <li><a class="pill" href="index.html">Início</a></li>
-          <li><a class="pill is-projetos" href="projetos.html">Projetos</a></li>
-          <li><a class="pill" href="contato.html">Contato</a></li>
-        </ul>
-      </div>
+      <div class="logo">Carlos Henrique</div>
 
-      <!-- Ícones mobile -->
-      <button id="burger" class="hamburger" aria-label="Abrir menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <button id="close-emoji" class="emoji-close" aria-label="Fechar menu">❌</button>
-
-      <aside id="side-menu" aria-hidden="true">
-        <p class="menu-heading">Navegação</p>
-        <a href="index.html">Início</a>
-        <a href="projetos.html">Projetos</a>
-        <a href="contato.html">Contato</a>
-        <hr class="menu-sep" />
-        <p class="menu-heading">Outros</p>
-        <a href="https://github.com/seuuser" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.linkedin.com/in/seuuser" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://www.figma.com/@seuuser" target="_blank" rel="noopener">Figma</a>
-        <a href="cv.pdf" target="_blank" rel="noopener">CV (PDF)</a>
-        <hr class="menu-sep" />
-        <div class="menu-switch">
-          <input type="checkbox" id="theme-switch" checked />
-          <label class="switch" for="theme-switch"></label>
-          <span class="switch-label">Tema escuro</span>
-        </div>
-      </aside>
+      <!-- NAV CENTRALIZADO COM NUMERAÇÃO (com SOBRE entre Início e Projetos) -->
+      <ul id="primary-nav" class="nav-steps" aria-label="Navegação principal">
+        <li><a class="pill step" data-step="1" href="index.html">Início</a></li>
+        <li><a class="pill step" data-step="2" href="sobre.html">Sobre</a></li>
+        <li><a class="pill step is-projetos" data-step="3" href="projetos.html">Projetos</a></li>
+        <li><a class="pill step" data-step="4" href="sistemas2.html">Sistemas</a></li>
+        <li><a class="pill step" data-step="5" href="testemain.html">Testes</a></li>
+        <li><a class="pill step" data-step="6" href="contato.html">Contato</a></li>
+      </ul>
     </nav>
     <div id="scrollbar"></div>
   </header>
@@ -426,7 +378,6 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
   <!-- ============================= GRID (6 PROJETOS) ============================= -->
   <main class="container section">
     <div id="grid" class="proj-grid">
-
       <!-- CARD 1 -->
       <article class="proj-card" data-tags="sites,uiux,landing" data-flow="site">
         <div class="proj-hero grad-blue">
@@ -441,7 +392,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="tags"><span class="tag">SEO</span><span class="tag">CWV</span><span class="tag">Acessível</span></div>
           <div class="proj-actions">
             <button class="btn primary open-flow magnet" type="button">Ver funcionamento</button>
-            <button class="btn small outline open-report" type="button">Relatório</button>
+            <a class="btn small outline open-report" href="#relatorios">Relatório</a>
           </div>
         </div>
       </article>
@@ -460,7 +411,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="tags"><span class="tag">Jobs</span><span class="tag">Logs</span><span class="tag">Relatórios</span></div>
           <div class="proj-actions">
             <button class="btn primary open-flow magnet" type="button">Ver funcionamento</button>
-            <button class="btn small outline open-report" type="button">Relatório</button>
+            <a class="btn small outline open-report" href="#relatorios">Relatório</a>
           </div>
         </div>
       </article>
@@ -479,7 +430,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="tags"><span class="tag">MQTT</span><span class="tag">WebSocket</span><span class="tag">Alertas</span></div>
           <div class="proj-actions">
             <button class="btn primary open-flow magnet" type="button">Ver funcionamento</button>
-            <button class="btn small outline open-report" type="button">Relatório</button>
+            <a class="btn small outline open-report" href="#relatorios">Relatório</a>
           </div>
         </div>
       </article>
@@ -498,7 +449,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="tags"><span class="tag">SLA</span><span class="tag">Checklist</span><span class="tag">Inventário</span></div>
           <div class="proj-actions">
             <button class="btn primary open-flow magnet" type="button">Ver funcionamento</button>
-            <button class="btn small outline open-report" type="button">Relatório</button>
+            <a class="btn small outline open-report" href="#relatorios">Relatório</a>
           </div>
         </div>
       </article>
@@ -517,7 +468,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="tags"><span class="tag">Charts</span><span class="tag">Filtros</span><span class="tag">Export</span></div>
           <div class="proj-actions">
             <button class="btn primary open-flow magnet" type="button">Ver funcionamento</button>
-            <button class="btn small outline open-report" type="button">Relatório</button>
+            <a class="btn small outline open-report" href="#relatorios">Relatório</a>
           </div>
         </div>
       </article>
@@ -536,11 +487,10 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="tags"><span class="tag">Checkout</span><span class="tag">Favoritos</span><span class="tag">Cupons</span></div>
           <div class="proj-actions">
             <button class="btn primary open-flow magnet" type="button">Ver funcionamento</button>
-            <button class="btn small outline open-report" type="button">Relatório</button>
+            <a class="btn small outline open-report" href="#relatorios">Relatório</a>
           </div>
         </div>
       </article>
-
     </div>
   </main>
 
@@ -586,7 +536,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
     </div>
   </section>
 
-  <!-- ============================= PLANOS ============================= -->
+  <!-- ============================= PLANOS / EXTRAS / CFTV / CONTAINERS ============================= -->
   <section class="container section" id="planosparaosistema">
     <div class="switch-wrap">
       <span class="muted">Mensal</span>
@@ -600,7 +550,10 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="price-head"><h3>Starter</h3><span class="badge-save">Entrega rápida</span></div>
           <div class="price" data-price-m="R$ 510" data-price-y="R$ 4.896">R$ 510</div>
           <ul class="features"><li>Landing 1 página</li><li>Formulário + WhatsApp</li><li>SEO básico & Suporte(🥉)</li></ul>
-          <div class="price-cta"><button class="btn primary ripple-btn magnet">Começar</button><button class="btn small outline">Ver detalhes</button></div>
+          <div class="price-cta">
+            <a class="btn primary ripple-btn magnet" href="contato.html">Começar</a>
+            <a class="btn small outline" href="projetos.html">Ver detalhes</a>
+          </div>
         </div>
       </article>
 
@@ -609,7 +562,10 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="price-head"><h3>Professional</h3><span class="badge-save">Mais vendido</span></div>
           <div class="price" data-price-m="R$ 850" data-price-y="R$ 8.160">R$ 850</div>
           <ul class="features"><li>Site multi-seções</li><li>Integrações (API/CRM)</li><li>Dashboard & Suporte(🥈)</li></ul>
-          <div class="price-cta"><button class="btn primary ripple-btn magnet">Contratar</button><button class="btn small outline">Ver detalhes</button></div>
+          <div class="price-cta">
+            <a class="btn primary ripple-btn magnet" href="contato.html">Contratar</a>
+            <a class="btn small outline" href="projetos.html">Ver detalhes</a>
+          </div>
         </div>
       </article>
 
@@ -618,13 +574,15 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <div class="price-head"><h3>Enterprise</h3><span class="badge-save">SLA & Suporte</span></div>
           <div class="price" data-price-m="R$ 1.550" data-price-y="R$ 14.880">R$ 1.667</div>
           <ul class="features"><li>Arquitetura escalável</li><li>Automação + CFTV/IoT</li><li>Suporte Dedicado & Premium(🥇)</li></ul>
-          <div class="price-cta"><button class="btn primary ripple-btn magnet">Falar com vendas</button><button class="btn small outline">Ver detalhes</button></div>
+          <div class="price-cta">
+            <a class="btn primary ripple-btn magnet" href="contato.html">Falar com vendas</a>
+            <a class="btn small outline" href="#relatorios">Ver detalhes</a>
+          </div>
         </div>
       </article>
     </div>
   </section>
- 
-  <!-- ============================= EXTRAS NOVOS ============================= -->
+
   <section class="container section extras--deliverables">
     <h2>Pacote completo para o seu site</h2>
     <p class="muted">Tudo que um site profissional precisa — incluído nos projetos.</p>
@@ -649,15 +607,15 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
     <div class="care-grid">
       <article class="care-card"><header><h3>Essencial</h3><small>para sites leves</small></header>
         <ul><li>Hospedagem gerenciada (até 10k visitas/mês)</li><li>SSL, backups diários, uptime monitor</li><li>2h de suporte/mês</li><li>Relatório mensal de performance</li></ul>
-        <div class="care-cta"><button class="btn small outline">Quero este</button></div>
+        <div class="care-cta"><a class="btn small outline" href="contato.html">Quero este</a></div>
       </article>
       <article class="care-card"><header><h3>Pro</h3><small>para crescimento</small></header>
         <ul><li>CDN + cache, até 50k visitas/mês</li><li>Otimização contínua de SEO técnico</li><li>6h de suporte/mês + filas</li><li>Relatórios quinzenais</li></ul>
-        <div class="care-cta"><button class="btn primary">Recomendado</button></div>
+        <div class="care-cta"><a class="btn primary" href="contato.html">Recomendado</a></div>
       </article>
       <article class="care-card"><header><h3>Enterprise</h3><small>alto tráfego</small></header>
         <ul><li>Infra dedicada/escala automática</li><li>WAF, auditoria de segurança e SLA</li><li>Suporte prioritário (até 24h/mês)</li><li>Relatórios semanais</li></ul>
-        <div class="care-cta"><button class="btn small outline">Falar com vendas</button></div>
+        <div class="care-cta"><a class="btn small outline" href="contato.html">Falar com vendas</a></div>
       </article>
     </div>
   </section>
@@ -678,7 +636,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
             <h3>Marketing específico para seu nicho</h3>
             <p class="muted">Pesquisa de palavras-chave, páginas pilar/cluster, calendário de conteúdos e tracking.</p>
             <ul class="tick"><li>SEO on-page/técnico/local</li><li>Copy de alta conversão</li><li>Integração com Ads e Pixel</li></ul>
-            <button class="btn primary">Quero um plano de marketing</button>
+            <a class="btn primary" href="contato.html">Quero um plano de marketing</a>
           </div>
           <div class="panel-art deco-float"><div class="bubble b1"></div><div class="bubble b2"></div><div class="bubble b3"></div></div>
         </div>
@@ -690,7 +648,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
             <h3>Landing pages que vendem</h3>
             <p class="muted">Layout testado, acima da dobra, prova social e FAQ.</p>
             <ul class="tick"><li>Componentes reutilizáveis</li><li>Integração com CRM</li><li>Performance 90+ PageSpeed</li></ul>
-            <button class="btn primary">Ver modelos de landing</button>
+            <a class="btn primary" href="projetos.html">Ver modelos de landing</a>
           </div>
           <div class="panel-art marquee">
             <div class="marquee-track"><span>Hero</span><span>CTA</span><span>Prova Social</span><span>Benefícios</span><span>FAQ</span><span>Form</span></div>
@@ -704,7 +662,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
             <h3>Automação com Python + Machine Learning</h3>
             <p class="muted">Robôs para captar leads, classificar contatos, prever churn e priorizar.</p>
             <ul class="tick"><li>ETL + dashboards</li><li>Score de intenção</li><li>Alertas por e-mail/WhatsApp</li></ul>
-            <button class="btn primary">Quero automatizar meu funil</button>
+            <a class="btn primary" href="contato.html">Quero automatizar meu funil</a>
           </div>
           <div class="panel-art chart-bars"><i style="--h:60%"></i><i style="--h:85%"></i><i style="--h:40%"></i><i style="--h:72%"></i></div>
         </div>
@@ -716,7 +674,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
             <h3>Design & pinturas digitais</h3>
             <p class="muted">Identidade visual, ilustrações e ícones exclusivos.</p>
             <ul class="tick"><li>Logo e guia de cores</li><li>Mockups e ilustrações</li><li>Pacote social</li></ul>
-            <button class="btn primary">Solicitar portfólio de arte</button>
+            <a class="btn primary" href="projetos.html">Solicitar portfólio de arte</a>
           </div>
           <div class="panel-art canvas-tilt"><div class="canvas"></div></div>
         </div>
@@ -735,7 +693,6 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
     </div>
   </section>
 
-  <!-- ============================= AUTOMACÕES & APIS ============================= -->
   <section class="container section" id="automacoes-apis">
     <p class="eyebrow">Automação & Integrações</p>
     <h2>Automação em Python + Integração por API</h2>
@@ -751,7 +708,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
         <p>APIs/planilhas → tratamento → relatórios (PDF/Excel) com envio automático.</p>
         <div class="kv"><div><b>+120h/mês</b><small>economizadas</small></div><div><b>Diário / Semanal</b><small>agendamento</small></div></div>
         <div class="techs"><span class="chip">Pandas</span><span class="chip">Airflow/Cron</span><span class="chip">GA4</span><span class="chip">Sheets</span></div>
-        <div class="cta-bar"><button class="btn primary">Quero automatizar</button><a class="btn small outline" href="#relatorios">Ver relatórios</a></div>
+        <div class="cta-bar"><a class="btn primary" href="contato.html">Quero automatizar</a><a class="btn small outline" href="#relatorios">Ver relatórios</a></div>
       </article>
 
       <article class="card-x">
@@ -760,7 +717,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
         <p>CRM/ERP, pagamentos, filas e logs com retries.</p>
         <div class="pipeline"><div class="pipe"><i>Webhook</i><small>evento</small></div><div class="pipe"><i>Fila/Job</i><small>retries</small></div><div class="pipe"><i>API</i><small>POST/GET</small></div><div class="pipe"><i>OK</i><small>log/alerta</small></div></div>
         <div class="techs"><span class="chip">HTTPX</span><span class="chip">JWT/OAuth</span><span class="chip">Queues</span></div>
-        <div class="cta-bar"><button class="btn small outline">Conectar meu CRM</button><button class="btn small outline">Integrar pagamentos</button></div>
+        <div class="cta-bar"><a class="btn small outline" href="contato.html">Conectar meu CRM</a><a class="btn small outline" href="contato.html">Integrar pagamentos</a></div>
       </article>
 
       <article class="card-x">
@@ -769,12 +726,11 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
         <p>Priorize contatos (propensão à compra) e reduza churn.</p>
         <div class="kv"><div><b>+18%</b><small>conversão</small></div><div><b>-22%</b><small>churn</small></div></div>
         <div class="techs"><span class="chip">Scikit-learn</span><span class="chip">XGBoost</span><span class="chip">Dash/API</span></div>
-        <div class="cta-bar"><button class="btn small outline">Quero scoring de leads</button></div>
+        <div class="cta-bar"><a class="btn small outline" href="contato.html">Quero scoring de leads</a></div>
       </article>
     </div>
   </section>
 
-  <!-- ============================= CFTV ============================= -->
   <section class="container section" id="cftv-remoto">
     <p class="eyebrow">CFTV / DNS / Cloud</p>
     <h2>Monitoramento de câmeras remoto</h2>
@@ -808,10 +764,9 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
     </div>
 
     <div class="techs" aria-label="Tecnologias CFTV"><span class="chip">RTSP/ONVIF</span><span class="chip">DNS</span><span class="chip">Webhooks</span><span class="chip">MQTT</span><span class="chip">HTTPS</span><span class="chip">Grafana</span></div>
-    <div class="cta-bar"><button class="btn primary">Quero monitoramento remoto</button><a class="btn small outline" href="#relatorios">Ver métricas</a></div>
+    <div class="cta-bar"><a class="btn primary" href="contato.html">Quero monitoramento remoto</a><a class="btn small outline" href="#relatorios">Ver métricas</a></div>
   </section>
 
-  <!-- ============================= CONTAINERS EXTRAS (com fotos) ============================= -->
   <section class="container section">
     <h2>Containers extras para fotos</h2>
     <div class="containers">
@@ -821,8 +776,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <img loading="lazy" src="https://images.unsplash.com/photo-1600267185393-e158a98703de?auto=format&fit=crop&w=1400&q=70" alt="Mockup do projeto">
         </div>
         <div class="body"><p class="muted">  <h3><strong>Do rascunho ao WOW em produção</strong></h3>
-
-“Transformamos a sua ideia em uma experiência que vende: começamos pelo briefing e protótipos rápidos, validamos a narrativa e, só então, avançamos para o código. Cada bloco foi pensado para clareza, velocidade e conversão — do hero que conta sua proposta de valor, às provas sociais que reduzem objeções. O resultado? Um visual que impressiona, métricas que sobem e uma base sólida para escalar.”</p></div>
+“Transformamos a sua ideia em uma experiência que vende...”</p></div>
       </article>
 
       <article class="container-card">
@@ -831,9 +785,7 @@ body.light .badge-top{ background:rgba(255,255,255,.65); color:#173050; border-c
           <img loading="lazy" src="docs/antesedepois.png" alt="Antes e depois">
         </div>
         <div class="body"><p class="muted"><h3><strong>O que muda quando o site trabalha por você?</strong></h3>
-
-“Antes: páginas lentas, layout confuso, bounce alto e visitas que não viram vendas.
-Depois: arquitetura enxuta, design orientado a objetivos e CTAs irresistíveis. Otimizamos performance, acessibilidade e SEO técnico — e o impacto aparece no dia a dia: carregamento 5–6× mais rápido, conversão multiplicada e uma marca que inspira confiança. É a diferença entre ter ‘um site’ e ter um motor de vendas.”</p></div>
+“Antes: páginas lentas... Depois: arquitetura enxuta...”</p></div>
       </article>
 
       <article class="container-card">
@@ -841,8 +793,8 @@ Depois: arquitetura enxuta, design orientado a objetivos e CTAs irresistíveis. 
         <div class="media">
           <img loading="lazy" src="docs/interfacewebdesign.jpg" alt="Componentes animados">
         </div>
-        <div class="body"><p class="muted"><h3><strong>Microinterações que guiam e convertem</h3></strong>
-“Animações sutis dão feedback, destacam caminhos e removem atrito. Botões ‘magnéticos’, cards com tilt 3D e transições suaves criam sensação de fluidez — sem pesar no carregamento. Cada detalhe foi calibrado para foco, leitura e clique, respeitando sua identidade visual. Resultado: uma interface que prende a atenção e impulsiona ações.”</p></div>
+        <div class="body"><p class="muted"><h3><strong>Microinterações que guiam e convertem</strong></h3>
+“Animações sutis dão feedback...”</p></div>
       </article>
     </div>
   </section>
@@ -852,7 +804,7 @@ Depois: arquitetura enxuta, design orientado a objetivos e CTAs irresistíveis. 
 
   <footer class="container"><p>&copy; 2025 Carlos Henrique. Todos os direitos reservados.</p></footer>
 
-  <!-- ============================= MODAL (necessário para “Ver funcionamento”) ============================= -->
+  <!-- ============================= MODAL ============================= -->
   <div id="modal" aria-hidden="true">
     <div class="modal-backdrop"></div>
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -912,35 +864,7 @@ const DATA = {
   $$('.section').forEach(s=>io.observe(s));
 })();
 
-/* Menu lateral — usa emoji ❌ no lugar da animação do hambúrguer */
-(() => {
-  const burger=$('#burger'), closeEmoji=$('#close-emoji'), side=$('#side-menu');
-  if(!burger || !closeEmoji || !side) return;
-  let scrollTop=0;
-  const lock=()=>{ scrollTop=window.scrollY||0; document.body.classList.add('scroll-lock'); document.body.style.top=`-${scrollTop}px`; };
-  const unlock=()=>{ document.body.classList.remove('scroll-lock'); document.body.style.top=''; window.scrollTo(0,scrollTop); };
-  const openMenu=o=>{
-    side.classList.toggle('open', o);
-    side.setAttribute('aria-hidden', (!o).toString());
-    burger.classList.toggle('active', o);           // classe pode ficar, mas o burger será oculto
-    burger.setAttribute('aria-expanded', o?'true':'false');
-    if(o){
-      burger.style.display='none';                  // mostra só o ❌
-      closeEmoji.classList.add('show');
-      lock();
-    }else{
-      closeEmoji.classList.remove('show');
-      burger.style.display='grid';
-      unlock();
-    }
-  };
-  burger.addEventListener('click', ()=> openMenu(!side.classList.contains('open')));
-  closeEmoji.addEventListener('click', ()=> openMenu(false));
-  const links = side.querySelectorAll('a'); links.forEach(a=> a.addEventListener('click',()=> openMenu(false)));
-  addEventListener('keydown', e=>{ if(e.key==='Escape') openMenu(false); });
-})();
-
-/* Tema */
+/* Tema (opcional) */
 (() => {
   const sw = $('#theme-switch');
   if(!sw) return;
@@ -1060,29 +984,24 @@ function genFlow(type='site'){
   animateNum($('#k-ativos'), ativos);
 })();
 
-/* Canvas helpers */
+/* Canvas helpers e gráficos */
 function setupCanvas(cv){
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   const rect = cv.getBoundingClientRect();
   let width = rect.width;
-  if(!width || width < 10){
-    width = (cv.parentElement && cv.parentElement.clientWidth) || parseInt(cv.style.width) || 300;
-  }
+  if(!width || width < 10){ width = (cv.parentElement && cv.parentElement.clientWidth) || parseInt(cv.style.width) || 300; }
   const ratio = parseFloat(cv.dataset.ratio || '0.55');
   const cssH = Math.max(200, Math.round(width * ratio));
   cv.style.height = cssH + 'px';
   cv.width = Math.round(width * dpr);
   cv.height = Math.round(cssH * dpr);
-  const ctx = cv.getContext('2d');
-  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
   return {ctx, w: width, h: cssH};
 }
 function grid(ctx,w,h,steps=4){
   ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.lineWidth=1;
   for(let i=1;i<=steps;i++){ const y = (h-24)*i/steps + 8; ctx.beginPath(); ctx.moveTo(40,y); ctx.lineTo(w-8,y); ctx.stroke(); }
 }
-
-/* Gráficos */
 function lineChart(cv, labels, values){
   if(!cv) return; const {ctx,w,h}=setupCanvas(cv);
   ctx.clearRect(0,0,w,h); grid(ctx,w,h,4);
@@ -1156,11 +1075,9 @@ drawAllCharts();
   const io = new IntersectionObserver((ents)=>{ if(ents.some(e=>e.isIntersecting)) drawAllCharts(); },{threshold:.2});
   cvs.forEach(cv=> io.observe(cv));
 })();
-(() => {
-  let raf=null; addEventListener('resize', ()=>{ cancelAnimationFrame(raf); raf=requestAnimationFrame(drawAllCharts); });
-})();
+(() => { let raf=null; addEventListener('resize', ()=>{ cancelAnimationFrame(raf); raf=requestAnimationFrame(drawAllCharts); }); })();
 
-/* Demos UI */
+/* Ripple */
 (() => {
   $$('.ripple-btn').forEach(btn=>{
     btn.addEventListener('click', function(e){
@@ -1194,7 +1111,7 @@ drawAllCharts();
 /* Botão Topo */
 (() => { const topBtn = $('#to-top'); if(topBtn) topBtn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'})); })();
 
-/* Mostrar imagem do card se tiver src + animação de reveal */
+/* Imagens dos cards com reveal */
 (() => {
   $$('.proj-hero').forEach(box=>{
     const img = box.querySelector('.hero-img');
@@ -1207,7 +1124,7 @@ drawAllCharts();
   });
 })();
 
-/* ===== Animação das .pipe quando entram na viewport ===== */
+/* Animação das .pipe ao entrar em viewport */
 (() => {
   const els = document.querySelectorAll('.pipe'); if(!els.length) return;
   const io = new IntersectionObserver((entries)=>{
@@ -1216,7 +1133,7 @@ drawAllCharts();
   els.forEach(el=>{ el.style.animationPlayState = 'paused'; io.observe(el); });
 })();
 
-/* ===== Smooth scroll dos CTAs internos ===== */
+/* Smooth scroll nos CTAs internos */
 (() => {
   document.querySelectorAll('.cta-bar a[href^="#"]').forEach(a=>{
     a.addEventListener('click', (e)=>{
@@ -1226,7 +1143,7 @@ drawAllCharts();
   });
 })();
 
-/* ===== Stagger + Tilt 3D nos cards ===== */
+/* Tilt 3D + stagger nos cards */
 (() => {
   const cards = $$('.proj-card');
   cards.forEach((c,i)=> c.style.animationDelay = (i*70)+'ms');
@@ -1235,20 +1152,18 @@ drawAllCharts();
   if(isTouch) return;
 
   cards.forEach(card=>{
-    const strength = 10; // graus máx
+    const strength = 10;
     card.addEventListener('mousemove', (e)=>{
       const r = card.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width - .5;
       const y = (e.clientY - r.top) / r.height - .5;
       card.style.transform = `rotateX(${(-y*strength).toFixed(2)}deg) rotateY(${(x*strength).toFixed(2)}deg) translateY(-2px)`;
     });
-    card.addEventListener('mouseleave', ()=>{
-      card.style.transform = '';
-    });
+    card.addEventListener('mouseleave', ()=>{ card.style.transform = ''; });
   });
 })();
 
-/* ===== Botões “magnéticos” ===== */
+/* Botões “magnéticos” */
 (() => {
   const btns = $$('.btn.primary.magnet');
   if(!btns.length || matchMedia('(hover: none)').matches) return;
@@ -1261,6 +1176,37 @@ drawAllCharts();
     });
     btn.addEventListener('mouseleave', ()=> btn.style.transform = '');
   });
+})();
+
+/* === Moldura viva (versão segura): aplica só em nav + botões principais === */
+(() => {
+  const targets = [
+    '#primary-nav a.pill',   // botões do menu
+    '.btn.primary'           // CTAs principais
+  ];
+  const els = targets.flatMap(sel => Array.from(document.querySelectorAll(sel)));
+
+  const supportsMask =
+    (CSS && CSS.supports && (CSS.supports('mask-composite','exclude') || CSS.supports('-webkit-mask-composite','xor')));
+
+  els.forEach(el => el.classList.add('has-frame'));
+
+  if(supportsMask){
+    const move = (e, el) => {
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      el.style.setProperty('--mx', (x*100).toFixed(2) + '%');
+      el.style.setProperty('--my', (y*100).toFixed(2) + '%');
+    };
+    els.forEach(el => {
+      el.addEventListener('pointermove', e => move(e, el));
+      el.addEventListener('pointerleave', () => {
+        el.style.removeProperty('--mx');
+        el.style.removeProperty('--my');
+      });
+    });
+  }
 })();
 </script>
 </body>
