@@ -91,6 +91,11 @@ body.light .hamburger:hover, body.light .emoji-close:hover{ background:rgba(0,0,
   width:26px; height:2px; background:#fff; margin:6px 0; transition:transform .22s,opacity .22s;
   box-shadow:0 0 0 1px rgba(0,0,0,.35);
 }
+/* FIX: visibilidade no tema claro (hambúrguer) */
+body.light .hamburger span{
+  background:#1e2530;
+  box-shadow:0 0 0 1px rgba(0,0,0,.15);
+}
 .hamburger.active span:nth-child(1){ transform:translateY(8px) rotate(45deg); }
 .hamburger.active span:nth-child(2){ opacity:0; }
 .hamburger.active span:nth-child(3){ transform:translateY(-8px) rotate(-45deg); }
@@ -907,7 +912,7 @@ const DATA = {
   $$('.section').forEach(s=>io.observe(s));
 })();
 
-/* Menu lateral */
+/* Menu lateral — usa emoji ❌ no lugar da animação do hambúrguer */
 (() => {
   const burger=$('#burger'), closeEmoji=$('#close-emoji'), side=$('#side-menu');
   if(!burger || !closeEmoji || !side) return;
@@ -916,10 +921,18 @@ const DATA = {
   const unlock=()=>{ document.body.classList.remove('scroll-lock'); document.body.style.top=''; window.scrollTo(0,scrollTop); };
   const openMenu=o=>{
     side.classList.toggle('open', o);
-    burger.classList.toggle('active', o);
+    side.setAttribute('aria-hidden', (!o).toString());
+    burger.classList.toggle('active', o);           // classe pode ficar, mas o burger será oculto
     burger.setAttribute('aria-expanded', o?'true':'false');
-    if(o){ burger.style.display='none'; closeEmoji.classList.add('show'); lock(); }
-    else { closeEmoji.classList.remove('show'); burger.style.display='grid'; unlock(); }
+    if(o){
+      burger.style.display='none';                  // mostra só o ❌
+      closeEmoji.classList.add('show');
+      lock();
+    }else{
+      closeEmoji.classList.remove('show');
+      burger.style.display='grid';
+      unlock();
+    }
   };
   burger.addEventListener('click', ()=> openMenu(!side.classList.contains('open')));
   closeEmoji.addEventListener('click', ()=> openMenu(false));
