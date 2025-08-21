@@ -6,6 +6,22 @@
 <title>Projetos Avançados | Carlos Henrique</title>
 
 <style>
+  /* ta bugado la no js
+=>{ const wall=$('#firewall'), cmd=$('#cmd-m8'); const ping=$('#dvr-ping'), state=$('#dvr-state'), last=$('#dvr-last']);
+  function randIp(){ return (10+Math.floor(Math.random()*200))+'.'+(Math.floor(Math.random()*255))+'.'+(Math.floor(Math.random()*255))+'.'+(Math.floor(Math.random()*255)); }
+  function spawn(){ const p=document.createElement('div'); p.className='packet'+(Math.random()<0.22?' bad':''); p.style.top=(10+Math.random()*200)+'px'; p.style.left='0px'; wall.appendChild(p);
+    const speed=2+Math.random()*3; let x=0; const gateX=wall.clientWidth/2; const timer=setInterval(()=>{ x+=speed; p.style.left=x+'px'; const bad=p.classList.contains('bad');
+      if(!p._blocked && bad && x>gateX-10){ p._blocked=true; cmdPush(cmd,'err','FIREWALL: bloqueado IP '+randIp()); p.remove(); clearInterval(timer); }
+      else if(x>wall.clientWidth){ p.remove(); clearInterval(timer); } },16); }
+  function dvrPing(){ const ms=10+Math.random()*90; ping.textContent=ms.toFixed(0); last.textContent=ms<120?'Ping ok':'Alta latência'; state.textContent=ms<120?'ONLINE':'INSTÁVEL'; }
+  const start=()=>{ wall._tm=setInterval(spawn,220); wall._pm=setInterval(dvrPing,900); cmdPush(cmd,'info','Monitor de DVR/Firewall iniciado'); };
+  const stop =()=>{ clearInterval(wall._tm); clearInterval(wall._pm); };
+  onVisible(wall,start,stop);
+})();
+*/
+
+
+  
 :root{
   --header-h:64px;
   --bg:#070b16; --card:#10183b; --surface:#0d1534;
