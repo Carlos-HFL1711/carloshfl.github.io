@@ -1,4 +1,245 @@
 <!DOCTYPE html>
-<html>
-    
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Currículo — Carlos HFL | Web Designer & T.I.</title>
+  <meta name="description" content="Currículo interativo de Carlos Henrique — Web Designer, UI/UX e Suporte T.I. com foco em animações, performance e experiência do usuário." />
+  <meta name="theme-color" content="#7c4dff" />
+
+  <!-- Preloads básicos de performance; os arquivos virão na próxima etapa -->
+  <link rel="preload" href="style.css" as="style" />
+  <link rel="preload" href="script.js" as="script" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Fallback de fontes do sistema; você pode trocar depois -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="cv-body">
+  <!-- Barra superior fixa com ações -->
+  <header class="cv-header" data-sticky>
+    <div class="cv-header__inner">
+      <a class="cv-brand" href="../" aria-label="Voltar ao site principal">
+        <span class="cv-brand__orb" aria-hidden="true"></span>
+        <span class="cv-brand__text">Carlos HFL</span>
+      </a>
+
+      <nav class="cv-actions">
+        <button class="cv-btn" data-action="toggle-theme" aria-label="Alternar tema">Tema</button>
+        <a class="cv-btn" href="#experiencia">Experiência</a>
+        <a class="cv-btn" href="#formacao">Formação</a>
+        <a class="cv-btn" href="#habilidades">Habilidades</a>
+        <button class="cv-btn cv-btn--primary" data-action="print" aria-label="Imprimir/Salvar em PDF">Salvar PDF</button>
+      </nav>
+    </div>
+    <div class="cv-progress" aria-hidden="true"><span class="cv-progress__bar"></span></div>
+  </header>
+
+  <!-- HERO: Mega imagem animada (orb + átomo inspirado na sua logo) -->
+  <section class="cv-hero" id="inicio" aria-label="Apresentação">
+    <div class="cv-hero__bg" aria-hidden="true">
+      <!-- Partículas e auroras serão desenhadas via CSS/JS -->
+      <canvas class="cv-hero__canvas" id="cvCanvas" width="1920" height="1080" aria-hidden="true"></canvas>
+    </div>
+
+    <div class="cv-hero__center">
+      <!-- SVG do átomo com glow (cores definidas no CSS) -->
+      <figure class="cv-logo">
+        <svg class="cv-logo__svg" viewBox="0 0 512 512" role="img" aria-label="Símbolo Carlos HFL">
+          <defs>
+            <radialGradient id="g-orb" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="currentColor" stop-opacity="1"/>
+              <stop offset="60%" stop-color="currentColor" stop-opacity=".35"/>
+              <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Orb principal -->
+          <circle cx="256" cy="256" r="210" class="orb" />
+          <!-- Núcleo -->
+          <circle cx="256" cy="256" r="58" class="core" />
+          <!-- Letra C -->
+          <text x="256" y="264" class="core-text" text-anchor="middle">C</text>
+          <!-- Órbitas do átomo -->
+          <g class="atom">
+            <ellipse cx="256" cy="256" rx="170" ry="80" class="orbit orbit--1"/>
+            <ellipse cx="256" cy="256" rx="170" ry="80" class="orbit orbit--2" transform="rotate(60 256 256)"/>
+            <ellipse cx="256" cy="256" rx="170" ry="80" class="orbit orbit--3" transform="rotate(120 256 256)"/>
+          </g>
+        </svg>
+        <figcaption class="cv-logo__caption">
+          <h1 class="cv-title">Carlos HFL</h1>
+          <p class="cv-subtitle">WEB DESIGNER &amp; T.I.</p>
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- Frase de impacto / resumo rápido -->
+    <div class="cv-hero__pitch">
+      <p>UI/UX focado em performance, acessibilidade e animações modernas. Experiência com CFTV, automação e front-end.</p>
+      <div class="cv-pills">
+        <span class="pill">UI/UX</span>
+        <span class="pill">Front-End</span>
+        <span class="pill">Automação Python</span>
+        <span class="pill">CFTV</span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cv-hero__cta">
+      <a class="cv-cta cv-cta--primary" href="#sobre">Ver currículo</a>
+      <a class="cv-cta" href="../">Voltar ao site</a>
+    </div>
+  </section>
+
+  <!-- Conteúdo do currículo (em blocos/cartões) -->
+  <main class="cv-main">
+    <!-- SOBRE / CONTATO -->
+    <section id="sobre" class="cv-section">
+      <header class="cv-section__head">
+        <h2>Sobre &amp; Contato</h2>
+      </header>
+
+      <div class="grid grid--2">
+        <article class="card card--soft">
+          <h3>Quem sou</h3>
+          <p>Web Designer e Suporte T.I. em Londrina/PR. Atuo com identidade visual para web, UI/UX, landing pages performáticas
+             e automações úteis para negócios. Experiência com monitoramento de imagens e infraestrutura básica de redes.</p>
+        </article>
+
+        <aside class="card card--contact">
+          <h3>Contato</h3>
+          <ul class="list contact">
+            <li><a href="tel:+5543996593590" class="link">(+43) 99659-3590</a></li>
+            <li><a href="mailto:carloslimahfl1711@gmail.com" class="link">carloslimahfl1711@gmail.com</a></li>
+            <li><a href="https://www.carloshfl.com.br" class="link" rel="noopener">carloshfl.com.br</a></li>
+            <li>Londrina — PR</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- EXPERIÊNCIA PROFISSIONAL -->
+    <section id="experiencia" class="cv-section">
+      <header class="cv-section__head">
+        <h2>Experiência Profissional</h2>
+      </header>
+
+      <div class="timeline">
+        <article class="item">
+          <div class="item__meta">
+            <strong>Auxiliar de T.I.</strong>
+            <span>Ativa Alarmes • 2024 — Atual</span>
+          </div>
+          <ul class="bullets">
+            <li>Monitoramento 24h, configuração de DVR/NVR e acesso remoto (DNS/portas/cloud).</li>
+            <li>Suporte à rede, comunicação tática e gerenciamento de servidores.</li>
+            <li>Instalação/manutenção de CFTV e integração com rotinas internas.</li>
+          </ul>
+        </article>
+
+        <article class="item">
+          <div class="item__meta">
+            <strong>Marketing Digital</strong>
+            <span>Top’S Pastelaria • 2024 — 7 meses</span>
+          </div>
+          <ul class="bullets">
+            <li>Gestão de dados e relatórios mensais; automações para pedidos/atendimento.</li>
+          </ul>
+        </article>
+
+        <article class="item">
+          <div class="item__meta">
+            <strong>Web Designer</strong>
+            <span>Escola de Artes de Taubaté • 2019 — 9 meses</span>
+          </div>
+          <ul class="bullets">
+            <li>Estrategias para marketing digital, criação de artes e vídeos.</li>
+          </ul>
+        </article>
+
+        <article class="item">
+          <div class="item__meta">
+            <strong>Web Designer</strong>
+            <span>Freelancer • 2021 — Atual</span>
+          </div>
+          <ul class="bullets">
+            <li>Projetos diversos em front-end, UI/UX e identidade visual.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- FORMAÇÃO -->
+    <section id="formacao" class="cv-section">
+      <header class="cv-section__head">
+        <h2>Formação Acadêmica</h2>
+      </header>
+
+      <div class="grid grid--2">
+        <article class="card">
+          <h3>Designer Digital (Bacharelado — EAD)</h3>
+          <p>Previsão de conclusão: 2027 • Faculdade ECBB</p>
+        </article>
+        <article class="card">
+          <h3>Ensino Médio</h3>
+          <p>Escola de referência Luiz Pereira Junior • 2021–2023</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- HABILIDADES / IDIOMAS -->
+    <section id="habilidades" class="cv-section">
+      <header class="cv-section__head">
+        <h2>Habilidades &amp; Idiomas</h2>
+      </header>
+
+      <div class="grid grid--3">
+        <article class="card">
+          <h3>Habilidades</h3>
+          <ul class="tags">
+            <li>Design Gráfico</li>
+            <li>UI/UX</li>
+            <li>Front-End</li>
+            <li>Automação Python</li>
+            <li>Monitoramento CFTV</li>
+            <li>Suporte T.I.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Idiomas</h3>
+          <ul class="levels">
+            <li>Inglês — <span data-level="avancado">Avançado</span></li>
+            <li>Espanhol — <span data-level="intermediario">Intermediário</span></li>
+            <li>Japonês — <span data-level="basico">Básico</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Cursos</h3>
+          <ul class="bullets">
+            <li>Programador Front-End (2018–2019) — Microsoft YouthSpark</li>
+            <li>Artes Visuais (2019–2020) — Escola de Artes de Taubaté</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé com links úteis -->
+  <footer class="cv-footer">
+    <div class="cv-footer__inner">
+      <span>© <span id="y"></span> Carlos HFL</span>
+      <nav class="cv-footer__nav">
+        <a href="../" rel="noopener">Voltar ao site</a>
+        <a href="#inicio">Topo</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- JS virá completo na etapa 3 -->
+  <script src="script.js" defer></script>
+</body>
 </html>
