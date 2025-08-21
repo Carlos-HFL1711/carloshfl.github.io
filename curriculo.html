@@ -6,25 +6,31 @@
 <title>Currículo | Carlos Henrique</title>
 <meta name="color-scheme" content="dark light" />
 <style>
-/* ============================= VARS / THEME ============================= */
+/* =================== VARS / THEME ================== */
 :root{
   --header-h:64px;
   --bg:#070b16; --card:#10183b; --surface:#0d1534;
   --text:#eaf2ff; --muted:#9bb0d3; --accent:#20d3ff; --brand:#7c4dff;
-  --pill-bg:rgba(124,77,255,.16); --border:rgba(255,255,255,.10);
+  --pill-bg:rgba(124,77,255,.16); --border:rgba(255,255,255,.12);
   --shadow:0 18px 40px rgba(0,0,0,.38);
-  --ring1:rgba(32,211,255,.25); --ring2:rgba(124,77,255,.25);
+  --ring1:rgba(32,211,255,.28); --ring2:rgba(124,77,255,.28);
   --mx:50%; --my:30%;
+  --frame-size:2px; --frame-alpha:.95; --frame-blur:16px;
 }
 body.light{
-  --bg:#f7f9ff; --card:#ffffff; --surface:#f2f5ff; --text:#1e2530; --muted:#647184;
-  --accent:#2b8eff; --brand:#1f6ed6; --pill-bg:rgba(43,142,255,.12); --border:rgba(0,0,0,.10);
-  --shadow:0 12px 28px rgba(0,0,0,.12);
-  --ring1:rgba(43,142,255,.22); --ring2:rgba(31,110,214,.22);
+  /* >>> contraste reforçado p/ legibilidade e efeitos visíveis */
+  --bg:#e9eef9; --card:#ffffff; --surface:#f3f7ff;
+  --text:#0f172a; --muted:#334155;
+  --accent:#2b8eff; --brand:#1f6ed6;
+  --pill-bg:rgba(31,110,214,.18);
+  --border:rgba(15,23,42,.18);
+  --shadow:0 12px 28px rgba(2,6,23,.12);
+  --ring1:rgba(43,142,255,.24); --ring2:rgba(31,110,214,.24);
+  --frame-blur:14px;
 }
 @property --angle { syntax:"<angle>"; initial-value:0deg; inherits:false }
 
-/* ============================= BASE + BG ANIM ============================= */
+/* ================= BASE + BG ANIM ======================= */
 *,*::before,*::after{ box-sizing:border-box }
 html{ scroll-behavior:smooth }
 html,body{ overflow-x:hidden; touch-action:pan-y; overscroll-behavior-x:none }
@@ -38,7 +44,7 @@ body{
   position:relative;
 }
 body::before{
-  /* spotlight global seguindo o mouse + aurora leve */
+  /* spotlight global segui*/
   content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
   background:
     radial-gradient(420px 280px at var(--mx) var(--my), color-mix(in oklab, var(--accent) 16%, transparent), transparent 70%),
@@ -53,12 +59,23 @@ img,svg,canvas{ max-width:100%; display:block }
 .section.visible{ opacity:1; transform:none }
 .eyebrow{ font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 6px }
 
-/* ============================= HEADER ============================= */
+/* ============================= FLOATERS ============================= */
+.floaters{ position:fixed; inset:0; pointer-events:none; z-index:0 }
+.f{ position:absolute; width:6px; height:6px; border-radius:50%; background:radial-gradient(#fff, #fff0);
+    opacity:.35; filter:blur(.5px); animation: drift var(--t) linear infinite; }
+@keyframes drift{
+  0%{ transform:translate3d(var(--x0),var(--y0),0) scale(.85) }
+  50%{ transform:translate3d(calc(var(--x0) + var(--dx)), calc(var(--y0) + var(--dy)),0) scale(1.05) }
+  100%{ transform:translate3d(var(--x1),var(--y1),0) scale(.85) }
+}
+
+/* ====================== HEADER ========================= */
 header{
-  position:sticky; top:0; z-index:2200; background:rgba(7,11,22,.60);
-  border-bottom:1px solid rgba(255,255,255,.06); backdrop-filter:saturate(120%) blur(8px);
+  position:sticky; top:0; z-index:2200; background:rgba(7,11,22,.70);
+  border-bottom:1px solid rgba(255,255,255,.10); backdrop-filter:saturate(120%) blur(8px);
   padding-inline:14px; overflow:hidden;
 }
+body.light header{ background:rgba(255,255,255,.90); border-bottom:1px solid var(--border) }
 header::after{
   content:""; position:absolute; inset:auto -20% 0 -20%; height:120%;
   background:radial-gradient(60% 50% at 20% 120%, rgba(124,77,255,.18), transparent 60%),
@@ -70,14 +87,19 @@ header::after{
   font-weight:800; background:linear-gradient(90deg,var(--brand),var(--accent) 60%);
   -webkit-background-clip:text; background-clip:text; color:transparent; white-space:nowrap
 }
-#primary-nav{ display:flex; align-items:center; justify-content:center; gap:8px; list-style:none; margin:0; padding:0; flex-wrap:wrap }
+#primary-nav{ display:flex; align-items:center; justify-content:center; gap:10px; list-style:none; margin:0; padding:0; flex-wrap:wrap }
 #primary-nav a{
-  padding:8px 14px; border-radius:999px; font-weight:800;
+  position:relative; padding:9px 16px; border-radius:999px; font-weight:800;
   border:1px solid var(--border); background:var(--pill-bg); color:var(--text);
-  transition:transform .12s, background .2s, color .2s, border-color .2s
+  transition:transform .12s, background .2s, color .2s, border-color .2s, box-shadow .25s;
+  outline:0;
 }
-#primary-nav a:hover{ transform:translateY(-1px) }
-#primary-nav a.is-here{ color:#0a1020; background:linear-gradient(90deg,var(--brand),var(--accent)); border-color:transparent; box-shadow:0 8px 20px rgba(32,211,255,.25) }
+#primary-nav a:hover{ transform:translateY(-1px); box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 50%, transparent), 0 10px 24px color-mix(in oklab, var(--accent) 28%, transparent) }
+#primary-nav a:focus-visible{ box-shadow:0 0 0 3px color-mix(in oklab, var(--accent) 65%, transparent) }
+#primary-nav a.is-here{
+  color:#0a1020; background:linear-gradient(90deg,var(--brand),var(--accent));
+  border-color:transparent; box-shadow:0 8px 22px rgba(32,211,255,.28)
+}
 .theme-toggle{ display:inline-flex; align-items:center; gap:8px; font-weight:800 }
 .theme-toggle input{ width:46px; height:26px; appearance:none; background:#3a4159; border:1px solid var(--border); border-radius:999px; position:relative; cursor:pointer }
 .theme-toggle input::before{ content:""; position:absolute; width:22px; height:22px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform .25s ease }
@@ -91,7 +113,7 @@ header::after{
 }
 #scrollbar{ height:3px; width:0; background:linear-gradient(90deg, var(--brand), var(--accent)); box-shadow:0 0 10px rgba(32,211,255,.45), 0 0 16px rgba(124,77,255,.28); transition:width .15s linear }
 
-/* ============================= HERO ============================= */
+/* ==================== HERO ================== */
 .hero{ position:relative; min-height:42svh; display:grid; align-items:center; padding:22px 0 }
 .hero .grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:18px }
 @media (max-width:980px){ .hero .grid{ grid-template-columns:1fr } }
@@ -108,9 +130,9 @@ header::after{
 .parallax-orb.o2{ right:8%; bottom:10%; background:linear-gradient(135deg,var(--accent),transparent) }
 .parallax-orb.o3{ left:45%; top:42%; width:90px; height:90px; background:linear-gradient(135deg,#fff2,transparent) }
 
-/* ============================= CARDS / GLOW ============================= */
-.has-frame{ position:relative; z-index:0; --angle:0deg; --frame-size:2px; --frame-alpha:.95; --frame-blur:16px }
-.has-frame::before,.has-frame::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0; transition:opacity .35s ease }
+/* ==================== CARDS / GLOW ===================== */
+.has-frame{ position:relative; z-index:0; --angle:0deg }
+.has-frame::before,.has-frame::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0; transition:opacity .28s ease }
 .has-frame::before{
   padding:var(--frame-size);
   background:conic-gradient(from var(--angle), var(--accent), var(--brand), var(--accent));
@@ -118,14 +140,14 @@ header::after{
   -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite:exclude; z-index:1
 }
 .has-frame::after{
-  background:radial-gradient(180px 180px at var(--mx,50%) var(--my,50%), color-mix(in oklab, var(--accent) 30%, transparent), transparent 60%);
+  background:radial-gradient(180px 180px at var(--mx,50%) var(--my,50%), color-mix(in oklab, var(--accent) 34%, transparent), transparent 62%);
   filter:blur(var(--frame-blur)); z-index:0
 }
 .has-frame:hover::before,.has-frame:hover::after{ opacity:var(--frame-alpha) }
 .has-frame:hover{ animation:spinAngle 2s linear infinite }
 @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
   .has-frame::before,.has-frame::after{ display:none!important }
-  .has-frame:hover{ box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 50%, transparent), 0 0 24px color-mix(in oklab, var(--accent) 30%, transparent) }
+  .has-frame:hover{ box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 60%, transparent), 0 0 28px color-mix(in oklab, var(--accent) 40%, transparent) }
 }
 .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:16px }
 .card.tilt{ transform-style:preserve-3d; will-change:transform }
@@ -137,8 +159,10 @@ header::after{
 .btn:hover{ transform:translateY(-1px) }
 .btn.primary{ background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border-color:transparent; box-shadow:0 10px 24px rgba(32,211,255,.28) }
 .btn.magnet{ transition:transform .08s linear }
+.more{ display:none; margin-top:8px }
+.more-btn{ margin-top:8px }
 
-/* ============================= GRIDs / LISTAS ============================= */
+/* ============= GRIDs / LISTAS ================ */
 .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:16px }
 @media (max-width:860px){ .grid-2{ grid-template-columns:1fr } }
 .grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px }
@@ -146,10 +170,9 @@ header::after{
 .kv{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
 @media (max-width:640px){ .kv{ grid-template-columns:1fr } }
 .kv div{ background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px }
-chips{ display:flex; flex-wrap:wrap; gap:8px }
 .chip{ padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--surface); font-weight:800 }
 
-/* ============================= TIMELINE (TOPO) ============================= */
+/* ============================= TIMELINE ======================= */
 .timeline{ position:relative; padding-left:22px }
 .timeline::before{ content:""; position:absolute; left:9px; top:0; bottom:0; width:2px; background:linear-gradient(var(--brand),var(--accent)); opacity:.6 }
 .item{ position:relative; margin:14px 0; padding:12px; border-radius:12px; background:var(--surface); border:1px solid var(--border);
@@ -160,14 +183,15 @@ chips{ display:flex; flex-wrap:wrap; gap:8px }
 .item ul{ margin:6px 0 0 18px }
 .item li{ margin:4px 0 }
 
-/* ============================= TABS DE STACK ============================= */
+/* ====================== TABS DE STACK ======================= */
 .tabs{ display:flex; gap:10px; flex-wrap:wrap }
 .tab{
   appearance:none; border:1px solid var(--border); background:var(--pill-bg); color:var(--text);
   font-weight:900; border-radius:999px; padding:8px 14px; cursor:pointer; white-space:nowrap;
-  transition:background .2s, color .2s, border-color .2s, transform .12s;
+  transition:background .2s, color .2s, border-color .2s, transform .12s, box-shadow .2s;
 }
-.tab:hover{ transform:translateY(-1px) }
+.tab:hover{ transform:translateY(-1px); box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 50%, transparent) }
+.tab:focus-visible{ box-shadow:0 0 0 3px color-mix(in oklab, var(--accent) 65%, transparent) }
 .tab.is-active{ background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border-color:transparent; box-shadow:0 8px 20px rgba(32,211,255,.25) }
 .panels{ margin-top:12px }
 .panel{ display:none; }
@@ -178,15 +202,15 @@ chips{ display:flex; flex-wrap:wrap; gap:8px }
 .tech h4{ margin:0 0 6px }
 .tech p{ margin:0; color:var(--muted) }
 .tech .badge{ position:absolute; top:10px; right:10px; font-size:.75rem; font-weight:800; background:rgba(0,0,0,.35); color:#fff; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18) }
-body.light .tech .badge{ background:rgba(255,255,255,.7); color:#173050; border-color:rgba(0,0,0,.08) }
+body.light .tech .badge{ background:rgba(0,0,0,.72); color:#fff; border-color:rgba(255,255,255,.2) } /* badge legível no claro */
 
-/* ============================= SKILLS (RODAPÉ) ============================= */
+/* ============================= SKILLS ============ */
 .skills{ display:grid; grid-template-columns:1.2fr .8fr; gap:16px }
 @media (max-width:980px){ .skills{ grid-template-columns:1fr } }
 .skillbar{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px; margin:10px 0; overflow:hidden }
 .skillbar .row{ display:flex; align-items:center; justify-content:space-between; gap:12px }
 .skillbar b{ font-size:1rem }
-.track{ position:relative; height:10px; border-radius:999px; background:linear-gradient(90deg,#ffffff08,#ffffff0e); overflow:hidden; margin-top:8px }
+.track{ position:relative; height:10px; border-radius:999px; background:linear-gradient(90deg,#ffffff08,#ffffff12); overflow:hidden; margin-top:8px }
 .fill{ position:absolute; inset:0 auto 0 0; width:0%; background:
   linear-gradient(90deg,var(--brand),var(--accent));
   box-shadow:0 6px 20px rgba(32,211,255,.25); border-radius:999px; transition:width 1.2s cubic-bezier(.2,.7,.2,1) }
@@ -196,13 +220,14 @@ body.light .tech .badge{ background:rgba(255,255,255,.7); color:#173050; border-
 .ring canvas{ position:absolute; inset:0 }
 .ring .lbl{ position:absolute; inset:0; display:grid; place-items:center; text-align:center; font-weight:900 }
 
-/* ============================= DIAGRAMA STACK ============================= */
+/* ============================= DIAGRAMA STACK ======================== */
 .diagram{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:10px; overflow:auto }
 .diagram svg text{ fill:var(--text); font:700 12px 'Segoe UI',sans-serif }
 .diagram .node{ fill:url(#g2) }
 .diagram .edge{ stroke:rgba(255,255,255,.28); stroke-width:2; marker-end:url(#arrow) }
+body.light .diagram .edge{ stroke:rgba(2,6,23,.25) } /* contraste no claro */
 
-/* ============================= FOOTER / MISC ============================= */
+/* ============================= FOOTER ============================= */
 footer{ text-align:center; padding:28px 0; color:var(--muted) }
 #to-top{ position:fixed; right:16px; bottom:84px; z-index:2200; opacity:0; transform:translateY(10px); background:linear-gradient(90deg,var(--brand),var(--accent)); color:#0a1020; border:0; border-radius:999px; padding:10px 14px; font-weight:900; cursor:pointer; box-shadow:0 10px 24px rgba(32,211,255,.28); transition:opacity .2s, transform .2s }
 
@@ -217,12 +242,15 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
 </style>
 </head>
 <body>
+  <!-- partículas flutuando -->
+  <div class="floaters" aria-hidden="true" id="floaters"></div>
+
   <!-- ============================= HEADER ============================= -->
   <header>
     <nav class="pill-nav container">
       <div class="logo">Carlos Henrique</div>
 
-      <ul id="primary-nav" aria-label="Navegação" class="nav has-frame">
+      <ul id="primary-nav" aria-label="Navegação">
         <li><a href="index.html">Início</a></li>
         <li><a href="sobre.html">Sobre</a></li>
         <li><a href="projetos.html">Projetos</a></li>
@@ -246,7 +274,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
       <div>
         <p class="eyebrow muted">Web Designer • UI/UX • Front & Back</p>
         <h1>Carlos Henrique <span style="font-weight:300">— Currículo / Site</span></h1>
-        <p>UI que converte, UX de verdade e um stack Front-to-Back pra tirar projeto do papel com qualidade.</p>
+        <p>UI que converte, UX honesta e stack ponta-a-ponta pra tirar projeto do papel sem drama.</p>
         <div class="ctas">
           <a class="btn primary magnet has-frame" href="#xp">Ver experiências</a>
           <a class="btn has-frame" href="#stack">Stack técnico</a>
@@ -264,7 +292,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
     </div>
   </section>
 
-  <!-- ============================= EXPERIÊNCIAS (DETALHADAS NO TOPO) ============================= -->
+  <!-- ============================= EXPERIÊNCIAS me contrata============================= -->
   <section class="container section" id="xp">
     <p class="eyebrow">Experiência</p>
     <div class="grid-2">
@@ -274,19 +302,34 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
           <div class="item">
             <h4>Web Designer — Freelancer <span class="muted">• 2021–Atual</span></h4>
             <ul class="muted">
-              <li>Criação de landings e sites multi-seção com **90+ PageSpeed** (CWV, SEO técnico, acessibilidade).</li>
-              <li>Biblioteca de componentes (UI kit próprio), variações de tema e layout **mobile-first**.</li>
-              <li>Integrações: **Form/CRM**, WhatsApp, e-mail, planilhas; **automação** de disparos e relatórios.</li>
-              <li>Stack mais usado em front: **HTML/CSS/JS**, **Tailwind** ou CSS authoring artesanal, **Vite**.</li>
+              <li>Criação de landings e sites multi-seção com <strong>90+ PageSpeed</strong> (CWV, SEO técnico, acessibilidade).</li>
+              <li>Biblioteca de componentes (UI kit próprio), variações de tema e layout <strong>mobile-first</strong>.</li>
+              <li>Integrações: <strong>Form/CRM</strong>, WhatsApp, e-mail, planilhas; <strong>automação</strong> de disparos e relatórios.</li>
+              <li>Stack mais usado em front: <strong>HTML/CSS/JS</strong>, <strong>Tailwind</strong> ou CSS “artesanal”, <strong>Vite</strong>.</li>
             </ul>
+            <button class="btn small more-btn">Ver mais</button>
+            <div class="more muted">
+              <ul style="margin:8px 0 0 18px">
+                <li>Tracking GA4 + eventos; heatmaps e testes rápidos A/B.</li>
+                <li>Biblioteca própria de microinterações (hover, focus, pressed, idle).</li>
+                <li>Pipeline de build com code-split, prefetch e lazy para mídia pesada.</li>
+              </ul>
+            </div>
           </div>
           <div class="item">
             <h4>Auxiliar de T.I. — Ativa Alarmes <span class="muted">• 2024–Atual</span></h4>
             <ul class="muted">
               <li>Suporte, inventário, padronização de processos e monitoramento.</li>
-              <li>Documentação de rotinas, **checklists** e **SLA** de atendimento.</li>
-              <li>Scripts de apoio e **dashboards** para visibilidade de chamados.</li>
+              <li>Documentação de rotinas, <strong>checklists</strong> e <strong>SLA</strong> de atendimento.</li>
+              <li>Scripts de apoio e <strong>dashboards</strong> para visibilidade de chamados.</li>
             </ul>
+            <button class="btn small more-btn">Ver mais</button>
+            <div class="more muted">
+              <ul style="margin:8px 0 0 18px">
+                <li>Automação de exportações; consolidação em planilhas; relatórios mensais.</li>
+                <li>Treinamento rápido de equipe e handoffs claros.</li>
+              </ul>
+            </div>
           </div>
           <div class="item">
             <h4>Auxiliar Administrativo — London Hotel <span class="muted">• 2024 (6 meses)</span></h4>
@@ -294,28 +337,39 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
               <li>Atendimento, cadastros e organização de documentos.</li>
               <li>Suporte em campanhas digitais e material gráfico quando necessário.</li>
             </ul>
+            <button class="btn small more-btn">Ver mais</button>
+            <div class="more muted"><p>Padronização de planilhas, e-mails e templates para agilizar rotina.</p></div>
           </div>
           <div class="item">
             <h4>Marketing Digital — Top’s Pastelaria <span class="muted">• 2024 (7 meses)</span></h4>
             <ul class="muted">
-              <li>Gestão de tráfego, **copy** e peças para redes sociais.</li>
+              <li>Gestão de tráfego, <strong>copy</strong> e peças para redes sociais.</li>
               <li>Medição de resultados (GA4) e pequenos experimentos A/B.</li>
             </ul>
+            <button class="btn small more-btn">Ver mais</button>
+            <div class="more muted"><p>Calendário editorial, ofertas sazonais e otimização de criativos.</p></div>
           </div>
           <div class="item">
             <h4>Front-end & Bots — Projetos <span class="muted">• contínuo</span></h4>
             <ul class="muted">
-              <li>**Bots de pedidos/atendimento** com filas e **retries**; logs e alertas (e-mail/WhatsApp).</li>
-              <li>Mini **ETLs** com **Python** para consolidar dados e gerar relatórios (CSV/Excel/PDF).</li>
-              <li>Dashboards de monitoramento (**CFTV/IoT**): **MQTT**, WebSocket, eventos e permissões.</li>
+              <li><strong>Bots</strong> de pedidos/atendimento com filas e <strong>retries</strong>; logs e alertas.</li>
+              <li>Mini <strong>ETLs</strong> com <strong>Python</strong> para consolidar dados e gerar relatórios.</li>
+              <li>Dashboards de monitoramento (<strong>CFTV/IoT</strong>): <strong>MQTT</strong>, WebSocket, eventos e permissões.</li>
             </ul>
+            <button class="btn small more-btn">Ver mais</button>
+            <div class="more muted">
+              <ul style="margin:8px 0 0 18px">
+                <li>Webhooks com idempotência; auditoria; alertas via WhatsApp/E-mail.</li>
+                <li>Hardening básico (headers, rate limit, validação forte).</li>
+              </ul>
+            </div>
           </div>
         </div>
       </article>
 
       <article class="card has-frame tilt">
         <h3>Resumo</h3>
-        <p class="muted">Web Designer & Suporte T.I. — foco em **UI/UX**, performance e integrações. Experiência com automação (bots), **CFTV/IoT** e dados.</p>
+        <p class="muted">Web Designer & Suporte T.I. — foco em <strong>UI/UX</strong>, performance e integrações. Experiência com automação (bots), <strong>CFTV/IoT</strong> e dados.</p>
 
         <h3 style="margin-top:12px">Idiomas</h3>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -340,7 +394,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
     </div>
   </section>
 
-  <!-- ============================= STACK TÉCNICO (FRONT / BACK / DEVOPS) ============================= -->
+  <!-- ============================= STACK TÉCNICO ============================= -->
   <section class="container section" id="stack">
     <p class="eyebrow">Stack Técnico</p>
     <div class="card has-frame tilt">
@@ -357,17 +411,23 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
             <article class="tech">
               <span class="badge">UI/UX</span>
               <h4>React • SPA/MPA</h4>
-              <p>Componentes reutilizáveis, estado, hooks e **acessibilidade**. Integração com APIs REST.</p>
+              <p>Hooks, acessibilidade, estado, code-split e integração REST.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Design tokens, animações CSS/JS, dark mode e preferências persistidas.</p></div>
             </article>
             <article class="tech">
               <span class="badge">Styling</span>
               <h4>CSS “artesanal” & Tailwind</h4>
-              <p>Design system leve, **microinterações**, animações CSS/JS e dark mode.</p>
+              <p>Design system leve; microinterações; responsividade granular.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Grid fluido, clamp(), container queries básicas e utilitários custom.</p></div>
             </article>
             <article class="tech">
               <span class="badge">Build</span>
               <h4>Vite & ESBuild</h4>
-              <p>Dev server rápido, bundling otimizado e divisão de chunks.</p>
+              <p>Dev server rápido, bundling otimizado e prefetch inteligente.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Lazy para imagens, fontes otimizadas e cache busting por hash.</p></div>
             </article>
           </div>
         </div>
@@ -378,17 +438,23 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
             <article class="tech">
               <span class="badge">Node.js</span>
               <h4>Express / Fastify</h4>
-              <p>APIs REST com middlewares, JWT, validação, logs e **fila de jobs**.</p>
+              <p>APIs REST com JWT, validação, logs e fila de jobs.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Paginação; idempotência; rate-limit; versionamento de rotas.</p></div>
             </article>
             <article class="tech">
               <span class="badge">Python</span>
               <h4>FastAPI & Scripts</h4>
-              <p>Endpoints enxutos e **automação** (ETL, bots, relatórios).</p>
+              <p>Automação (ETL, bots, relatórios) e endpoints enxutos.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Agendamentos (cron), planilhas e geração de PDF/CSV.</p></div>
             </article>
             <article class="tech">
               <span class="badge">Dados</span>
               <h4>PostgreSQL / MongoDB</h4>
-              <p>ORM/Query builders (Prisma/Knex), índices e **migrações**.</p>
+              <p>Modelagem, índices, migrações e backups.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Prisma/Knex; auditoria; masking em dados sensíveis.</p></div>
             </article>
           </div>
         </div>
@@ -399,24 +465,30 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
             <article class="tech">
               <span class="badge">Infra</span>
               <h4>Docker</h4>
-              <p>Containers para app, banco e workers; compose local.</p>
+              <p>Containers para app, DB e workers; compose local.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Volumes, networks, healthchecks e .env seguro.</p></div>
             </article>
             <article class="tech">
               <span class="badge">Observ.</span>
               <h4>Logs & Monit.</h4>
-              <p>Logs estruturados, métricas de API e alertas.</p>
+              <p>Logs estruturados, métricas e alertas.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Correlações por request-id e dashboards de saúde.</p></div>
             </article>
             <article class="tech">
               <span class="badge">CFTV/IoT</span>
               <h4>MQTT & WebSocket</h4>
-              <p>Eventos em tempo real, dashboards e permissões.</p>
+              <p>Eventos em tempo real; permissões e auditoria.</p>
+              <button class="btn small more-btn">Ver mais</button>
+              <div class="more muted"><p>Retenção de mensagens; reconexão; QoS adequado.</p></div>
             </article>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Diagrama bonitão -->
+    <!-- Diagrama -->
     <div class="diagram card has-frame tilt" style="margin-top:16px">
       <svg viewBox="0 0 880 260" width="100%" height="100%" role="img" aria-label="Mapa do stack">
         <defs>
@@ -442,47 +514,17 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
     </div>
   </section>
 
-  <!-- ============================= SKILLS & PROFICIÊNCIA (RODAPÉ) ============================= -->
+  <!-- ========================= SKILLS ======================== -->
   <section class="container section" id="skills">
     <p class="eyebrow">Skills & proficiência</p>
     <div class="skills">
       <div class="card has-frame tilt">
         <h3>Barras animadas</h3>
-        <div class="skillbar">
-          <div class="row"><b>Web Design / UI</b><span>92%</span></div>
-          <div class="track">
-            <div class="fill" style="--to:92%"></div>
-            <i class="spark"></i>
-          </div>
-        </div>
-        <div class="skillbar">
-          <div class="row"><b>UX / Pesquisa</b><span>86%</span></div>
-          <div class="track">
-            <div class="fill" style="--to:86%"></div>
-            <i class="spark"></i>
-          </div>
-        </div>
-        <div class="skillbar">
-          <div class="row"><b>Automação (Bots)</b><span>84%</span></div>
-          <div class="track">
-            <div class="fill" style="--to:84%"></div>
-            <i class="spark"></i>
-          </div>
-        </div>
-        <div class="skillbar">
-          <div class="row"><b>CFTV / IoT</b><span>80%</span></div>
-          <div class="track">
-            <div class="fill" style="--to:80%"></div>
-            <i class="spark"></i>
-          </div>
-        </div>
-        <div class="skillbar">
-          <div class="row"><b>Marketing / SEO</b><span>88%</span></div>
-          <div class="track">
-            <div class="fill" style="--to:88%"></div>
-            <i class="spark"></i>
-          </div>
-        </div>
+        <div class="skillbar"><div class="row"><b>Web Design / UI</b><span>92%</span></div><div class="track"><div class="fill" style="--to:92%"></div><i class="spark"></i></div></div>
+        <div class="skillbar"><div class="row"><b>UX / Pesquisa</b><span>86%</span></div><div class="track"><div class="fill" style="--to:86%"></div><i class="spark"></i></div></div>
+        <div class="skillbar"><div class="row"><b>Automação (Bots)</b><span>84%</span></div><div class="track"><div class="fill" style="--to:84%"></div><i class="spark"></i></div></div>
+        <div class="skillbar"><div class="row"><b>CFTV / IoT</b><span>80%</span></div><div class="track"><div class="fill" style="--to:80%"></div><i class="spark"></i></div></div>
+        <div class="skillbar"><div class="row"><b>Marketing / SEO</b><span>88%</span></div><div class="track"><div class="fill" style="--to:88%"></div><i class="spark"></i></div></div>
       </div>
 
       <div class="card has-frame tilt">
@@ -505,16 +547,16 @@ footer{ text-align:center; padding:28px 0; color:var(--muted) }
   <button id="to-top" aria-label="Voltar ao topo">↑ Topo</button>
 
 <script>
-/* ============================= HELPERS ============================= */
+/* ======================== HELPERS =========================== */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 
-/* Tema */
+/* Tema (dark padrão; light ) */
 (() => {
   const sw = $("#theme-switch");
   const set = v => document.body.classList.toggle("light", v);
   const pref = localStorage.getItem("cv-theme");
-  if (pref){ set(pref === "light"); sw.checked = (pref === "dark") ? false : true; }
+  if (pref){ set(pref === "light"); sw.checked = (pref === "light"); }
   sw.addEventListener("change", ()=>{
     const light = sw.checked;
     set(light);
@@ -522,7 +564,7 @@ const $$ = s => Array.from(document.querySelectorAll(s));
   });
 })();
 
-/* Progress bar + ToTop + spotlight follow */
+/* Progress + ToTop + spotlight follow */
 (() => {
   const bar = $("#scrollbar"), toTop = $("#to-top");
   const onScroll = () => {
@@ -534,14 +576,30 @@ const $$ = s => Array.from(document.querySelectorAll(s));
   };
   addEventListener("scroll", onScroll); onScroll();
   toTop.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
-
-  // spotlight mouse
   addEventListener("pointermove", e=>{
     const x = (e.clientX / innerWidth) * 100;
     const y = (e.clientY / innerHeight) * 100;
     document.documentElement.style.setProperty("--mx", x.toFixed(2)+"%");
     document.documentElement.style.setProperty("--my", y.toFixed(2)+"%");
   });
+})();
+
+/* Partículas flutuando */
+(() => {
+  const root = $("#floaters");
+  if(!root) return;
+  const W = () => window.innerWidth, H = () => window.innerHeight;
+  for(let i=0;i<36;i++){
+    const d = document.createElement('div'); d.className='f';
+    const x0 = Math.random()*W(), y0 = Math.random()*H();
+    const dx = (Math.random()*120-60)+'px', dy=(Math.random()*120-60)+'px';
+    d.style.setProperty('--x0', x0+'px'); d.style.setProperty('--y0', y0+'px');
+    d.style.setProperty('--dx', dx); d.style.setProperty('--dy', dy);
+    d.style.setProperty('--x1', (x0 + (parseFloat(dx)||0))+'px');
+    d.style.setProperty('--y1', (y0 + (parseFloat(dy)||0))+'px');
+    d.style.setProperty('--t', (8+Math.random()*10)+'s');
+    root.appendChild(d);
+  }
 })();
 
 /* Reveal sections + timeline stagger */
@@ -563,9 +621,9 @@ const $$ = s => Array.from(document.querySelectorAll(s));
   items.forEach(it => itemIO.observe(it));
 })();
 
-/* Glow follow (nav, buttons, cards) */
+/* Glow follow — só nos links/botões/cards (NÃO no <ul>) */
 (() => {
-  const els = [...$$("#primary-nav a"), ...$$(".btn"), ...$$(".card"), $(".nav")].filter(Boolean);
+  const els = [...$$("#primary-nav a"), ...$$(".btn"), ...$$(".card")];
   const supportsMask = CSS && CSS.supports && (CSS.supports('mask-composite','exclude') || CSS.supports('-webkit-mask-composite','xor'));
   els.forEach(el => el.classList.add("has-frame"));
   if (supportsMask){
@@ -581,7 +639,7 @@ const $$ = s => Array.from(document.querySelectorAll(s));
   }
 })();
 
-/* Tilt 3D cards */
+/* Tilt 3D (hover devices) */
 (() => {
   if (matchMedia("(hover: none)").matches) return;
   $$(".tilt").forEach(card=>{
@@ -630,14 +688,11 @@ const $$ = s => Array.from(document.querySelectorAll(s));
   document.addEventListener("pointermove", (e)=>{
     const w = window.innerWidth, h = window.innerHeight;
     const dx = (e.clientX - w/2)/w, dy = (e.clientY - h/2)/h;
-    orbs.forEach((o,i)=>{
-      const k = (i+1)*8;
-      o.style.transform = `translate(${dx*k}px, ${dy*k}px)`;
-    });
+    orbs.forEach((o,i)=>{ const k = (i+1)*8; o.style.transform = `translate(${dx*k}px, ${dy*k}px)`; });
   });
 })();
 
-/* Tabs de stack */
+/* Tabs de stack + “Ver mais” */
 (() => {
   const tabs = $$(".tab"), panels = $$(".panel");
   function activate(target){
@@ -645,35 +700,16 @@ const $$ = s => Array.from(document.querySelectorAll(s));
     tabs.forEach(t => { const on = t.dataset.target === target; t.classList.toggle("is-active", on); t.setAttribute("aria-selected", on ? "true" : "false"); });
   }
   tabs.forEach(t => t.addEventListener("click", ()=> activate(t.dataset.target)));
-})();
 
-/* Skills: animar barras quando visíveis + spark correndo */
-(() => {
-  const bars = $$(".fill");
-  const io = new IntersectionObserver(ents=>{
-    ents.forEach(e=>{
-      if(e.isIntersecting){
-        const el = e.target;
-        const to = el.style.getPropertyValue("--to") || "80%";
-        el.style.width = to;
-        const spark = el.parentElement.querySelector(".spark");
-        if(spark){
-          const parent = el.parentElement.getBoundingClientRect();
-          let start = null;
-          function anim(t){
-            if(!start) start = t;
-            const p = Math.min(1, (t-start)/1200);
-            const x = parent.width * p * (parseFloat(to)/100);
-            spark.style.transform = `translateX(${x-9}px)`;
-            if(p<1) requestAnimationFrame(anim); else spark.style.opacity=".0";
-          }
-          requestAnimationFrame(anim);
-        }
-        io.unobserve(el);
-      }
+  $$(".more-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const box = btn.nextElementSibling;
+      const open = box && box.style.display === "block";
+      if(!box) return;
+      box.style.display = open ? "none" : "block";
+      btn.textContent = open ? "Ver mais" : "Ver menos";
     });
-  },{threshold:.5});
-  bars.forEach(f=> io.observe(f));
+  });
 })();
 
 /* Skill rings (canvas) */
@@ -684,11 +720,12 @@ const $$ = s => Array.from(document.querySelectorAll(s));
     cv.width = size * dpr; cv.height = size * dpr;
     const ctx = cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
     const r = size/2 - 8, cx=size/2, cy=size/2;
-    ctx.strokeStyle = "rgba(255,255,255,.14)"; ctx.lineWidth=8; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = "rgba(0,0,0,.14)"; if(document.body.classList.contains('light')===false){ ctx.strokeStyle="rgba(255,255,255,.14)"; }
+    ctx.lineWidth=8; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
     const ang = (val/100)*Math.PI*2;
+    const get = p => getComputedStyle(document.documentElement).getPropertyValue(p).trim();
     const grad = ctx.createLinearGradient(cx-r,cy-r,cx+r,cy+r);
-    grad.addColorStop(0,getComputedStyle(document.documentElement).getPropertyValue("--brand").trim());
-    grad.addColorStop(1,getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
+    grad.addColorStop(0,get('--brand')); grad.addColorStop(1,get('--accent'));
     ctx.strokeStyle = grad; ctx.lineCap="round"; ctx.lineWidth=8; ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+ang); ctx.stroke();
   }
   const io = new IntersectionObserver(ents=>{
