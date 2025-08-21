@@ -6,12 +6,12 @@
 <title>Contato | Carlos Henrique</title>
 
 <style>
-  /* ---------- segurança contra overflow ---------- */
+  /* -------- segurança contra overflow -------- */
   *,*::before,*::after{ box-sizing:border-box; }
   img,svg,video,canvas{ max-width:100%; height:auto; display:block; }
   html,body{ max-width:100%; overflow-x:hidden; }
 
-  /* ===== Vars (tema DARK por padrão) ===== */
+  /* ==== Vars (tema DARK por padrão) ==== */
   :root{
     --header-h: 64px;
     --bg:#070b16;
@@ -24,7 +24,7 @@
     --shadow:0 10px 30px rgba(0,0,0,.28);
     --border:rgba(255,255,255,.10);
   }
-  /* Tema CLARO quando body.light estiver presente */
+  /* Tema CLARO quando body.light estiver on*/
   body.light{
     --bg:#f7f9ff; --card:#ffffff; --text:#1e2530; --muted:#647184;
     --accent:#2b8eff; --accent-2:#1f6ed6; --pill-bg:rgba(43,142,255,.12);
@@ -32,7 +32,6 @@
     --border:rgba(0,0,0,.10);
   }
 
-  /* ===== Base / bloqueio lateral ===== */
   html{ scroll-behavior:smooth; }
   html,body{ touch-action:pan-y; overscroll-behavior-x:none; }
   body{
@@ -95,7 +94,6 @@
   .hamburger:hover, .emoji-close:hover{ background:rgba(255,255,255,.06); }
   body.light .hamburger:hover, body.light .emoji-close:hover{ background:rgba(0,0,0,.06); }
 
-  /* 3 linhas SEMPRE brancas (ativo/inativo, claro/escuro) */
   .hamburger span{
     width:26px; height:2px; background:#fff !important;
     margin:6px 0; transition:transform .22s,opacity .22s;
@@ -152,7 +150,7 @@
   }
   .grid{ display:grid; gap:16px; grid-template-columns:1fr; }
 
-  /* >>> cols seguras (não estouram) <<< */
+  /* >>> cols seguras <<< */
   .row{
     display:grid; gap:16px;
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
@@ -221,10 +219,10 @@
 
       <ul id="side-menu">
         <li class="menu-heading">Outros sites</li>
-        <li><a href="https://github.com/seuuser" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="https://www.linkedin.com/in/seuuser" target="_blank" rel="noopener">LinkedIn</a></li>
-        <li><a href="https://www.figma.com/@seuuser" target="_blank" rel="noopener">Figma</a></li>
-        <li><a href="cv.pdf" target="_blank" rel="noopener">CV (PDF)</a></li>
+        <li><a href="https://github.com/Carlos-HFL1711" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/carlos-henrique-fernandes-de-lima-8a292937a?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BawPJ6yWNTKm7d6hB15eIxA%3D%3D" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="h" target="_blank" rel="noopener">Instagram </></li>
+        <li><a href="curriculo.html" target="_blank" rel="noopener">CV (Site)</a></li>
         <li class="menu-sep"></li>
         <li class="menu-switch">
           <!-- Marcado = ESCURO (padrão) -->
