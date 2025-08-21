@@ -34,7 +34,7 @@ body.light{
   --shadow:0 12px 28px rgba(0,0,0,.12);
 }
 
-/* ============================= BASE ============================= */
+/* ========== BASE ======== */
 *,*::before,*::after{ box-sizing:border-box; }
 /* ajuste: smooth -> auto para evitar “puxões” ao restaurar a rolagem */
 html{ scroll-behavior:auto; }
@@ -53,7 +53,7 @@ img,svg,canvas{ max-width:100%; height:auto; display:block; }
 
 body.scroll-lock{ position:fixed; inset:0; overflow:hidden; width:100vw; height:100vh; }
 
-/* ============================= HEADER ============================= */
+/* ========= HEADER ============ */
 header{
   position:sticky; top:0; z-index:2200;
   background:rgba(7,11,22,.60);
@@ -111,7 +111,7 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
 /* Barra de leitura */
 #scrollbar{ position:absolute; left:0; bottom:-1px; height:3px; width:0%; background:linear-gradient(90deg,var(--brand),var(--accent)); box-shadow:0 0 12px rgba(32,211,255,.45); }
 
-/* ============================= BOTÕES / UTILS ============================= */
+/* ================= BOTÕES / UTILS aqueles lá ============== */
 .btn{
   display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:10px 14px; font-weight:900;
   text-decoration:none; border:1px solid var(--border); color:var(--text); background:var(--card);
@@ -123,13 +123,12 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
 .btn.small{ font-size:.92rem; padding:8px 12px; }
 .badge{ display:inline-flex; align-items:center; gap:8px; font-weight:800; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--surface); }
 
-/* ====== "?" e popovers ====== */
 .help{ width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:999px; background:transparent; color:#fff; border:2px solid #fff; font-weight:900; line-height:1; cursor:pointer; }
 .help-pop{ position:fixed; z-index:4000; max-width:260px; padding:10px 12px; border-radius:12px; background:rgba(7,11,22,.92); border:1px solid rgba(255,255,255,.18); color:#eaf2ff; box-shadow:0 18px 40px rgba(0,0,0,.45); font-size:.92rem; line-height:1.35; display:none; }
 .help-pop.show{ display:block; }
 .help-pop h4{ margin:0 0 6px; font-size:1rem } .help-pop .x{ position:absolute; top:6px; right:8px; background:transparent; border:0; color:#fff; font-size:16px; cursor:pointer; }
 
-/* ============================= SEÇÕES / HERO ============================= */
+/* ================ SEÇÕES / HERO ======== */
 .section{ padding:56px 0; opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
 .section.visible{ opacity:1; transform:translateY(0); }
 
@@ -177,7 +176,7 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
 .ban-waves::before{ content:""; position:absolute; inset:-20%; background: radial-gradient(800px 300px at 20% 20%, rgba(124,77,255,.25), transparent 60%), radial-gradient(700px 300px at 80% 80%, rgba(32,211,255,.20), transparent 60%); animation:waves 8s linear infinite; mix-blend-mode:screen; }
 @keyframes waves{ to{ transform:translateX(-10%) } }
 
-/* ============================= INFO CARD (📩) — para usar em qualquer lugar ============================= */
+/* ============================= INFO CARD (📩)  ========================== */
 .info-toggle{ display:grid; gap:10px; }
 .info-trigger{
   display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; flex-wrap:wrap;
@@ -194,7 +193,7 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
 .info-panel{ overflow:hidden; max-height:0; opacity:0; border:1px solid var(--border); border-radius:14px; padding:0 14px; background:var(--card); transition:max-height .35s ease, opacity .28s ease, padding .2s ease; }
 .info-panel.open{ max-height:380px; opacity:1; padding:14px; }
 
-/* ============================= ASSISTENTE (ROBÔ CARLOS) ============================= */
+/* =================== ASSISTENTE (ROBÔ CARLOS) ========================= */
 .assistant{ display:grid; gap:16px; grid-template-columns: .9fr 1.1fr; align-items:stretch; }
 @media (max-width:900px){ .assistant{ grid-template-columns:1fr; } }
 .bot-mini{ position:relative; border:1px solid var(--border); border-radius:16px; background:var(--surface); padding:18px; overflow:hidden; }
@@ -209,7 +208,7 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
 /* substituto do chat inline (abrir sala) */
 .chat-launch{ display:grid; gap:10px; border:1px solid var(--border); border-radius:16px; background:var(--card); padding:14px; box-shadow:var(--shadow); }
 
-/* ============================= SALA (OVERLAY) ============================= */
+/* ==================== SALA (OVERLAY) ==================== */
 #support-full{ position:fixed; inset:0; z-index:3000; display:none;
   background: radial-gradient(1200px 600px at 15% 15%, rgba(124,77,255,.18), transparent 60%), radial-gradient(1200px 600px at 85% 85%, rgba(32,211,255,.18), transparent 60%), rgba(7,11,22,.92);
   backdrop-filter:saturate(120%) blur(6px);
@@ -223,7 +222,7 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
 .menu-grid{ display:grid; gap:8px; grid-template-columns:repeat(3,1fr); margin-top:8px; }
 .menu-grid .btn{ justify-content:center; }
 
-/* ============================= PROMPTS (ALTURA FIXA) ============================= */
+/* ==================== PROMPTS (ALTURA FIXA) ===================== */
 .stack{ display:grid; gap:18px; margin-top:18px; }
 .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:var(--shadow); }
 .card.head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
@@ -315,7 +314,7 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
 .stars::after{ content:'★★★★★'; color:#ffd36b; position:absolute; left:0; top:0; width:calc((var(--score)/5) * 100%); overflow:hidden; }
 .tag-note{ padding:4px 8px; border-radius:999px; font-weight:800; border:1px solid var(--border); background:var(--surface); font-size:.86rem; }
 
-/* ===== Removido: estilos da seção “Fábrica Autônoma” (solicitado) ===== */
+/* ===== Removido: estilos da seção “Fábrica Autônoma” ===== */
 </style>
 </head>
 
@@ -336,10 +335,10 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
       </button>
 
       <ul id="side-menu" aria-hidden="true">
-        <li class="menu-heading">Outros links</li>
+        <li class="menu-heading">Outro</li>
         <li><a href="testemain.html" target="_blank" rel="noopener">Testes</a></li>
-        <li><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="cv.pdf" target="_blank" rel="noopener">Currículo (PDF)</a></li>
+        <li><a href="https://github.com/Carlos-HFL1711" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="curriculo.html" target="_blank" rel="noopener">Currículo (Site)</a></li>
         <li class="menu-sep"></li>
         <li class="menu-switch">
           <input type="checkbox" id="theme-switch" checked />
@@ -376,7 +375,7 @@ body.light header{ background:var(--bg); border-bottom:1px solid var(--border); 
       </div>
     </section>
 
-    <!-- ============================= MICRO-CARDS ============================= -->
+    <!-- ===================== MICRO-CARDS ==================== -->
     <section class="section">
       <div class="ui-row">
         <div class="ui-card"><div class="shine"></div><h3 style="margin:0 0 6px">Performance</h3><p class="muted">Sites com notas altas no PageSpeed e carregamento inteligente.></p></div>
