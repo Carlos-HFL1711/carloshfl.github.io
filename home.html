@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Carlos HFL — Tráfego Pago + Automação & BI</title>
+  <meta name="description" content="Gestão de tráfego (Meta Ads, Google Ads) com automações, painéis e BI. Otimize CPL, CAC e ROAS com inteligência própria." />
+  <meta name="theme-color" content="#0b1224" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+  <!-- Barra de progresso de scroll -->
+  <div class="progress" aria-hidden="true"></div>
+
+  <!-- Fundo animado (constelações/partículas) -->
+  <canvas id="bg-dots" aria-hidden="true"></canvas>
+
+  <!-- Header fixo -->
+  <header class="site-header" id="top" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="AstraFlux Marketing">
+        <span class="brand-mark">CH</span>
+        <strong>Carlos Henrique</strong> <span class="brand-sub">Marketing</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primária">
+        <a href="#servicos">Serviços</a>
+        <a href="#diferenciais">Diferenciais</a>
+        <a href="#cases">Cases</a>
+        <a href="#planos">Planos</a>
+        <a href="#sobre">Sobre</a>
+        <a href="#contato" class="link-cta">Contato</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn-ghost" id="theme-toggle" aria-label="Alternar tema"></button>
+        <button class="btn-primary open-modal" data-modal="lead-modal">Pedir Proposta</button>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-controls="drawer" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Drawer Mobile -->
+    <aside class="drawer" id="drawer" aria-hidden="true">
+      <nav class="drawer-nav" aria-label="Menu mobile">
+        <a href="#servicos">Serviços</a>
+        <a href="#diferenciais">Diferenciais</a>
+        <a href="#cases">Cases</a>
+        <a href="#planos">Planos</a>
+        <a href="#sobre">Sobre</a>
+        <a href="#contato" class="link-cta">Contato</a>
+      </nav>
+      <div class="drawer-footer">
+        <button class="btn-ghost" id="theme-toggle-mobile" aria-label="Alternar tema">Tema</button>
+        <button class="btn-primary open-modal" data-modal="lead-modal">Pedir Proposta</button>
+      </div>
+    </aside>
+  </header>
+
+  <main id="home" class="site-main" role="main">
+    <!-- HERO -->
+    <section class="hero section">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <div class="partner-badge" aria-label="Parceria">
+            <span class="dot"></span>
+            Parceria <strong>Workana</strong>
+          </div>
+          <h1>Tráfego Pago com <span class="grad">Automação & AI</span></h1>
+          <p class="lead">
+            Meta Ads e Google Ads combinados com bots e painéis próprios.
+            Mais eficiência, menos achismo: foco em <strong>CPL</strong>, <strong>CAC</strong> e <strong>ROAS</strong>.
+          </p>
+          <div class="hero-cta">
+            <button class="btn-primary open-modal" data-modal="lead-modal">Quero escalar agora</button>
+            <a class="btn-ghost" href="#cases">Ver cases</a>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi">
+              <span class="kpi-num" data-count="13">0</span>
+              <span class="kpi-label">Projetos</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-num" data-count="2">0</span>
+              <span class="kpi-label">Anos</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-num" data-count="94">0</span>
+              <span class="kpi-label">Satisfação (%)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <!-- Painel animado (placeholder para gráfico/roas em JS subinduuu) -->
+          <div class="glass card-analytics">
+            <div class="chart-placeholder" role="img" aria-label="Gráfico de performance"></div>
+            <div class="metrics">
+              <div class="metric">
+                <span>ROAS</span>
+                <strong class="metric-val" data-animate="roas">0.0x</strong>
+              </div>
+              <div class="metric">
+                <span>CPL</span>
+                <strong class="metric-val" data-animate="cpl">R$0,00</strong>
+              </div>
+              <div class="metric">
+                <span>CAC</span>
+                <strong class="metric-val" data-animate="cac">R$0,00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="orbit">
+            <span class="planet"></span>
+            <span class="satellite"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust bar -->
+      <div class="trust">
+        <div class="container trust-inner">
+          <span class="trust-label">Conectado com</span>
+          <ul class="trust-logos">
+            <li class="logo meta" aria-label="Meta Ads">Meta</li>
+            <li class="logo google" aria-label="Google Ads">Google</li>
+            <li class="logo ga4" aria-label="GA4">GA4</li>
+            <li class="logo zap" aria-label="Zapier">Zapier</li>
+            <li class="logo powerbi" aria-label="Power BI">PowerBI</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVIÇOS -->
+    <section id="servicos" class="section">
+      <div class="container">
+        <header class="section-head">
+          <h2>Serviços que movem a agulha</h2>
+          <p>Campanhas que performam e páginas que convertem — tudo amarrado em dados.</p>
+        </header>
+
+        <div class="grid cards-services">
+          <article class="card service skeleton">
+            <div class="card-icon" aria-hidden="true">
+              <!-- Ícone Meta Ads (SVG simples) -->
+              <svg viewBox="0 0 24 24" class="icon"><circle cx="12" cy="12" r="10"/></svg>
+            </div>
+            <h3>Meta Ads</h3>
+            <p>Estratégia, segmentação e criativos orientados por dados. Menos CPC, mais conversões.</p>
+            <ul class="bullets">
+              <li>Testes A/B de criativos</li>
+              <li>Segmentações avançadas</li>
+              <li>Otimização por evento</li>
+            </ul>
+          </article>
+
+          <article class="card service skeleton">
+            <div class="card-icon" aria-hidden="true">
+              <!-- Ícone Google Ads -->
+              <svg viewBox="0 0 24 24" class="icon"><rect x="3" y="3" width="18" height="18" rx="4"/></svg>
+            </div>
+            <h3>Google Ads</h3>
+            <p>Search, Display e YouTube. Cobertura completa da jornada e intenção do usuário.</p>
+            <ul class="bullets">
+              <li>Keywords e negativas</li>
+              <li>Extensões e anúncios responsivos</li>
+              <li>Estratégias de lance</li>
+            </ul>
+          </article>
+
+          <article class="card service skeleton">
+            <div class="card-icon" aria-hidden="true">
+              <!-- Ícone Landing -->
+              <svg viewBox="0 0 24 24" class="icon"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
+            </div>
+            <h3>Landing Pages</h3>
+            <p>Páginas rápidas, persuasivas e medíveis. Estruturas que elevam a taxa de conversão para a sua empresa.</p>
+            <ul class="bullets">
+              <li>UX orientada a KPI</li>
+              <li>Testes de headline</li>
+              <li>guias completos</li>
+            </ul>
+          </article>
+
+          <article class="card service skeleton">
+            <div class="card-icon" aria-hidden="true">
+              <!-- Ícone Automação/BI -->
+              <svg viewBox="0 0 24 24" class="icon"><path d="M4 16h4v4H4zM10 10h4v10h-4zM16 6h4v14h-4z"/></svg>
+            </div>
+            <h3>Automações & BI</h3>
+            <p>Bots, ETL e painéis. Alertas quando o ROAS cai ou o CPL dispara. Decisão em tempo real.</p>
+            <ul class="bullets">
+              <li>Integrações (APIs)</li>
+              <li>Data pipelines</li>
+              <li>Power BI / Looker</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIFERENCIAIS -->
+    <section id="diferenciais" class="section alt">
+      <div class="container">
+        <header class="section-head">
+          <h2>Seu diferencial: <span class="grad">inteligência própria</span></h2>
+          <p>Bots que auditam campanhas, heatmaps, testes automáticos de criativos e alertas por meta.</p>
+        </header>
+
+        <div class="grid diff-grid">
+          <div class="card code-card">
+            <div class="code-header">audit_bot.py</div>
+            <pre class="code">
+def audit_campaigns(kpis):
+    if kpis["roas"] &lt; 2.0: alert("ROAS caiu &lt; 2.0x")
+    if kpis["cpl"] &gt; 25: alert("CPL &gt; R$25")
+    if kpis["spend"] &gt; budget_hourly(): pause_low_perf()
+# Executa a cada 15min e envia no WhatsApp/Slack
+            </pre>
+          </div>
+
+          <ul class="card diff-list">
+            <li><strong>Alertas automáticos:</strong> WhatsApp/Slack quando KPIs fogem do alvo.</li>
+            <li><strong>Heatmap & scroll:</strong> entenda onde converte e onde abandona.</li>
+            <li><strong>Teste de criativos:</strong> identifica vencedor por estatística, não por feeling.</li>
+            <li><strong>ROI fechado:</strong> Ads + CRM + vendas, sem ilusão de métrica de vaidade.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CASES -->
+    <section id="cases" class="section">
+      <div class="container">
+        <header class="section-head">
+          <h2>Cases reais, métricas claras</h2>
+          <p>Resultados apresentados com ROAS, CPL e CAC. Transparência total.</p>
+        </header>
+
+        <div class="slider" role="region" aria-label="Cases de sucesso">
+          <button class="slider-arrow prev" aria-label="Anterior">‹</button>
+          <div class="slides">
+            <article class="slide card">
+              <header class="slide-head">
+                <h3>E-commerce Fitness</h3>
+                <span class="pill">Meta + Google</span>
+              </header>
+              <p class="slide-desc">Otimização de funil e criativos UGC. Integração com CRM para qualificar leads.</p>
+              <ul class="kpi-list">
+                <li>ROAS: <strong>5,2x</strong></li>
+                <li>CPL: <strong>R$ 12,40</strong></li>
+                <li>CAC: <strong>R$ 58,00</strong></li>
+              </ul>
+            </article>
+
+            <article class="slide card">
+              <header class="slide-head">
+                <h3>Edtech Local</h3>
+                <span class="pill">YouTube + Search</span>
+              </header>
+              <p class="slide-desc">Aposta em intenção com Search + remarketing em vídeo para conversão.</p>
+              <ul class="kpi-list">
+                <li>ROAS: <strong>3,8x</strong></li>
+                <li>CPL: <strong>R$ 9,90</strong></li>
+                <li>CAC: <strong>R$ 47,00</strong></li>
+              </ul>
+            </article>
+
+            <article class="slide card">
+              <header class="slide-head">
+                <h3>Clínica Estética</h3>
+                <span class="pill">Leads qualificados</span>
+              </header>
+              <p class="slide-desc">Landing enxuta + qualificação automática no WhatsApp (bot de triagem).</p>
+              <ul class="kpi-list">
+                <li>ROAS: <strong>4,4x</strong></li>
+                <li>CPL: <strong>R$ 8,30</strong></li>
+                <li>CAC: <strong>R$ 39,00</strong></li>
+              </ul>
+            </article>
+          </div>
+          <button class="slider-arrow next" aria-label="Próximo">></button>
+          <div class="slider-dots" role="tablist" aria-label="Navegação dos cases"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLANOS -->
+    <section id="planos" class="section alt">
+      <div class="container">
+        <header class="section-head">
+          <h2>Escolha um plano, o que lhe agrada</h2>
+          <p>Escolha o nível de gestão e inteligência que faz sentido agora e escale depois.</p>
+        </header>
+
+        <div class="grid pricing">
+          <article class="card price">
+            <h3>Básico</h3>
+            <p class="price-tag"><strong>R$ 1.500</strong> / mês</p>
+            <ul class="bullets">
+              <li>Gestão Meta/Google</li>
+              <li>Relatório quinzenal</li>
+              <li>5 testes de criativos</li>
+            </ul>
+            <button class="btn-primary open-modal" data-modal="lead-modal">Começar</button>
+          </article>
+
+          <article class="card price highlight">
+            <h3>Pro</h3>
+            <p class="price-tag"><strong>R$ 3.000</strong> / mês</p>
+            <ul class="bullets">
+              <li>Tudo do Básico</li>
+              <li>Painel ao vivo + alertas</li>
+              <li>Integração com CRM</li>
+            </ul>
+            <button class="btn-primary open-modal" data-modal="lead-modal">Escalar</button>
+          </article>
+
+          <article class="card price">
+            <h3>Premium</h3>
+            <p class="price-tag"><strong>R$ 4.500</strong> / mês</p>
+            <ul class="bullets">
+              <li>BI completo (ROI fechado)</li>
+              <li>Testes automáticos</li>
+              <li>Suporte prioridade</li>
+            </ul>
+            <button class="btn-primary open-modal" data-modal="lead-modal">Falar com especialista</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section id="sobre" class="section">
+      <div class="container">
+        <header class="section-head">
+          <h2>Com o que trabalho</h2>
+          <p>Equipe híbrida de bots + marketing + engenharia + IA. Tráfego pago guiado por dados e automação, com relatorios
+            especifcos para o seu negócio.</p>
+        </header>
+
+        <div class="grid about-grid">
+          <div class="card about-card">
+            <h3>Metodologia</h3>
+            <p>Diagnóstico, hipóteses, testes rápidos, iterações semanais. Ciclos curtos de aprendizado.</p>
+          </div>
+          <div class="card about-card">
+            <h3>Stack</h3>
+            <p>Meta/Google, GA4, GTM, APIs, Python/Node, Power BI/Looker, Zapier/n8n.</p>
+          </div>
+          <div class="card about-card">
+            <h3>Compliance</h3>
+            <p>LGPD, consentimento, tags corretas e segurança nos dados de leads e vendas.</p>
+          </div>
+          <div class="card about-card">
+            <h3>Entrega</h3>
+            <p>Relatórios claros, foco em CPL/CAC/ROAS. Sem vaidade — só o que move o negócio.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- DEPOIMENTOS -->
+    <section class="section alt">
+      <div class="container">
+        <header class="section-head">
+          <h2>Depoimentos</h2>
+          <p>Confiança construída com métrica e transparência.</p>
+        </header>
+
+        <div class="testimonials">
+          <figure class="testimonial card">
+            <blockquote>“Passamos a decidir com dados. O painel ao vivo e os alertas mudaram nosso negocio.”</blockquote>
+            <figcaption>— Juliana M., E-commerce</figcaption>
+          </figure>
+          <figure class="testimonial card">
+            <blockquote>“CPL caiu, vendas subiram. A automação liberou tempo do time, cara vlw.”</blockquote>
+            <figcaption>— Renato S., Edtech</figcaption>
+          </figure>
+          <figure class="testimonial card">
+            <blockquote>“Integração com CRM mostrou q realmente traz cliente bom, obg.”</blockquote>
+            <figcaption>— Alana T., Serviços</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section id="contato" class="section">
+      <div class="container">
+        <header class="section-head">
+          <h2>Fale comigo</h2>
+          <p>Conte o objetivo e o orçamento. A gente volta com um plano realista.</p>
+        </header>
+
+        <form class="contact-form card" aria-label="Formulário de contato">
+          <div class="grid form-grid">
+            <label>
+              <span>Nome</span>
+              <input type="text" name="nome" placeholder="Seu nome" required />
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" name="email" placeholder="voce@empresa.com" required />
+            </label>
+            <label>
+              <span>Telefone/WhatsApp</span>
+              <input type="tel" name="telefone" placeholder="(43) 9 9999-9999" />
+            </label>
+            <label>
+              <span>Orçamento mensal</span>
+              <select name="orcamento">
+                <option value="">Selecione</option>
+                <option>&lt; R$ 2.000</option>
+                <option>R$ 2.000 – 5.000</option>
+                <option>R$ 5.000 – 10.000</option>
+                <option>&gt; R$ 10.000</option>
+              </select>
+            </label>
+            <label class="full">
+              <span>Objetivo</span>
+              <textarea name="mensagem" rows="4" placeholder="Descreva seu objetivo e prazo"></textarea>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button class="btn-primary" type="submit">Enviar</button>
+            <p class="form-note">Respondo em até 1 dia útil no Whats.</p>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Dock de contato flutuante -->
+  <div class="contact-dock" role="dialog" aria-label="Contato rápido">
+    <a class="dock-btn" href="https://wa.me/5543996593590?text=Olá! Gostaria de saber mais sobre seus serviços de tráfego pago." target="_blank">Mensagem</a>
+    <!-- Botão voltar ao topo removido -->
+  </div>
+
+  <!-- Botão WhatsApp flutuante -->
+  <a class="whatsapp-btn" href="https://wa.me/5543996593590?text=Olá! Gostaria de saber mais sobre seus serviços de tráfego pago." target="_blank" aria-label="Falar no WhatsApp">
+    📱
+  </a>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Carlos Henrique — Tráfego Pago + Automação & BI.</p>
+      <p class="foot-note">Parceria: Workana • GA4 • Power BI • Zapier • n8n</p>
+    </div>
+  </footer>
+
+  <!-- Modal Lead -->
+  <dialog id="lead-modal" class="modal" aria-labelledby="lead-title" aria-modal="true">
+    <form method="dialog" class="modal-body card">
+      <header class="modal-head">
+        <h3 id="lead-title">Vamos escalar seu tráfego</h3>
+        <button class="modal-close" aria-label="Fechar">✕</button>
+      </header>
+      <div class="grid form-grid">
+        <label>
+          <span>Nome</span>
+          <input type="text" name="m_nome" placeholder="Seu nome" required />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" name="m_email" placeholder="voce@empresa.com" required />
+        </label>
+        <label class="full">
+          <span>Objetivo</span>
+          <textarea name="m_msg" rows="3" placeholder="Ex.: reduzir CPL, aumentar ROAS, integrar com CRM"></textarea>
+        </label>
+      </div>
+      <footer class="modal-actions">
+        <button class="btn-ghost" value="cancel">Cancelar</button>
+        <button class="btn-primary" value="enviar">Enviar</button>
+      </footer>
+    </form>
+  </dialog>
+
+
+  <!-- Scripts -->
+  <script src="app.js" defer></script>
+</body>
+</html>
