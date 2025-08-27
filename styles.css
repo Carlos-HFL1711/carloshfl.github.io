@@ -412,6 +412,10 @@ body {
   border: none;
   cursor: pointer;
   padding: 8px;
+  z-index: 1001;
+  position: relative;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 .hamburger span {
@@ -444,7 +448,7 @@ body {
   background: linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(30, 15, 45, 0.98));
   backdrop-filter: blur(20px);
   transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  z-index: 999;
+  z-index: 1003;
   border-left: 1px solid rgba(99, 102, 241, 0.3);
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
 }
@@ -2709,13 +2713,46 @@ body {
   }
 }
 
-@media (max-width: 768px) {
+/* Desktop styles */
+@media (min-width: 769px) {
   .nav-links {
-    display: none;
+    display: flex !important;
   }
   
   .hamburger {
-    display: flex;
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important;
+  }
+  
+  .nav-controls {
+    display: flex !important;
+    position: relative;
+    z-index: 1003;
+  }
+  
+  .hamburger {
+    display: flex !important;
+    z-index: 1004 !important;
+    position: relative !important;
+    background: rgba(99, 102, 241, 0.1) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    border-radius: 8px !important;
+    width: 40px !important;
+    height: 40px !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  
+  .hamburger span {
+    background: var(--text-primary) !important;
+    display: block !important;
+    width: 20px !important;
+    height: 2px !important;
   }
   
   .hero {
