@@ -152,7 +152,7 @@ select.sortby{
   background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px 12px; font-weight:700;
 }
 
-/* ================== CARDS (6) ================== */
+/* ================== CARDS (12) ================== */
 .proj-grid{
   display:grid; gap:16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
@@ -173,7 +173,6 @@ select.sortby{
   height:140px; position:relative; overflow:hidden;
   background:linear-gradient(135deg,#1a2248,#0c153f);
 }
-/* A IMAGEM DO CARD */
 .proj-hero .hero-img{
   position:absolute; inset:0;
   width:100%; height:100%;
@@ -187,7 +186,7 @@ select.sortby{
 }
 @keyframes shine{ 0%{ transform:translateX(-120%) rotate(8deg); } 100%{ transform:translateX(120%) rotate(8deg); } }
 
-/* gradientes de fallback caso a imagem não carregue */
+/* gradientes de fallback */
 .grad-blue{ background:linear-gradient(135deg,#2b8eff,#21c1ff); }
 .grad-cyan{ background:linear-gradient(135deg,#0fd1ff,#48f5ff); }
 .grad-purple{ background:linear-gradient(135deg,#7b61ff,#a67cff); }
@@ -234,7 +233,6 @@ body.light .proj-badge{ background:rgba(255,255,255,.65); color:#173050; border-
   display:flex; flex-direction:column;
 }
 .modal-hero{ height:190px; background:linear-gradient(135deg,var(--brand),var(--accent)); flex:0 0 auto; position:relative; }
-/* IMAGEM DO MODAL (preenchida via JS) */
 .modal-hero #modal-photo{
   position:absolute; inset:0;
   width:100%; height:100%;
@@ -300,7 +298,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
 .conv .item{ position:absolute; font-weight:900; user-select:none; pointer-events:none; opacity:0; transform:translate(-50%,-50%) scale(.8); }
 @keyframes pop{ 0%{ opacity:0; transform:translate(var(--x),var(--y)) scale(.4) } 30%{ opacity:1; transform:translate(var(--x),var(--y)) scale(1) } 100%{ opacity:0; transform:translate(var(--x2),var(--y2)) scale(.6) } }
 
-/* pequenas polidas para telas bem estreitas */
+/* pequenas polidas */
 @media (max-width:420px){
   .container{ padding:0 12px; }
   #menu-toggle{ width:42px; height:40px; font-size:21px; }
@@ -373,20 +371,19 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
     </div>
   </section>
 
-  <!-- ============ GRID (6 PROJETOS) ============ -->
+  <!-- ============ GRID (12 PROJETOS) ============ -->
   <main class="container section">
     <div id="grid" class="proj-grid">
 
       <!-- 1 Site -->
       <article class="proj-card" data-tags="sites,uiux,landing,seo" data-date="2025-01-28">
         <div class="proj-hero grad-blue">
-          <!-- CORRIGIDO: aspas e data-detail -->
           <img class="hero-img" src="docs/suporte.png" data-detail="docs/camera.jpg" alt="Landing 1" loading="lazy">
         </div>
         <span class="proj-badge">Sites</span>
         <div class="proj-body">
           <h3 class="proj-title">Relatórios De Automatização & CFTV</h3>
-          <p class="proj-desc">Landing rápida com alto score de performance.</p>
+          <p class="proj-desc">Ganha: +30–90% em conversões em 30 dias • CWV 90+ · LCP &lt; 2.5s · INP &lt; 200ms</p>
           <div class="tags">
             <span class="tag">Acessível</span><span class="tag">Core Web Vitals</span>
           </div>
@@ -412,7 +409,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
         <span class="proj-badge">CFTV & IoT</span>
         <div class="proj-body">
           <h3 class="proj-title">Sistema de Segurança Automatizadas</h3>
-          <p class="proj-desc">Sensores e dashboard em tempo real.</p>
+          <p class="proj-desc">Ganha: −70% do tempo de verificação com alertas e auditoria • Logs · Export CSV/PDF · Eventos IA</p>
           <div class="tags">
             <span class="tag">MQTT</span><span class="tag">WebSocket</span><span class="tag">Alertas</span>
           </div>
@@ -433,13 +430,12 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
       <!-- 3 Automação -->
       <article class="proj-card" data-tags="automacao,scripts,integ" data-date="2025-01-22">
         <div class="proj-hero grad-purple">
-          <!-- MANTIDO e com data-detail p/ modal -->
           <img class="hero-img" src="docs/relatoriocftv.png" data-detail="docs/relatoriocftv.png" alt="Bot de automação" loading="lazy">
         </div>
         <span class="proj-badge">Automação</span>
         <div class="proj-body">
           <h3 class="proj-title">Bot de automação para sua Empresa</h3>
-          <p class="proj-desc">Integrações com APIs e tarefas agendadas.</p>
+          <p class="proj-desc">Ganha: −60% de tarefas repetitivas / relatórios 1-clique • Jobs com retry · Sheets/Drive · Alertas</p>
           <div class="tags">
             <span class="tag">Jobs</span><span class="tag">REST</span><span class="tag">Relatórios</span>
           </div>
@@ -465,7 +461,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
         <span class="proj-badge">Suporte T.I.</span>
         <div class="proj-body">
           <h3 class="proj-title">Suporte T.I. remoto</h3>
-          <p class="proj-desc">Atendimento remoto e documentação de ativos.</p>
+          <p class="proj-desc">Ganha: SLA previsível e inventário padronizado • Base de conhecimento · Checklists · Relatórios de SLA</p>
           <div class="tags">
             <span class="tag">Inventário</span><span class="tag">Padronização</span><span class="tag">KPIs</span>
           </div>
@@ -491,7 +487,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
         <span class="proj-badge">Dashboard</span>
         <div class="proj-body">
           <h3 class="proj-title">Dashboard administrativo</h3>
-          <p class="proj-desc">Painel com gráficos e cards responsivos.</p>
+          <p class="proj-desc">Ganha: decisão em minutos (filtros e exports prontos) • Linhas/Barras · Intervalos · Export PNG</p>
           <div class="tags">
             <span class="tag">Charts</span><span class="tag">Filtros</span><span class="tag">Dark Mode</span>
           </div>
@@ -502,7 +498,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
           <div class="proj-more" hidden>
             <ul class="bullets">
               <li>Linhas, barras e designs com tooltips</li>
-              <li>Intervalos e agrupamentos (dia/sem/mês)</li><!-- corrigido -->
+              <li>Intervalos e agrupamentos (dia/sem/mês)</li>
               <li>Exportar imagem do gráfico</li>
             </ul>
           </div>
@@ -517,7 +513,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
         <span class="proj-badge">E-commerce</span>
         <div class="proj-body">
           <h3 class="proj-title">Loja virtual</h3>
-          <p class="proj-desc">Catálogo, carrinho e checkout simplificado.</p>
+          <p class="proj-desc">Ganha: checkout rápido e recuperação de carrinho • Filtros · Frete/Cupons · Abandono</p>
           <div class="tags">
             <span class="tag">Busca</span><span class="tag">Favoritos</span><span class="tag">Pagamentos</span>
           </div>
@@ -530,6 +526,164 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
               <li>Filtros por preço/categoria</li>
               <li>Frete e cupons</li>
               <li>Recuperação de carrinho</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- ===== NOVOS 6 CARDS (datas antigas p/ ficarem embaixo) ===== -->
+
+      <!-- 7 Automação — Integração ERP -->
+      <article class="proj-card" data-tags="automacao,scripts,integ" data-date="2024-10-30">
+        <div class="proj-hero grad-purple">
+          <img class="hero-img" src="docs/relatorios2.png" data-detail="docs/relatoriocftv.png" alt="Integração ERP & Faturamento" loading="lazy">
+        </div>
+        <span class="proj-badge">Automação</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Integração ERP & Faturamento</h3>
+          <p class="proj-desc">Ganha: −40% tempo do financeiro com conciliação automática • Webhooks · NF-e · XLSX</p>
+          <div class="tags">
+            <span class="tag">API</span><span class="tag">Webhooks</span><span class="tag">XLSX</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="#" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li><b>Resultados:</b> conciliação Pix/Boleto; queda de tarefas manuais.</li>
+              <li><b>Escopo:</b> integração ERP, NF-e, exportações XLSX/CSV.</li>
+              <li><b>Stack:</b> REST, Jobs com retry, logs e alertas.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8 Suporte — App Técnicos -->
+      <article class="proj-card" data-tags="suporte,ti,manutencao" data-date="2024-10-25">
+        <div class="proj-hero grad-orange">
+          <img class="hero-img" src="docs/suporteti.jpg" data-detail="docs/camera.jpg" alt="App de Técnicos Terceirizados" loading="lazy">
+        </div>
+        <span class="proj-badge">Suporte T.I.</span>
+        <div class="proj-body">
+          <h3 class="proj-title">App para Técnicos Terceirizados</h3>
+          <p class="proj-desc">Ganha: −25% tempo de deslocamento (rotas/SLA) • Check-in · Fotos · Geo</p>
+          <div class="tags">
+            <span class="tag">Check-in</span><span class="tag">Geo</span><span class="tag">SLA</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="#" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li><b>Resultados:</b> mais visitas/dia com roteirização.</li>
+              <li><b>Escopo:</b> ordens de serviço, check-in/out, fotos com anotação.</li>
+              <li><b>Stack:</b> PWA, mapas, storage de mídia otimizado.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 9 Sites — Landing A/B -->
+      <article class="proj-card" data-tags="sites,uiux,landing,seo" data-date="2024-10-20">
+        <div class="proj-hero grad-blue">
+          <img class="hero-img" src="docs/interfacewebdesign.jpg" data-detail="docs/suporte.png" alt="Landing com Testes A/B" loading="lazy">
+        </div>
+        <span class="proj-badge">Sites</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Landing com Testes A/B</h3>
+          <p class="proj-desc">Ganha: +18–35% conversão com A/B • SEO · Analytics · CWV 90+</p>
+          <div class="tags">
+            <span class="tag">SEO</span><span class="tag">A/B</span><span class="tag">Analytics</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="#" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li><b>Resultados:</b> variações de hero/copy com uplift medido.</li>
+              <li><b>Escopo:</b> GA4, eventos, export de resultados.</li>
+              <li><b>Stack:</b> HTML/CSS/JS otimizado para LCP/INP.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 10 Automação — Backups (DAG) -->
+      <article class="proj-card" data-tags="automacao,scripts,integ" data-date="2024-10-15">
+        <div class="proj-hero grad-teal">
+          <img class="hero-img" src="docs/casestudy.png" data-detail="docs/dashboard.jpg" alt="Orquestração de Backups (DAG)" loading="lazy">
+        </div>
+        <span class="proj-badge">Automação</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Orquestração de Backups (DAG)</h3>
+          <p class="proj-desc">Ganha: RPO/RTO previsíveis, alertas e retry • DAG · Logs · Retry</p>
+          <div class="tags">
+            <span class="tag">DAG</span><span class="tag">Logs</span><span class="tag">Retry</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="#" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li><b>Resultados:</b> falhas detectadas cedo; reexecução automática.</li>
+              <li><b>Escopo:</b> múltiplos destinos, relatórios semanais.</li>
+              <li><b>Stack:</b> jobs, logs estruturados, notificações.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 11 Automação — WhatsApp Faturas -->
+      <article class="proj-card" data-tags="automacao,scripts,integ" data-date="2024-10-10">
+        <div class="proj-hero grad-cyan">
+          <img class="hero-img" src="docs/relatoriocftv.png" data-detail="docs/relatoriocftv.png" alt="Assistente WhatsApp — Faturas" loading="lazy">
+        </div>
+        <span class="proj-badge">Automação</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Assistente WhatsApp — Faturas</h3>
+          <p class="proj-desc">Ganha: −60% tickets sobre 2ª via e pagamentos • WhatsApp · Pix/Boleto · Notificações</p>
+          <div class="tags">
+            <span class="tag">WhatsApp</span><span class="tag">Pix</span><span class="tag">Boleto</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="#" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li><b>Resultados:</b> autosserviço de 2ª via e confirmação de pagamento.</li>
+              <li><b>Escopo:</b> consulta de faturas, envio de comprovante.</li>
+              <li><b>Stack:</b> webhooks, filas, auditoria.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 12 Suporte — Portal do Cliente -->
+      <article class="proj-card" data-tags="suporte,ti,manutencao" data-date="2024-10-05">
+        <div class="proj-hero grad-teal">
+          <img class="hero-img" src="docs/suporte.png" data-detail="docs/suporteti.jpg" alt="Portal do Cliente / Suporte" loading="lazy">
+        </div>
+        <span class="proj-badge">Suporte T.I.</span>
+        <div class="proj-body">
+          <h3 class="proj-title">Portal do Cliente / Suporte</h3>
+          <p class="proj-desc">Ganha: −32% chamados repetidos (base de conhecimento) • Tickets · FAQ · SLA</p>
+          <div class="tags">
+            <span class="tag">Tickets</span><span class="tag">FAQ</span><span class="tag">SLA</span>
+          </div>
+          <div class="proj-actions">
+            <a class="btn primary" href="#" target="_blank" rel="noopener">Ver online</a>
+            <button class="btn outline open-modal" type="button">Detalhes</button>
+          </div>
+          <div class="proj-more" hidden>
+            <ul class="bullets">
+              <li><b>Resultados:</b> resolução self-service e triagem inteligente.</li>
+              <li><b>Escopo:</b> KB pesquisável, formulário guiado, status público.</li>
+              <li><b>Stack:</b> HTML/JS, buscas, integrações por webhook.</li>
             </ul>
           </div>
         </div>
@@ -548,7 +702,6 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
         <div>
           <h3>Robô Scanner de Páginas</h3>
           <svg id="scanner" viewBox="0 0 720 280" role="img" aria-label="Robô analisando páginas">
-            <!-- páginas -->
             <g id="pages">
               <rect class="page" x="60" y="40" width="120" height="80" rx="10"/>
               <rect class="page" x="220" y="60" width="120" height="80" rx="10"/>
@@ -558,7 +711,6 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
               <rect class="page" x="300" y="160" width="120" height="80" rx="10"/>
               <rect class="page" x="460" y="150" width="120" height="80" rx="10"/>
             </g>
-            <!-- braço -->
             <g id="arm" transform="translate(90,240)">
               <rect x="0" y="-10" width="140" height="12" fill="#2de1ff"/>
               <circle cx="0" cy="-4" r="10" fill="#2de1ff"/>
@@ -569,9 +721,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
             </g>
           </svg>
         </div>
-        <div>
-          <div class="cmd" id="cmd-scan" aria-live="polite"></div>
-        </div>
+        <div><div class="cmd" id="cmd-scan" aria-live="polite"></div></div>
       </div>
     </article>
 
@@ -582,9 +732,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
           <h3>Pipeline de Dados</h3>
           <canvas id="pipe" class="pipe-canvas"></canvas>
         </div>
-        <div>
-          <div class="cmd" id="cmd-pipe"></div>
-        </div>
+        <div><div class="cmd" id="cmd-pipe"></div></div>
       </div>
     </article>
 
@@ -595,9 +743,7 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
           <h3>Conversão & Engajamento</h3>
           <div id="conv" class="conv"></div>
         </div>
-        <div>
-          <div class="cmd" id="cmd-conv"></div>
-        </div>
+        <div><div class="cmd" id="cmd-conv"></div></div>
       </div>
     </article>
   </section>
@@ -607,7 +753,6 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
     <div class="modal-backdrop"></div>
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-hero" id="modal-hero">
-        <!-- IMAGEM DO MODAL — preenchida via JS -->
         <img id="modal-photo" alt="">
       </div>
       <div class="modal-content">
@@ -637,7 +782,6 @@ footer{ text-align:center; padding:28px 0; color:var(--muted); }
 
 <!-- ================== JS ================== -->
 <script>
-/* Util */
 const $ = (s,doc=document)=>doc.querySelector(s);
 const $$ = (s,doc=document)=>Array.from(doc.querySelectorAll(s));
 const norm = s => (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
@@ -665,7 +809,7 @@ const norm = s => (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u
   addEventListener('keydown',e=>{ if(e.key==='Escape') openMenu(false); });
 })();
 
-/* 3) Tema: checkbox CHECKED = escuro; desmarcar = claro (.light) */
+/* 3) Tema */
 (() => {
   const sw = $('#theme-switch');
   if(!sw) return;
@@ -673,7 +817,7 @@ const norm = s => (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u
   sw.addEventListener('change', ()=>document.body.classList.toggle('light', !sw.checked));
 })();
 
-/* 4) Filtros, Busca (debounce), Contadores, Ordenação */
+/* 4) Filtros/Busca/Sort */
 (() => {
   const tabs = $$('.filters .tab');
   const input = $('#buscar-proj');
@@ -751,7 +895,7 @@ const norm = s => (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u
   apply();
 })();
 
-/* 5) Modal — usa a <img.hero-img> do card (ou data-detail) como imagem do topo */
+/* 5) Modal */
 (() => {
   const modal = $('#modal');
   const closeBtn = $('#modal-close');
@@ -761,7 +905,6 @@ const norm = s => (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u
   const extra = $('#modal-extra');
   const tags = $('#modal-tags');
 
-  // fallback: se imagem do modal falhar, esconde a <img> e fica só o gradiente
   modalPhoto.addEventListener('error', ()=>{ modalPhoto.style.display='none'; });
 
   function open(card){
