@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carlos Henrique - Desenvolvedor Full Stack | UI/UX</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
-    <!-- Enhanced Animated Background -->
-    <div class="animated-background">
+    <div class="animated-background" aria-hidden="true">
         <div class="floating-shapes">
             <div class="shape shape-1"></div>
             <div class="shape shape-2 cube"></div>
@@ -20,10 +17,11 @@
             <div class="shape shape-4 triangle"></div>
             <div class="shape shape-5"></div>
             <div class="shape shape-6 cube"></div>
+            <div class="shape shape-7"></div>
+            <div class="shape shape-8"></div>
         </div>
     </div>
 
-    <!-- Header -->
     <header class="header">
         <nav class="navbar">
             <div class="nav-brand">
@@ -43,7 +41,7 @@
             </ul>
 
             <div class="nav-controls">
-                <button class="hamburger" id="hamburger">
+                <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -51,15 +49,14 @@
             </div>
         </nav>
 
-        <!-- Mobile Menu -->
         <div class="mobile-menu" id="mobileMenu">
             <div class="mobile-menu-content">
                 <div class="mobile-links">
-                    <a href="#inicio" class="mobile-link">Início </a>
-                    <a href="sobre.html" class="mobile-link">sobre</a>
+                    <a href="#inicio" class="mobile-link">Início</a>
+                    <a href="sobre.html" class="mobile-link">Sobre</a>
                     <a href="portfolio.html" class="mobile-link">Portfólio</a>
                     <a href="projetos.html" class="mobile-link">Projetos</a>
-                    <a href="sistemas2" class="mobile-link">Sistemas</a>
+                    <a href="sistemas2.html" class="mobile-link">Sistemas</a>
                     <a href="home.html" class="mobile-link">Marketing</a>
                     <a href="curriculo.html" class="mobile-link">CV</a>
                 </div>
@@ -70,14 +67,11 @@
                     <a href="testemain.html" class="social-link tests"><i class="fas fa-flask"></i><span>Testes</span></a>
                     <a href="#" class="social-link resume"><i class="fas fa-file-alt"></i><span>Currículo</span></a>
                 </div>
-
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main>
-        <!-- Hero Section -->
         <section id="inicio" class="hero">
             <div class="container">
                 <div class="hero-content">
@@ -93,15 +87,15 @@
                         <p><span>para uma melhor experiência, utilize um computador</span></p>
                         <div class="hero-stats">
                             <div class="stat-item">
-                                <div class="stat-number" data-target="217">0</div>
+                                <div class="stat-number" data-target="217" data-suffix="">0</div>
                                 <div class="stat-label">Projetos Concluídos</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number" data-target="4">0</div>
+                                <div class="stat-number" data-target="4" data-suffix="">0</div>
                                 <div class="stat-label">Anos de Experiência</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number" data-target="97">0</div>
+                                <div class="stat-number" data-target="97" data-suffix="%">0</div>
                                 <div class="stat-label">% Satisfação</div>
                             </div>
                         </div>
@@ -116,7 +110,7 @@
                         </div>
                     </div>
                     <div class="hero-visual">
-                        <div class="code-preview">
+                        <div class="code-preview skeleton-target">
                             <div class="code-header">
                                 <div class="code-dots">
                                     <span></span>
@@ -139,93 +133,51 @@
             </div>
         </section>
 
-        <!-- Services Preview -->
         <section class="services-preview">
             <div class="container">
                 <h2 class="section-title">Serviços Especializados</h2>
                 <div class="services-grid">
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-palette"></i>
-                        </div>
+                    <div class="service-card skeleton-target">
+                        <div class="service-icon"><i class="fas fa-palette"></i></div>
                         <h3>UI/UX Design</h3>
                         <p>Interfaces modernas e intuitivas que convertem visitantes em clientes</p>
-                        <div class="service-tech">
-                            <span>Figma</span>
-                            <span>Adobe XD</span>
-                            <span>Prototyping</span>
-                        </div>
+                        <div class="service-tech"><span>Figma</span><span>Adobe XD</span><span>Prototyping</span></div>
                     </div>
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fab fa-react"></i>
-                        </div>
+                    <div class="service-card skeleton-target">
+                        <div class="service-icon"><i class="fab fa-react"></i></div>
                         <h3>Front-end Desenvolvedor</h3>
                         <p>Aplicações web responsivas e performáticas com as melhores tecnologias</p>
-                        <div class="service-tech">
-                            <span>React.js</span>
-                            <span>Node.js</span>
-                            <span>Electron</span>
-                        </div>
+                        <div class="service-tech"><span>React.js</span><span>Node.js</span><span>Electron</span></div>
                     </div>
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
+                    <div class="service-card skeleton-target">
+                        <div class="service-icon"><i class="fas fa-robot"></i></div>
                         <h3>Python & Machine Learning</h3>
                         <p>Automação inteligente e soluções de IA para otimizar seus processos</p>
-                        <div class="service-tech">
-                            <span>Python</span>
-                            <span>TensorFlow</span>
-                            <span>Automation</span>
-                        </div>
+                        <div class="service-tech"><span>Python</span><span>TensorFlow</span><span>Automation</span></div>
                     </div>
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
+                    <div class="service-card skeleton-target">
+                        <div class="service-icon"><i class="fas fa-database"></i></div>
                         <h3>Backend & Base de Dados</h3>
                         <p>APIs robustas e bancos de dados escaláveis para suas aplicações</p>
-                        <div class="service-tech">
-                            <span>SQLite</span>
-                            <span>MySQL</span>
-                            <span>APIs REST</span>
-                        </div>
+                        <div class="service-tech"><span>SQLite</span><span>MySQL</span><span>APIs REST</span></div>
                     </div>
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
+                    <div class="service-card skeleton-target">
+                        <div class="service-icon"><i class="fas fa-mobile-alt"></i></div>
                         <h3>Mobile Desenvolvedor</h3>
                         <p>Aplicativos móveis nativos e híbridos para iOS e Android</p>
-                        <div class="service-tech">
-                            <span>React Native</span>
-                            <span>Flutter</span>
-                            <span>Ionic</span>
-                        </div>
+                        <div class="service-tech"><span>React Native</span><span>Flutter</span><span>Ionic</span></div>
                     </div>
-                    <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-cloud"></i>
-                        </div>
+                    <div class="service-card skeleton-target">
+                        <div class="service-icon"><i class="fas fa-cloud"></i></div>
                         <h3>Cloud & DevOps</h3>
                         <p>Infraestrutura em nuvem e automação de deploy para máxima eficiência</p>
-                        <div class="service-tech">
-                            <span>AWS</span>
-                            <span>Docker</span>
-                            <span>CI/CD</span>
-                        </div>
+                        <div class="service-tech"><span>AWS</span><span>Docker</span><span>CI/CD</span></div>
                     </div>
                 </div>
             </div>
         </section>
 
-
-
-
-
-        <!-- About Preview -->
-        <section class="about-preview">
+        <!--section class="about-preview">
             <div class="container">
                 <div class="preview-content">
                     <div class="preview-text">
@@ -240,170 +192,27 @@
                     <div class="preview-visual">
                         <div class="skill-bars">
                             <div class="skill-bar">
-                                <div class="skill-info">
-                                    <span>Front-end Desenvolvedor</span>
-                                    <span>98%</span>
-                                </div>
-                                <div class="skill-progress">
-                                    <div class="skill-fill" data-width="98"></div>
-                                </div>
+                                <div class="skill-info"><span>Front-end Desenvolvedor</span><span>98%</span></div>
+                                <div class="skill-progress"><div class="skill-fill" data-width="98"></div></div>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-info">
-                                    <span>UI/UX Design</span>
-                                    <span>87%</span>
-                                </div>
-                                <div class="skill-progress">
-                                    <div class="skill-fill" data-width="87"></div>
-                                </div>
+                                <div class="skill-info"><span>UI/UX Design</span><span>87%</span></div>
+                                <div class="skill-progress"><div class="skill-fill" data-width="87"></div></div>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-info">
-                                    <span>Python & ML</span>
-                                    <span>88%</span>
-                                </div>
-                                <div class="skill-progress">
-                                    <div class="skill-fill" data-width="88"></div>
-                                </div>
+                                <div class="skill-info"><span>Python & ML</span><span>88%</span></div>
+                                <div class="skill-progress"><div class="skill-fill" data-width="88"></div></div>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-info">
-                                    <span>Backend Development</span>
-                                    <span>85%</span>
-                                </div>
-                                <div class="skill-progress">
-                                    <div class="skill-fill" data-width="85"></div>
-                                </div>
+                                <div class="skill-info"><span>Backend Development</span><span>85%</span></div>
+                                <div class="skill-progress"><div class="skill-fill" data-width="85"></div></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </section-->
 
-
-
-        <!-- Portfolio Preview -->
-        <section class="portfolio-preview">
-            <div class="container">
-                <h2 class="section-title">Portfolio em Destaque</h2>
-                <div class="portfolio-grid">
-                    <div class="portfolio-item">
-                        <div class="portfolio-image">
-                            <div class="portfolio-icon"><i class="fas fa-shopping-cart"></i></div>
-                            <div class="portfolio-overlay">
-                                <div class="portfolio-info">
-                                    <h3>Plataforma E-commerce</h3>
-                                    <p>Sistema completo de vendas online com React.js e Node.js - 15.000+ usuários ativos</p>
-                                    <div class="portfolio-tech">
-                                        <span>React</span>
-                                        <span>Node.js</span>
-                                        <span>MySQL</span>
-                                    </div>
-                                    <button class="portfolio-btn" href="projetos.html">Ver Projeto</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portfolio-item">
-                        <div class="portfolio-image">
-                            <div class="portfolio-icon"><i class="fas fa-chart-line"></i></div>
-                            <div class="portfolio-overlay">
-                                <div class="portfolio-info">
-                                    <h3>Dashboard Analytics IA</h3>
-                                    <p>Painel inteligente de análise com Python e TensorFlow - 98.7% de precisão</p>
-                                    <div class="portfolio-tech">
-                                        <span>Python</span>
-                                        <span>TensorFlow</span>
-                                        <span>React</span>
-                                    </div>
-                                    <button class="portfolio-btn" href="projetos.html">Ver Projeto</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portfolio-item">
-                        <div class="portfolio-image">
-                            <div class="portfolio-icon"><i class="fas fa-desktop"></i></div>
-                            <div class="portfolio-overlay">
-                                <div class="portfolio-info">
-                                    <h3>Aplicação Desktop</h3>
-                                    <p>Software desktop multiplataforma desenvolvido com Electron - 50.000+ downloads</p>
-                                    <div class="portfolio-tech">
-                                        <span>Electron</span>
-                                        <span>React</span>
-                                        <span>SQLite</span>
-                                    </div>
-                                    <button class="portfolio-btn" href="projetos.html">Ver Projeto</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portfolio-item">
-                        <div class="portfolio-image">
-                            <div class="portfolio-icon"><i class="fas fa-robot"></i></div>
-                            <div class="portfolio-overlay">
-                                <div class="portfolio-info">
-                                    <h3>Sistema de Inteligência Artificial</h3>
-                                    <p>Automação empresarial inteligente com Machine Learning - 85% redução de tempo</p>
-                                    <div class="portfolio-tech">
-                                        <span>Python</span>
-                                        <span>TensorFlow</span>
-                                        <span>Automation</span>
-                                    </div>
-                                    <button class="portfolio-btn" href="projetos.html">Ver Projeto</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portfolio-item">
-                        <div class="portfolio-image">
-                            <div class="portfolio-icon"><i class="fas fa-mobile-alt"></i></div>
-                            <div class="portfolio-overlay">
-                                <div class="portfolio-info">
-                                    <h3>Aplicativo Mobile Híbrido</h3>
-                                    <p>App multiplataforma com React Native e funcionalidades nativas - 4.8★ na Play Store</p>
-                                    <div class="portfolio-tech">
-                                        <span>React Native</span>
-                                        <span>Flutter</span>
-                                        <span>Ionic</span>
-                                    </div>
-                                    <button class="portfolio-btn" heref="projetos.html">Ver Projeto</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portfolio-item">
-                        <div class="portfolio-image">
-                            <div class="portfolio-icon"><i class="fas fa-globe"></i></div>
-                            <div class="portfolio-overlay">
-                                <div class="portfolio-info">
-                                    <h3>Sistema Corporativo Premium</h3>
-                                    <p>Plataforma empresarial de alta performance com IA integrada - 200+ empresas Fortune 500</p>
-                                    <div class="premium-features">
-                                        <div class="feature-badge"> IA Integrada</div>
-                                        <div class="feature-badge"> 99.6% Uptime</div>
-                                        <div class="feature-badge"> Segurança Enterprise</div>
-                                    </div>
-                                    <div class="portfolio-tech">
-
-                                    </div>
-                                    <button class="portfolio-btn premium-btn" href="projetos.html">Projeto Premium</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="portfolio-cta">
-                    <a href="portfolio.html" class="btn btn-primary">
-                        <span>Ver Portfolio Completo</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Preview -->
         <section class="projects-preview">
             <div class="container">
                 <h2 class="section-title">Projetos Recentes</h2>
@@ -416,11 +225,7 @@
                                 <span class="timeline-date">Concluído em 2 semanas</span>
                             </div>
                             <p>Reduziu 70% do tempo de processamento manual de dados</p>
-                            <div class="timeline-tech">
-                                <span>Python</span>
-                                <span>Machine Learning</span>
-                                <span>API Integration</span>
-                            </div>
+                            <div class="timeline-tech"><span>Python</span><span>Machine Learning</span><span>API Integration</span></div>
                         </div>
                     </div>
                     <div class="timeline-item">
@@ -431,11 +236,7 @@
                                 <span class="timeline-date">Entregue em 3 semanas</span>
                             </div>
                             <p>Interface moderna que aumentou engajamento em 114%</p>
-                            <div class="timeline-tech">
-                                <span>React.js</span>
-                                <span>Node.js</span>
-                                <span>UI/UX Design</span>
-                            </div>
+                            <div class="timeline-tech"><span>React.js</span><span>Node.js</span><span>UI/UX Design</span></div>
                         </div>
                     </div>
                     <div class="timeline-item">
@@ -446,11 +247,7 @@
                                 <span class="timeline-date">Desenvolvido em 1 semana</span>
                             </div>
                             <p>Aplicativo cross-platform com performance nativa</p>
-                            <div class="timeline-tech">
-                                <span>React Native</span>
-                                <span>Electron</span>
-                                <span>SQLite</span>
-                            </div>
+                            <div class="timeline-tech"><span>React Native</span><span>Electron</span><span>SQLite</span></div>
                         </div>
                     </div>
                 </div>
@@ -463,533 +260,38 @@
             </div>
         </section>
 
-
-
-        <!-- Credibility Section -->
-        <section class="credibility-section">
-            <div class="container">
-                <div class="credibility-content">
-                    <div class="credibility-stats">
-                        <div class="credibility-item">
-                            <div class="credibility-icon">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <div class="credibility-number" data-target="50000">0</div>
-                            <div class="credibility-label">Linhas de Código</div>
-                        </div>
-                        <div class="credibility-item">
-                            <div class="credibility-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="credibility-number" data-target="1440">0</div>
-                            <div class="credibility-label">Horas Economizadas</div>
-                        </div>
-                        <div class="credibility-item">
-                            <div class="credibility-icon">
-                                <i class="fas fa-rocket"></i>
-                            </div>
-                            <div class="credibility-number" data-target="75">0</div>
-                            <div class="credibility-label">% Mais Rápido</div>
-                        </div>
-                        <div class="credibility-item">
-                            <div class="credibility-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="credibility-number" data-target="141">0</div>
-                            <div class="credibility-label">Clientes Atendidos</div>
-                        </div>
-                    </div>
-                    <div class="credibility-testimonials">
-                        <div class="testimonial-carousel">
-                            <div class="testimonial-item active">
-                                <div class="testimonial-content">
-                                    <p>"Reduziu nosso tempo de desenvolvimento em 70% com automações inteligentes, obg"</p>
-                                    <div class="testimonial-author">
-                                        <strong>Tech Lead/SP - Startup Fintech</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="testimonial-item">
-                                <div class="testimonial-content">
-                                    <p>"Código limpo, documentado e com performance excepcional"</p>
-                                    <div class="testimonial-author">
-                                        <strong>CTO - E-commerce</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="testimonial-item">
-                                <div class="testimonial-content">
-                                    <p>"Entrega sempre no prazo com qualidade superior e emite nota fiscal"</p>
-                                    <div class="testimonial-author">
-                                        <strong>Product Manager - SaaS</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonial-dots">
-                            <span class="dot active" data-slide="0"></span>
-                            <span class="dot" data-slide="1"></span>
-                            <span class="dot" data-slide="2"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="tech-showcase">
-                    <h3>Stack Tecnológico Avançado</h3>
-                    <div class="tech-grid">
-                        <div class="tech-item">
-                            <i class="fab fa-python"></i>
-                            <span>Python</span>
-                            <div class="tech-level">
-                                <div class="tech-fill" style="width: 95%"></div>0</div>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fab fa-js-square"></i>
-                            <span>JavaScript</span>
-                            <div class="tech-level">
-                                <div class="tech-fill" style="width: 92%"></div>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fab fa-react"></i>
-                            <span>React.js</span>
-                            <div class="tech-level">
-                                <div class="tech-fill" style="width: 90%"></div>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fab fa-node-js"></i>
-                            <span>Node.js</span>
-                            <div class="tech-level">
-                                <div class="tech-fill" style="width: 88%"></div>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fas fa-database"></i>
-                            <span>Databases</span>
-                            <div class="tech-level">
-                                <div class="tech-fill" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fas fa-brain"></i>
-                            <span>Machine Learning</span>
-                            <div class="tech-level">
-                                <div class="tech-fill" style="width: 87%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ROI Section -->
-        <section class="roi-section" data-aos="fade-up">
-            <div class="container">
-                <h2 class="section-title">Resultados que Transformam Negócios</h2>
-                <p class="section-subtitle">Métricas reais de projetos entregues</p>
-                <div class="roi-grid">
-                    <div class="roi-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="roi-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="roi-number" data-target="265">0</div>
-                        <div class="roi-label">% Aumento em Vendas</div>
-                        <div class="roi-description">Média de crescimento dos clientes após implementação</div>
-                    </div>
-                    <div class="roi-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="roi-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="roi-number" data-target="67">0</div>
-                        <div class="roi-label">% Redução de Tempo</div>
-                        <div class="roi-description">Automação de processos manuais repetitivos</div>
-                    </div>
-                    <div class="roi-card" data-aos="fade-up" data-aos-delay="300">
-                        <div class="roi-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="roi-number" data-target="150">0</div>
-                        <div class="roi-label">% Mais Engajamento</div>
-                        <div class="roi-description">Interfaces otimizadas para experiência do usuário</div>
-                    </div>
-                    <div class="roi-card" data-aos="fade-up" data-aos-delay="400">
-                        <div class="roi-icon">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <div class="roi-number" data-target="37000">0</div>
-                        <div class="roi-label">R$ Economizados</div>
-                        <div class="roi-description">Redução de custos operacionais mensais</div>
-                    </div>
-                    <div class="roi-card" data-aos="fade-up" data-aos-delay="500">
-                        <div class="roi-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <div class="roi-number" data-target="48">0</div>
-                        <div class="roi-label">Horas de Deploy</div>
-                        <div class="roi-description">Tempo médio para colocar projetos em produção</div>
-                    </div>
-                    <div class="roi-card" data-aos="fade-up" data-aos-delay="600">
-                        <div class="roi-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="roi-number" data-target="99">0</div>
-                        <div class="roi-label">% Uptime</div>
-                        <div class="roi-description">Disponibilidade garantida dos sistemas</div>
-                    </div>
-                </div>
-                <div class="roi-guarantee">
-                    <div class="guarantee-badge">
-                        <i class="fas fa-medal"></i>
-                        <span>Garantia de Satisfação</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Packages Section -->
-        <section class="packages-section" data-aos="fade-up">
-            <div class="container">
-                <h2 class="section-title">Pacotes Premium</h2>
-                <p class="section-subtitle">Soluções completas para cada necessidade do seu negócio</p>
-                <div class="packages-grid">
-                    <div class="package-card" data-aos="zoom-in" data-aos-delay="100">
-                        <div class="package-header">
-                            <div class="package-icon">
-                                <i class="fas fa-cog"></i>
-                            </div>
-                            <h3>Personalizado</h3>
-                            <div class="package-price">A partir de R$250</div>
-                        </div>
-                        <ul class="package-features">
-                            <li><i class="fas fa-check"></i> Design UI/UX Exclusivo</li>
-                            <li><i class="fas fa-check"></i> Sistema personalizado</li>
-                            <li><i class="fas fa-check"></i> Integração de APIs</li>
-                            <li><i class="fas fa-check"></i> Pequenas alterações</li>
-                            <li><i class="fas fa-check"></i> Documentação Completa</li>
-                        </ul>
-                        <button class="package-btn" id="package-personalizado">Escolher Plano</button>
-                    </div>
-                    <div class="package-card featured" data-aos="zoom-in" data-aos-delay="200">
-                        <div class="package-header">
-                            <div class="package-icon">
-                                <i class="fas fa-crown"></i>
-                            </div>
-                            <h3>Enterprise Pro</h3>
-                            <div class="package-price">A partir de R$800</div>
-                        </div>
-                        <ul class="package-features">
-                            <li><i class="fas fa-check"></i> Tudo do Personalizado</li>
-                            <li><i class="fas fa-check"></i> integração ao Back-End</li>
-                            <li><i class="fas fa-check"></i> Banco de Dados</li>
-                            <li><i class="fas fa-check"></i> Deploy em Produção</li>
-                            <li><i class="fas fa-check"></i> Suporte 30 dias</li>
-                        </ul>
-                        <button class="package-btn" id="package-enterprise">Mais Popular</button>
-                    </div>
-                    <div class="package-card" data-aos="zoom-in" data-aos-delay="300">
-                        <div class="package-header">
-                            <div class="package-icon">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <h3>AI Revolution</h3>
-                            <div class="package-price">A partir de R$1.500</div>
-                        </div>
-                        <ul class="package-features">
-                            <li><i class="fas fa-check"></i> Tudo do Enterprise Pro</li>
-                            <li><i class="fas fa-check"></i> Machine Learning</li>
-                            <li><i class="fas fa-check"></i> Automação Python</li>
-                            <li><i class="fas fa-check"></i> IA Personalizada</li>
-                            <li><i class="fas fa-check"></i> Analytics Avançado</li>
-                        </ul>
-                        <button class="package-btn" id="package-ai">Escolher Plano</button>
-                    </div>
-                    <div class="package-card" data-aos="zoom-in" data-aos-delay="400">
-                        <div class="package-header">
-                            <div class="package-icon">
-                                <i class="fas fa-rocket"></i>
-                            </div>
-                            <h3>Transformação Digital</h3>
-                            <div class="package-price">R$ 2.400</div>
-                        </div>
-                        <ul class="package-features">
-                            <li><i class="fas fa-check"></i> Consultoria Estratégica</li>
-                            <li><i class="fas fa-check"></i> Arquitetura Completa</li>
-                            <li><i class="fas fa-check"></i> Migração de Sistemas</li>
-                            <li><i class="fas fa-check"></i> Treinamento Equipe</li>
-                            <li><i class="fas fa-check"></i> Suporte 6 meses</li>
-                        </ul>
-                        <button class="package-btn" id="package-transformacao">Escolher Plano</button>
-                    </div>
-                    <div class="package-card" data-aos="zoom-in" data-aos-delay="500">
-                        <div class="package-header">
-                            <div class="package-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <h3>Plano completo</h3>
-                            <div class="package-price">R$ 3.500</div>
-                        </div>
-                        <ul class="package-features">
-                            <li><i class="fas fa-check"></i> Landing Pages</li>
-                            <li><i class="fas fa-check"></i> A/B Testing</li>
-                            <li><i class="fas fa-check"></i> Analytics Setup</li>
-                            <li><i class="fas fa-check"></i> Otimização SEO</li>
-                            <li><i class="fas fa-check"></i> Relatórios Mensais</li>
-                        </ul>
-                        <button class="package-btn" id="package-completo">Escolher Plano</button>
-                    </div>
-                    <div class="package-card" data-aos="zoom-in" data-aos-delay="600">
-                        <div class="package-header">
-                            <div class="package-icon">
-                                <i class="fas fa-building"></i>
-                            </div>
-                            <h3>Corporação</h3>
-                            <div class="package-price">R$ 5.200</div>
-                        </div>
-                        <ul class="package-features">
-                            <li><i class="fas fa-check"></i> Solução Enterprise</li>
-                            <li><i class="fas fa-check"></i> Multi-plataforma</li>
-                            <li><i class="fas fa-check"></i> Segurança Avançada</li>
-                            <li><i class="fas fa-check"></i> Escalabilidade</li>
-                            <li><i class="fas fa-check"></i> Suporte 24/7</li>
-                        </ul>
-                        <button class="package-btn" id="package-corporacao">Escolher Plano</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Success Stories Section -->
-        <section class="success-stories-section" data-aos="fade-up">
-            <div class="container">
-                <h2 class="section-title">Histórias de Sucesso</h2>
-                <p class="section-subtitle">Clientes que transformaram seus negócios com minhas soluções</p>
-                <div class="stories-grid">
-                    <div class="story-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="story-header">
-                            <div class="story-logo">
-                                <i class="fas fa-car"></i>
-                            </div>
-                            <div class="story-info">
-                                <h3>AutoMax Concessionária</h3>
-                                <span class="story-category">Automotivo</span>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"Implementamos um sistema completo de gestão que revolucionou nossa operação. Vendas aumentaram 41% e o tempo de atendimento reduziu em 78%."</p>
-                        </div>
-                        <div class="story-results">
-                            <div class="result-item">
-                                <span class="result-number">41%</span>
-                                <span class="result-label">Aumento em Vendas</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-number">78%</span>
-                                <span class="result-label">Redução no Tempo</span>
-                            </div>
-                        </div>
-                        <div class="story-author">
-                            <strong>João Gustavo M.</strong> - Diretor Comercial
-                        </div>
-                    </div>
-                    <div class="story-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="story-header">
-                            <div class="story-logo">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
-                            <div class="story-info">
-                                <h3>MedicalTech E-commerce</h3>
-                                <span class="story-category">Varejo Online</span>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"A plataforma de e-commerce desenvolvida superou todas as expectativas. Interface moderna e performance excepcional resultaram em 129% mais conversões."</p>
-                        </div>
-                        <div class="story-results">
-                            <div class="result-item">
-                                <span class="result-number">129%</span>
-                                <span class="result-label">Mais Conversões</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-number">95%</span>
-                                <span class="result-label">Satisfação Cliente</span>
-                            </div>
-                        </div>
-                        <div class="story-author">
-                            <strong>Maria Santos J.</strong> - CEO
-                        </div>
-                    </div>
-                    <div class="story-card" data-aos="fade-up" data-aos-delay="300">
-                        <div class="story-header">
-                            <div class="story-logo">
-                                <i class="fas fa-graduation-cap"></i>
-                            </div>
-                            <div class="story-info">
-                                <h3>Escola Pequeno bom Jesus</h3>
-                                <span class="story-category">Educação</span>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"O sistema de gestão escolar automatizou todos os processos. Professores economizam 5 horas semanais e pais têm acesso total ao desenvolvimento dos filhos."</p>
-                        </div>
-                        <div class="story-results">
-                            <div class="result-item">
-                                <span class="result-number">5h</span>
-                                <span class="result-label">Economia Semanal</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-number">100%</span>
-                                <span class="result-label">Transparência</span>
-                            </div>
-                        </div>
-                        <div class="story-author">
-                            <strong>Estela dos Santos</strong> - Diretora Pedagógica
-                        </div>
-                    </div>
-                    <div class="story-card" data-aos="fade-up" data-aos-delay="400">
-                        <div class="story-header">
-                            <div class="story-logo">
-                                <i class="fas fa-industry"></i>
-                            </div>
-                            <div class="story-info">
-                                <h3>InnovaCorp T.I.</h3>
-                                <span class="story-category">Manufatura</span>
-                            </div>
-                        </div>
-                        <div class="story-content">
-                            <p>"Compramos o Sistema Wall de Cameras, ajudou em 9 horas, na verificação de cameras paradas"</p>
-                        </div>
-                        <div class="story-results">
-                            <div class="result-item">
-                                <span class="result-number">9 horas</span>
-                                <span class="result-label">Redução Tempo & Custos</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-number">60%</span>
-                                <span class="result-label">Mais Agilidade</span>
-                            </div>
-                        </div>
-                        <div class="story-author">
-                            <strong>Jonnh Frankley W.</strong> - CEO
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Business Solutions Section -->
-        <section class="business-solutions">
-            <div class="bg-shape bg-shape-1"></div>
-            <div class="bg-shape bg-shape-2"></div>
-            <div class="bg-shape bg-shape-3"></div>
-            <div class="container">
-                <div class="section-header">
-                    <h2> Resultados Extraordinários</h2>
-                    <p>Números que comprovam a excelência e impacto transformador dos meus projetos</p>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-code"></i>
-                        </div>
-                        <div class="stat-number" data-target="27">0</div>
-                        <div class="stat-label">279Mil Linhas de Código</div>
-                        <div class="stat-description">Escritas com excelência e alta performance</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stat-number" data-target="5000">0</div>
-                        <div class="stat-label">Horas Economizadas</div>
-                        <div class="stat-description">Para clientes através de automação inteligente</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <div class="stat-number" data-target="98">0</div>
-                        <div class="stat-label">% Performance</div>
-                        <div class="stat-description">Média de otimização dos sistemas desenvolvidos</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <div class="stat-number" data-target="100">0</div>
-                        <div class="stat-label">% Satisfação</div>
-                        <div class="stat-description">Taxa de aprovação e recomendação dos clientes</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-number" data-target="217">0</div>
-                        <div class="stat-label">Projetos Entregues</div>
-                        <div class="stat-description">Soluções completas desenvolvidas com sucesso</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="stat-number" data-target="260">0</div>
-                        <div class="stat-label">% ROI Médio</div>
-                        <div class="stat-description">Retorno sobre investimento para os clientes</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA Section -->
-        <section class="cta-section">
-            <div class="container">
-                <div class="cta-content">
-                    <h2>Pronto para Transformar Sua Ideia em Realidade?</h2>
-                    <p>Vamos conversar sobre como posso ajudar seu negócio a crescer com soluções digitais inovadoras</p>
-                    <div class="cta-buttons">
-                        <a href="projeto.html" class="btn btn-primary">
-                            <span>Ver Meu Trabalho</span>
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="sobre.html" class="btn btn-secondary">
-                            <span>Conhecer Mais</span>
-                            <i class="fas fa-user"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Featured Project 1 - E-commerce Platform -->
-        <section class="featured-project-section" data-aos="fade-up">
+        <section class="featured-project-section">
             <div class="container">
                 <div class="project-header">
-                    <h2 class="section-title">Projeto Destaque: Plataforma E-commerce</h2>
-                    <p class="section-subtitle">Sistema completo de vendas online com IA integrada</p>
+                    <h2 class="section-title">Projeto Destaque</h2>
+                    <p class="section-subtitle">Plataforma E-commerce com Inteligência Artificial</p>
                 </div>
                 <div class="project-showcase">
-                    <div class="project-main-card" data-aos="zoom-in">
+                    <div class="project-main-card interactive-surface">
                         <div class="project-image">
                             <div class="project-preview">
                                 <div class="preview-header">
-                                    <div class="preview-dots">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                    <span class="preview-title">ShopMax Tec</span>
+                                    <div class="preview-dots"><span></span><span></span><span></span></div>
+                                    <span class="preview-title">ShopMax Tec - Dashboard</span>
                                 </div>
                                 <div class="preview-content">
                                     <div class="preview-nav">
-                                        <span>Home</span>
-                                        <span>Produtos</span>
-                                        <span>Carrinho</span>
+                                        <span class="nav-item active" data-preview-view="home">Home</span>
+                                        <span class="nav-item" data-preview-view="produtos">Produtos</span>
+                                        <span class="nav-item" data-preview-view="carrinho">Carrinho</span>
                                     </div>
-                                    <div class="preview-products">
-                                        <div class="preview-product"></div>
-                                        <div class="preview-product"></div>
-                                        <div class="preview-product"></div>
+                                    <div class="preview-body" id="previewBody">
+                                        <div class="preview-simulation">
+                                            <div class="sim-hero"></div>
+                                            <div class="sim-grid">
+                                                <div class="sim-item"></div>
+                                                <div class="sim-item"></div>
+                                                <div class="sim-item"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="interactive-cue"><i class="fas fa-mouse-pointer"></i> Interativo</div>
                             </div>
                         </div>
                         <div class="project-info">
@@ -997,208 +299,174 @@
                             <p>Plataforma e-commerce completa com sistema de recomendação por IA, processamento de pagamentos e dashboard administrativo avançado.</p>
                             <div class="project-stats">
                                 <div class="stat">
-                                    <span class="stat-number">169%</span>
+                                    <span class="stat-number" data-target="169" data-suffix="%">0</span>
                                     <span class="stat-label">Aumento em Vendas</span>
                                 </div>
                                 <div class="stat">
-                                    <span class="stat-number">2.3s</span>
+                                    <span class="stat-number" data-target="2.3" data-decimals="1" data-suffix="s">0</span>
                                     <span class="stat-label">Tempo de Carregamento</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="project-features">
-                        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                            <div class="feature-icon">
-                                <i class="fas fa-brain"></i>
-                            </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-brain"></i></div>
                             <h4>IA Recomendação</h4>
                             <p>Sistema inteligente que analisa comportamento do usuário e sugere produtos personalizados</p>
-                            <div class="feature-tech">
-                                <span>Python</span>
-                                <span>TensorFlow</span>
-                                <span>ML</span>
-                            </div>
+                            <div class="feature-tech"><span>Python</span><span>TensorFlow</span><span>ML</span></div>
                         </div>
-                        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
-                            <div class="feature-icon">
-                                <i class="fas fa-credit-card"></i>
-                            </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-credit-card"></i></div>
                             <h4>Pagamentos Seguros</h4>
                             <p>Integração com múltiplas formas de pagamento e sistema antifraude avançado</p>
-                            <div class="feature-tech">
-                                <span>Stripe</span>
-                                <span>PayPal</span>
-                                <span>PIX</span>
-                            </div>
+                            <div class="feature-tech"><span>Stripe</span><span>PayPal</span><span>PIX</span></div>
                         </div>
-                        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-                            <div class="feature-icon">
-                                <i class="fas fa-chart-analytics"></i>
-                            </div>
+                        <div class="feature-card analytics-card">
+                            <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
                             <h4>Analytics Avançado</h4>
                             <p>Dashboard completo com métricas em tempo real e relatórios detalhados de vendas</p>
-                            <div class="feature-tech">
-                                <span>React</span>
-                                <span>D3.js</span>
-                                <span>API</span>
-                            </div>
+                            <div class="feature-tech"><span>React</span><span>D3.js</span><span>API</span></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Featured Project 2 - AI Platform -->
-        <section class="premium-project-section" data-aos="fade-up">
+        <section class="projects-preview">
             <div class="container">
-                <div class="premium-header">
-                    <div class="premium-badge">
-                        <span>PROJETO PREMIUM</span>
-                        <div class="badge-glow"></div>
-                    </div>
-                    <h2 class="premium-title">NeuroFlow AI Enterprise</h2>
-                    <p class="premium-subtitle">Plataforma de Inteligência Artificial para Automação Empresarial Completa</p>
+                <h2 class="section-title">Projetos Bem-Sucedidos</h2>
+                <p class="section-subtitle" style="text-align: center; margin-bottom: 3rem; color: var(--text-secondary);">Soluções de alto impacto que resolvem problemas complexos</p>
+                <div class="success-grid">
+                    <div class="success-card"><div class="success-header"><div class="success-icon"><i class="fas fa-landmark"></i></div><h3>Portal de Transparência</h3></div><div class="success-body"><p>Plataforma de governança e dados abertos para instituições públicas.</p><ul class="success-features"><li><i class="fas fa-check"></i> Dashboards em tempo real</li><li><i class="fas fa-check"></i> Análise de dados massiva</li><li><i class="fas fa-check"></i> 100% de Acessibilidade</li></ul></div><div class="success-footer"><div class="success-tech"><span>Vue.js</span><span>D3.js</span><span>SQL</span></div></div></div>
+                    <div class="success-card"><div class="success-header"><div class="success-icon"><i class="fas fa-file-invoice-dollar"></i></div><h3>Motor de Notas Fiscais</h3></div><div class="success-body"><p>Automação completa de emissão, captura e tratamento de notas fiscais.</p><ul class="success-features"><li><i class="fas fa-check"></i> Previsibilidade de chegada</li><li><i class="fas fa-check"></i> Redução de 99% em erros</li><li><i class="fas fa-check"></i> Alerta de falta de nota</li></ul></div><div class="success-footer"><div class="success-tech"><span>Python</span><span>OCR</span><span>API</span></div></div></div>
+                    <div class="success-card"><div class="success-header"><div class="success-icon"><i class="fas fa-hospital-user"></i></div><h3>Sistemas Hospitalares</h3></div><div class="success-body"><p>Gestão inteligente de filas e chamados para diversos setores.</p><ul class="success-features"><li><i class="fas fa-check"></i> Chamada por voz neural</li><li><i class="fas fa-check"></i> Triagem automatizada</li><li><i class="fas fa-check"></i> Painéis de monitoramento</li></ul></div><div class="success-footer"><div class="success-tech"><span>React</span><span>WebSocket</span><span>Node</span></div></div></div>
                 </div>
-                <div class="premium-showcase">
-                    <div class="premium-main">
-                        <div class="premium-visual">
-                            <div class="ai-dashboard">
-                                <div class="dashboard-header">
-                                    <div class="header-left">
-                                        <div class="logo-ai">NeuroFlow</div>
-                                        <div class="status-indicator">
-                                            <span class="status-dot"></span>
-                                            <span>AI Online</span>
-                                        </div>
-                                    </div>
-                                    <div class="header-right">
-                                        <div class="metric">
-                                            <span class="metric-value">98.7%</span>
-                                            <span class="metric-label">Precisão</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="dashboard-content">
-                                    <div class="ai-modules">
-                                        <div class="module active">
-                                            <div class="module-icon">🧠</div>
-                                            <span>Neural Network</span>
-                                        </div>
-                                        <div class="module">
-                                            <div class="module-icon">📊</div>
-                                            <span>Analytics</span>
-                                        </div>
-                                        <div class="module">
-                                            <div class="module-icon">🔄</div>
-                                            <span>Automation</span>
-                                        </div>
-                                    </div>
-                                    <div class="ai-visualization">
-                                        <div class="neural-network">
-                                            <div class="node"></div>
-                                            <div class="node"></div>
-                                            <div class="node"></div>
-                                            <div class="node"></div>
-                                            <div class="connection"></div>
-                                            <div class="connection"></div>
-                                            <div class="connection"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="premium-info">
-                            <div class="premium-metrics">
-                                <div class="metric-card">
-                                    <div class="metric-icon">⚡</div>
-                                    <div class="metric-data">
-                                        <span class="metric-number">10x</span>
-                                        <span class="metric-text">Carregamento Rapido</span>
-                                    </div>
-                                </div>
-                                <div class="metric-card">
-                                    <div class="metric-icon">💰</div>
-                                    <div class="metric-data">
-                                        <span class="metric-number">85%</span>
-                                        <span class="metric-text">Redução de Custo</span>
-                                    </div>
-                                </div>
-                                <div class="metric-card">
-                                    <div class="metric-icon">🎯</div>
-                                    <div class="metric-data">
-                                        <span class="metric-number">99.2%</span>
-                                        <span class="metric-text">Precisão de Dados</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="premium-description">
-                                <h3>Revolução em Automação Empresarial</h3>
-                                <p>Sistema de IA proprietário que integra Machine Learning, Deep Learning e processamento de linguagem natural para automatizar completamente processos empresariais complexos.</p>
-                                <div class="premium-features">
-                                    <div class="feature-item">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Processamento de 1k+ documentos/hora</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Integração com 150+ APIs empresariais</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Análise preditiva em tempo real</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="projects-cta" style="margin-top: 3rem;">
+                    <a href="projetos.html" class="btn btn-outline"><span>Ver Todos os Projetos</span><i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="credibility-section">
+            <div class="container">
+                <div class="credibility-content">
+                    <div class="credibility-stats">
+                        <div class="credibility-item"><div class="credibility-icon"><i class="fas fa-code"></i></div><div class="credibility-number" data-target="50000" data-suffix="">0</div><div class="credibility-label">Linhas de Código</div></div>
+                        <div class="credibility-item"><div class="credibility-icon"><i class="fas fa-clock"></i></div><div class="credibility-number" data-target="1440" data-suffix="">0</div><div class="credibility-label">Horas Economizadas</div></div>
+                        <div class="credibility-item"><div class="credibility-icon"><i class="fas fa-rocket"></i></div><div class="credibility-number" data-target="75" data-suffix="%">0</div><div class="credibility-label">% Mais Rápido</div></div>
+                        <div class="credibility-item"><div class="credibility-icon"><i class="fas fa-users"></i></div><div class="credibility-number" data-target="141" data-suffix="">0</div><div class="credibility-label">Clientes Atendidos</div></div>
                     </div>
-                    <div class="premium-technologies">
-                        <div class="tech-category">
-                            <h4>AI & Machine Learning</h4>
-                            <div class="tech-stack">
-                                <span class="tech-item premium">TensorFlow</span>
-                                <span class="tech-item premium">PyTorch</span>
-                                <span class="tech-item premium">OpenAI GPT</span>
-                                <span class="tech-item premium">CUDA</span>
-                            </div>
+                    <div class="credibility-testimonials">
+                        <div class="testimonial-carousel">
+                            <div class="testimonial-item active"><div class="testimonial-content"><p>"Reduziu nosso tempo de desenvolvimento em 70% com automações inteligentes, obg"</p><div class="testimonial-author"><strong>Tech Lead/SP - Startup Fintech</strong></div></div></div>
+                            <div class="testimonial-item"><div class="testimonial-content"><p>"Código limpo, documentado e com performance excepcional"</p><div class="testimonial-author"><strong>CTO - E-commerce</strong></div></div></div>
+                            <div class="testimonial-item"><div class="testimonial-content"><p>"Entrega sempre no prazo com qualidade superior e emite nota fiscal"</p><div class="testimonial-author"><strong>Product Manager - SaaS</strong></div></div></div>
                         </div>
-                        <div class="tech-category">
-                            <h4>Backend & Infrastructure</h4>
-                            <div class="tech-stack">
-                                <span class="tech-item premium">Kubernetes</span>
-                                <span class="tech-item premium">Docker</span>
-                                <span class="tech-item premium">Redis</span>
-                                <span class="tech-item premium">PostgreSQL</span>
-                            </div>
-                        </div>
-                        <div class="tech-category">
-                            <h4>Cloud & DevOps</h4>
-                            <div class="tech-stack">
-                                <span class="tech-item premium">AWS</span>
-                                <span class="tech-item premium">Terraform</span>
-                                <span class="tech-item premium">Jenkins</span>
-                                <span class="tech-item premium">Grafana</span>
-                            </div>
-                        </div>
+                        <div class="testimonial-dots"><span class="dot active" data-slide="0"></span><span class="dot" data-slide="1"></span><span class="dot" data-slide="2"></span></div>
+                    </div>
+                </div>
+                <div class="tech-showcase">
+                    <h3>Stack Tecnológico Avançado</h3>
+                    <div class="tech-grid">
+                        <div class="tech-item"><i class="fab fa-python"></i><span>Python</span><div class="tech-level"><div class="tech-fill" style="width: 95%"></div></div></div>
+                        <div class="tech-item"><i class="fab fa-js-square"></i><span>JavaScript</span><div class="tech-level"><div class="tech-fill" style="width: 92%"></div></div></div>
+                        <div class="tech-item"><i class="fab fa-react"></i><span>React.js</span><div class="tech-level"><div class="tech-fill" style="width: 90%"></div></div></div>
+                        <div class="tech-item"><i class="fab fa-node-js"></i><span>Node.js</span><div class="tech-level"><div class="tech-fill" style="width: 88%"></div></div></div>
+                        <div class="tech-item"><i class="fas fa-database"></i><span>Databases</span><div class="tech-level"><div class="tech-fill" style="width: 85%"></div></div></div>
+                        <div class="tech-item"><i class="fas fa-brain"></i><span>Machine Learning</span><div class="tech-level"><div class="tech-fill" style="width: 87%"></div></div></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Seção Premium Projects -->
+        <section class="roi-section">
+            <div class="container">
+                <h2 class="section-title">Resultados que Transformam Negócios</h2>
+                <p class="section-subtitle">Métricas reais de projetos entregues</p>
+                <div class="roi-grid">
+                    <div class="roi-card"><div class="roi-icon"><i class="fas fa-chart-line"></i></div><div class="roi-number" data-target="265" data-suffix="%">0</div><div class="roi-label">% Aumento em Vendas</div><div class="roi-description">Média de crescimento dos clientes após implementação</div></div>
+                    <div class="roi-card"><div class="roi-icon"><i class="fas fa-clock"></i></div><div class="roi-number" data-target="67" data-suffix="%">0</div><div class="roi-label">% Redução de Tempo</div><div class="roi-description">Automação de processos manuais repetitivos</div></div>
+                    <div class="roi-card"><div class="roi-icon"><i class="fas fa-users"></i></div><div class="roi-number" data-target="150" data-suffix="%">0</div><div class="roi-label">% Mais Engajamento</div><div class="roi-description">Interfaces otimizadas para experiência do usuário</div></div>
+                    <div class="roi-card"><div class="roi-icon"><i class="fas fa-dollar-sign"></i></div><div class="roi-number" data-target="37000" data-prefix="R$ " data-suffix="">0</div><div class="roi-label">R$ Economizados</div><div class="roi-description">Redução de custos operacionais mensais</div></div>
+                    <div class="roi-card"><div class="roi-icon"><i class="fas fa-rocket"></i></div><div class="roi-number" data-target="48" data-suffix="">0</div><div class="roi-label">Horas de Deploy</div><div class="roi-description">Tempo médio para colocar projetos em produção</div></div>
+                    <div class="roi-card"><div class="roi-icon"><i class="fas fa-shield-alt"></i></div><div class="roi-number" data-target="99" data-suffix="%">0</div><div class="roi-label">% Uptime</div><div class="roi-description">Disponibilidade garantida dos sistemas</div></div>
+                </div>
+                <div class="roi-guarantee"><div class="guarantee-badge"><i class="fas fa-medal"></i><span>Garantia de Satisfação</span></div></div>
+            </div>
+        </section>
 
+        <section class="success-stories-section">
+            <div class="container">
+                <h2 class="section-title">Histórias de Sucesso</h2>
+                <p class="section-subtitle">Clientes que transformaram seus negócios com minhas soluções</p>
+                <div class="stories-grid">
+                    <div class="story-card"><div class="story-header"><div class="story-logo"><i class="fas fa-car"></i></div><div class="story-info"><h3>AutoMax Concessionária</h3><span class="story-category">Automotivo</span></div></div><div class="story-content"><p>"Implementamos um sistema completo de gestão que revolucionou nossa operação. Vendas aumentaram 41% e o tempo de atendimento reduziu em 78%."</p></div><div class="story-results"><div class="result-item"><span class="result-number">41%</span><span class="result-label">Aumento em Vendas</span></div><div class="result-item"><span class="result-number">78%</span><span class="result-label">Redução no Tempo</span></div></div><div class="story-author"><strong>João Gustavo M.</strong> - Diretor Comercial</div></div>
+                    <div class="story-card"><div class="story-header"><div class="story-logo"><i class="fas fa-shopping-cart"></i></div><div class="story-info"><h3>MedicalTech E-commerce</h3><span class="story-category">Varejo Online</span></div></div><div class="story-content"><p>"A plataforma de e-commerce desenvolvida superou todas as expectativas. Interface moderna e performance excepcional resultaram em 129% mais conversões."</p></div><div class="story-results"><div class="result-item"><span class="result-number">129%</span><span class="result-label">Mais Conversões</span></div><div class="result-item"><span class="result-number">95%</span><span class="result-label">Satisfação Cliente</span></div></div><div class="story-author"><strong>Maria Santos J.</strong> - CEO</div></div>
+                    <div class="story-card"><div class="story-header"><div class="story-logo"><i class="fas fa-graduation-cap"></i></div><div class="story-info"><h3>Escola Pequeno bom Jesus</h3><span class="story-category">Educação</span></div></div><div class="story-content"><p>"O sistema de gestão escolar automatizou todos os processos. Professores economizam 5 horas semanais e pais têm acesso total ao desenvolvimento dos filhos."</p></div><div class="story-results"><div class="result-item"><span class="result-number">5h</span><span class="result-label">Economia Semanal</span></div><div class="result-item"><span class="result-number">100%</span><span class="result-label">Transparência</span></div></div><div class="story-author"><strong>Estela dos Santos</strong> - Diretora Pedagógica</div></div>
+                    <div class="story-card"><div class="story-header"><div class="story-logo"><i class="fas fa-industry"></i></div><div class="story-info"><h3>InnovaCorp T.I.</h3><span class="story-category">Manufatura</span></div></div><div class="story-content"><p>"Compramos o Sistema Wall de Cameras, ajudou em 9 horas, na verificação de cameras paradas"</p></div><div class="story-results"><div class="result-item"><span class="result-number">9 horas</span><span class="result-label">Redução Tempo & Custos</span></div><div class="result-item"><span class="result-number">60%</span><span class="result-label">Mais Agilidade</span></div></div><div class="story-author"><strong>Jonnh Frankley W.</strong> - CEO</div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="business-solutions interactive-metrics">
+            <div class="bg-shape bg-shape-1"></div>
+            <div class="bg-shape bg-shape-2"></div>
+            <div class="bg-shape bg-shape-3"></div>
+            <div class="container">
+                <div class="section-header">
+                    <h2>Resultados Extraordinários</h2>
+                    <p>Números que comprovam a excelência e impacto transformador dos meus projetos</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-code"></i></div><div class="stat-number" data-target="279" data-suffix="Mil">0</div><div class="stat-label">279Mil Linhas de Código</div><div class="stat-description">Escritas com excelência e alta performance</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-number" data-target="5000" data-suffix="">0</div><div class="stat-label">Horas Economizadas</div><div class="stat-description">Para clientes através de automação inteligente</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-rocket"></i></div><div class="stat-number" data-target="98" data-suffix="%">0</div><div class="stat-label">% Performance</div><div class="stat-description">Média de otimização dos sistemas desenvolvidos</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-trophy"></i></div><div class="stat-number" data-target="100" data-suffix="%">0</div><div class="stat-label">% Satisfação</div><div class="stat-description">Taxa de aprovação e recomendação dos clientes</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-number" data-target="217" data-suffix="">0</div><div class="stat-label">Projetos Entregues</div><div class="stat-description">Soluções completas desenvolvidas com sucesso</div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-number" data-target="260" data-suffix="%">0</div><div class="stat-label">% ROI Médio</div><div class="stat-description">Retorno sobre investimento para os clientes</div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="packages-section">
+            <div class="container">
+                <h2 class="section-title">Pacotes Premium</h2>
+                <p class="section-subtitle">Soluções completas para cada necessidade do seu negócio</p>
+                <div class="packages-grid">
+                    <div class="package-card"><div class="package-header"><div class="package-icon"><i class="fas fa-cog"></i></div><h3>Personalizado</h3><div class="package-price price-counter" data-price="250">A partir de R$250</div></div><ul class="package-features"><li><i class="fas fa-check"></i> Design UI/UX Exclusivo</li><li><i class="fas fa-check"></i> Sistema personalizado</li><li><i class="fas fa-check"></i> Integração de APIs</li><li><i class="fas fa-check"></i> Pequenas alterações</li><li><i class="fas fa-check"></i> Documentação Completa</li></ul><button class="package-btn" id="package-personalizado">Escolher Plano</button></div>
+                    <div class="package-card featured"><div class="package-header"><div class="package-icon"><i class="fas fa-crown"></i></div><h3>Enterprise Pro</h3><div class="package-price price-counter" data-price="800">A partir de R$800</div></div><ul class="package-features"><li><i class="fas fa-check"></i> Tudo do Personalizado</li><li><i class="fas fa-check"></i> integração ao Back-End</li><li><i class="fas fa-check"></i> Banco de Dados</li><li><i class="fas fa-check"></i> Deploy em Produção</li><li><i class="fas fa-check"></i> Suporte 30 dias</li></ul><button class="package-btn" id="package-enterprise">Mais Popular</button></div>
+                    <div class="package-card"><div class="package-header"><div class="package-icon"><i class="fas fa-robot"></i></div><h3>AI Revolution</h3><div class="package-price price-counter" data-price="1500">A partir de R$1.500</div></div><ul class="package-features"><li><i class="fas fa-check"></i> Tudo do Enterprise Pro</li><li><i class="fas fa-check"></i> Machine Learning</li><li><i class="fas fa-check"></i> Automação Python</li><li><i class="fas fa-check"></i> IA Personalizada</li><li><i class="fas fa-check"></i> Analytics Avançado</li></ul><button class="package-btn" id="package-ai">Escolher Plano</button></div>
+                    <div class="package-card"><div class="package-header"><div class="package-icon"><i class="fas fa-rocket"></i></div><h3>Transformação Digital</h3><div class="package-price price-counter" data-price="2400">R$ 2.400</div></div><ul class="package-features"><li><i class="fas fa-check"></i> Consultoria Estratégica</li><li><i class="fas fa-check"></i> Arquitetura Completa</li><li><i class="fas fa-check"></i> Migração de Sistemas</li><li><i class="fas fa-check"></i> Treinamento Equipe</li><li><i class="fas fa-check"></i> Suporte 6 meses</li></ul><button class="package-btn" id="package-transformacao">Escolher Plano</button></div>
+                    <div class="package-card"><div class="package-header"><div class="package-icon"><i class="fas fa-chart-line"></i></div><h3>Plano completo</h3><div class="package-price">A combinar</div></div><ul class="package-features"><li><i class="fas fa-check"></i> Landing Pages</li><li><i class="fas fa-check"></i> A/B Testing</li><li><i class="fas fa-check"></i> Analytics Setup</li><li><i class="fas fa-check"></i> Otimização SEO</li><li><i class="fas fa-check"></i> Relatórios Mensais</li></ul><button class="package-btn" id="package-completo">Escolher Plano</button></div>
+                    <div class="package-card"><div class="package-header"><div class="package-icon"><i class="fas fa-building"></i></div><h3>Corporação</h3><div class="package-price">A combinar</div></div><ul class="package-features"><li><i class="fas fa-check"></i> Solução Enterprise</li><li><i class="fas fa-check"></i> Multi-plataforma</li><li><i class="fas fa-check"></i> Segurança Avançada</li><li><i class="fas fa-check"></i> Escalabilidade</li><li><i class="fas fa-check"></i> Suporte 24/7</li></ul><button class="package-btn" id="package-corporacao">Escolher Plano</button></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Pronto para Transformar Sua Ideia em Realidade?</h2>
+                    <p>Vamos conversar sobre como posso ajudar seu negócio a crescer com soluções digitais inovadoras</p>
+                    <div class="cta-buttons">
+                        <a href="projeto.html" class="btn btn-primary"><span>Ver Meu Trabalho</span><i class="fas fa-eye"></i></a>
+                        <a href="sobre.html" class="btn btn-secondary"><span>Conhecer Mais</span><i class="fas fa-user"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-brand">
+                <div class="footer-brand footer-block">
                     <h3>Carlos <span class="accent"> Henrique</span></h3>
                     <p>Desenvolvedor Full Stack & Especialista em IA</p>
                 </div>
                 <div class="footer-links">
-                    <div class="footer-section">
+                    <div class="footer-section footer-block">
                         <h4>Navegação</h4>
                         <ul>
                             <li><a href="#inicio">Início</a></li>
@@ -1207,7 +475,7 @@
                             <li><a href="projetos.html">Projetos</a></li>
                         </ul>
                     </div>
-                    <div class="footer-section">
+                    <div class="footer-section footer-block">
                         <h4>Serviços</h4>
                         <ul>
                             <li><a href="sistemas.html">Sistemas</a></li>
@@ -1216,7 +484,7 @@
                             <li><a href="projetos.html">Automação</a></li>
                         </ul>
                     </div>
-                    <div class="footer-section">
+                    <div class="footer-section footer-block">
                         <h4>Contato</h4>
                         <ul>
                             <li><a href="#">LinkedIn</a></li>
@@ -1226,13 +494,20 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
+            <div class="tools-used-strip" aria-label="Ferramentas usadas">
+                <span class="tool-chip"><i class="fab fa-figma"></i> Figma</span>
+                <span class="tool-chip"><i class="fas fa-bolt"></i> Vite</span>
+                <span class="tool-chip"><i class="fas fa-briefcase"></i> Workana</span>
+                <span class="tool-chip"><i class="fab fa-react"></i> React</span>
+                <span class="tool-chip"><i class="fab fa-python"></i> Python</span>
+                <span class="tool-chip"><i class="fab fa-node-js"></i> Node</span>
+            </div>
+            <div class="footer-bottom footer-bottom-block">
                 <p>&copy; 2024 Carlos Henrique. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Modais dos Projetos -->
     <div id="projectModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -1241,19 +516,11 @@
                 <div class="modal-tech" id="modalTech"></div>
             </div>
             <div class="modal-body">
-                <div class="modal-image">
-                    <img id="modalImage" src="" alt="Projeto">
-                </div>
+                <div class="modal-image"><img id="modalImage" src="" alt="Projeto"></div>
                 <div class="modal-info">
                     <p id="modalDescription">Descrição do projeto...</p>
-                    <div class="modal-features">
-                        <h4>Funcionalidades:</h4>
-                        <ul id="modalFeatures"></ul>
-                    </div>
-                    <div class="modal-stats">
-                        <h4>Estatísticas:</h4>
-                        <div class="stats-grid" id="modalStats"></div>
-                    </div>
+                    <div class="modal-features"><h4>Funcionalidades:</h4><ul id="modalFeatures"></ul></div>
+                    <div class="modal-stats"><h4>Estatísticas:</h4><div class="stats-grid" id="modalStats"></div></div>
                     <div class="modal-actions">
                         <a href="#" class="btn btn-primary" id="modalDemo">🚀 Ver Demo</a>
                         <a href="#" class="btn btn-secondary" id="modalCode">💻 Ver Código</a>
@@ -1263,7 +530,6 @@
         </div>
     </div>
 
-    <!-- Botão de Contato Flutuante -->
     <div class="floating-contact-btn" id="floating-whatsapp">
         <i class="fab fa-whatsapp"></i>
         <span class="contact-tooltip">Fale Comigo</span>
@@ -1271,5 +537,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>
